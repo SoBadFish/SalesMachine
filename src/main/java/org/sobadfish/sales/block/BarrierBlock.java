@@ -13,7 +13,7 @@ import cn.nukkit.utils.TextFormat;
  * @author Sobadfish
  * @date 2023/11/18
  */
-public class BarrierBlock extends BlockSolid {
+public class BarrierBlock extends BlockSolid implements IBarrier {
     public BarrierBlock() {
     }
 
@@ -70,6 +70,7 @@ public class BarrierBlock extends BlockSolid {
         return new ItemBlock(new BlockAir());
     }
 
+    @Override
     public Item getShaleItem(){
         Item item = Item.get(54);
         item.setCustomName(TextFormat.colorize('&',"&r&l&e售卖机"));
@@ -79,5 +80,10 @@ public class BarrierBlock extends BlockSolid {
         compoundTag.putBoolean("saleskey",true);
         item.addEnchantment(Enchantment.getEnchantment(0).setLevel(1));
         return item;
+    }
+
+    @Override
+    public int getBid() {
+        return 416;
     }
 }

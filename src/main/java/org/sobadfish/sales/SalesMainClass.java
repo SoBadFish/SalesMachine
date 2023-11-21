@@ -19,6 +19,8 @@ import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import cn.nukkit.utils.Utils;
 import org.sobadfish.sales.block.BarrierBlock;
+import org.sobadfish.sales.block.BarrierBlock_Nukkit;
+import org.sobadfish.sales.block.IBarrier;
 import org.sobadfish.sales.entity.SalesEntity;
 
 import org.sobadfish.sales.manager.SalesManager;
@@ -42,16 +44,25 @@ public class SalesMainClass extends PluginBase {
 
     public static final String PLUGIN_NAME = "&7[&e售货机&7]&r";
 
-    public SalesManager salesManager;
+    public IBarrier iBarrier;
 
     public static SalesMainClass INSTANCE;
 
     @Override
     public void onLoad() {
+
         Entity.registerEntity(SalesEntity.ENTITY_TYPE,SalesEntity.class);
         BlockEntity.registerBlockEntity(SalesEntity.SalesBlockEntity.ENTITY_TYPE,SalesEntity.SalesBlockEntity.class);
-        Block.list[416] = BarrierBlock.class;
-        Block.fullList[416] = new BarrierBlock();
+        if(Block.list.length <= 256){
+            Block.list[95] = BarrierBlock_Nukkit.class;
+            iBarrier = new BarrierBlock_Nukkit();
+        }else{
+            Block.list[416] = BarrierBlock.class;
+            iBarrier = new BarrierBlock();
+        }
+
+
+
 
     }
 
@@ -97,7 +108,7 @@ public class SalesMainClass extends PluginBase {
                         }
                     }
                     if(p != null){
-                        Item item = new BarrierBlock().getShaleItem();
+                        Item item =  SalesMainClass.INSTANCE.iBarrier.getShaleItem();
                         item.setCount(count);
                         p.getInventory().addItem(item);
                         sendMessageToObject("&b 你获得了 &e 售货机 * &a"+count,p);

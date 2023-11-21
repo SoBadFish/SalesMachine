@@ -45,7 +45,7 @@ public class SalesListener implements Listener {
     @EventHandler
     public void onPlayerInteractEvent(PlayerInteractEvent event){
         Block block = event.getBlock();
-        if(block.getId() == 416){
+        if(block.getId() == main.iBarrier.getBid()){
             BlockEntity entity = block.level.getBlockEntity(block);
             if(entity instanceof SalesEntity.SalesBlockEntity){
 
@@ -117,7 +117,7 @@ public class SalesListener implements Listener {
     public void onBlockUpdate(BlockUpdateEvent event){
         Block upblock = event.getBlock();
         Block old = upblock.level.getBlock(upblock);
-        if(old.getId() != 416 && upblock.getId() == 416){
+        if(old.getId() != main.iBarrier.getBid() && upblock.getId() == main.iBarrier.getBid()){
             BlockEntity entity = old.level.getBlockEntity(old);
             if(entity instanceof SalesEntity.SalesBlockEntity){
                 SalesEntity entity1 = ((SalesEntity.SalesBlockEntity) entity).sales;
@@ -137,7 +137,7 @@ public class SalesListener implements Listener {
             return;
         }
         if(event.getPlayer().isOp()){
-            if(block.getId() == 416){
+            if(block.getId() == main.iBarrier.getBid()){
                 event.setCancelled();
                 BlockEntity entity = block.level.getBlockEntity(block);
                 if(entity instanceof SalesEntity.SalesBlockEntity){

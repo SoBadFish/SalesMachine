@@ -398,8 +398,8 @@ public class SalesEntity extends EntityHuman {
             tg.putByte("face",bf.getIndex());
             BlockEntity.createBlockEntity(SalesBlockEntity.ENTITY_TYPE,pos.getChunk(),tg,sales);
             BlockEntity.createBlockEntity(SalesBlockEntity.ENTITY_TYPE,p2.getChunk(),BlockEntity.getDefaultCompound(p2, SalesBlockEntity.ENTITY_TYPE),sales);
-            position.getLevel().setBlock(position, Block.get(416),false,true);
-            position.getLevel().setBlock(position.add(0,1),  Block.get(416),false,true);
+            position.getLevel().setBlock(position, (Block) SalesMainClass.INSTANCE.iBarrier,false,true);
+            position.getLevel().setBlock(position.add(0,1), (Block) SalesMainClass.INSTANCE.iBarrier,false,true);
 
             return true;
         }
@@ -415,9 +415,9 @@ public class SalesEntity extends EntityHuman {
         public SalesBlockEntity(FullChunk chunk, CompoundTag nbt) {
             super(chunk, nbt);
 
-            if(this.level.getBlock(this).getId() != new BarrierBlock().getId()
-                    && this.level.getBlock(this.add(0,1)).getId() != new BarrierBlock().getId()
-                    && this.level.getBlock(this.add(0,-1)).getId() != new BarrierBlock().getId()){
+            if(this.level.getBlock(this).getId() != SalesMainClass.INSTANCE.iBarrier.getBid()
+                    && this.level.getBlock(this.add(0,1)).getId() != SalesMainClass.INSTANCE.iBarrier.getBid()
+                    && this.level.getBlock(this.add(0,-1)).getId() != SalesMainClass.INSTANCE.iBarrier.getBid()){
                 this.level.removeBlockEntity(this);
                 //移除相关实体
                 for(Entity entity: level.getEntities()){
@@ -449,8 +449,8 @@ public class SalesEntity extends EntityHuman {
                     sales.setSkin(skin);
                     sales.spawnToAll();
 //                System.out.println("生成位置: "+sales.getPosition());
-                    level.setBlock(this,new BarrierBlock(),false,false);
-                    level.setBlock(this.add(0,1),new BarrierBlock(),false,false);
+                    level.setBlock(this, (Block) SalesMainClass.INSTANCE.iBarrier,false,false);
+                    level.setBlock(this.add(0,1), (Block) SalesMainClass.INSTANCE.iBarrier,false,false);
                     this.sales = sales;
                     BlockEntity be = level.getBlockEntity(this.add(0,1));
 

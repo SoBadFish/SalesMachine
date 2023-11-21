@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.TextFormat;
+import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.block.BarrierBlock;
 import org.sobadfish.sales.panel.lib.ChestPanel;
 
@@ -32,7 +33,7 @@ public class RemoveSales extends BasePlayPanelItemInstance{
             Server.getInstance().getScheduler().scheduleDelayedTask(() -> click = 0,40);
         }else{
             inventory.onClose(player);
-            inventory.sales.level.dropItem(inventory.sales,new BarrierBlock().getShaleItem());
+            inventory.sales.level.dropItem(inventory.sales, SalesMainClass.INSTANCE.iBarrier.getShaleItem());
             inventory.sales.toClose();
 
         }
