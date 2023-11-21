@@ -99,7 +99,7 @@ public class SalesMainClass extends PluginBase {
                     if(p != null){
                         Item item = new BarrierBlock().getShaleItem();
                         item.setCount(count);
-                        p.getInventory().addItem();
+                        p.getInventory().addItem(item);
                         sendMessageToObject("&b 你获得了 &e 售货机 * &a"+count,p);
                     }else{
                         sendMessageToObject("&c目标玩家为控制台!",sender);
