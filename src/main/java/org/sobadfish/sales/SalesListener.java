@@ -36,6 +36,8 @@ public class SalesListener implements Listener {
 
     public SalesMainClass main;
 
+    public static LinkedHashMap<String,DisplayPlayerPanel> chestPanelLinkedHashMap = new LinkedHashMap<>();
+
     public SalesListener(SalesMainClass salesMainClass){
         this.main = salesMainClass;
     }
@@ -64,6 +66,8 @@ public class SalesListener implements Listener {
 
                     DisplayPlayerPanel displayPlayerPanel = new DisplayPlayerPanel(entity1);
                     displayPlayerPanel.open(player);
+                    chestPanelLinkedHashMap.put(player.getName(),displayPlayerPanel);
+
                 }
                 event.setCancelled();
             }
@@ -139,6 +143,7 @@ public class SalesListener implements Listener {
                 if(entity instanceof SalesEntity.SalesBlockEntity){
                     SalesEntity entity1 = ((SalesEntity.SalesBlockEntity) entity).sales;
                     entity1.toClose();
+
                 }
             }
         }

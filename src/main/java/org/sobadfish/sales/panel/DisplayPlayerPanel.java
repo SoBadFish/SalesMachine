@@ -24,7 +24,7 @@ import java.util.Map;
  */
 public class DisplayPlayerPanel implements InventoryHolder {
 
-    private AbstractFakeInventory inventory;
+    public AbstractFakeInventory inventory;
 
     public SalesEntity sales;
 

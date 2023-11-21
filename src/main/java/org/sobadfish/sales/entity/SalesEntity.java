@@ -25,9 +25,11 @@ import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.network.protocol.AddItemEntityPacket;
 import cn.nukkit.network.protocol.DataPacket;
 import cn.nukkit.network.protocol.RemoveEntityPacket;
+import org.sobadfish.sales.SalesListener;
 import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.block.BarrierBlock;
 import org.sobadfish.sales.items.SaleItem;
+import org.sobadfish.sales.panel.DisplayPlayerPanel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -354,6 +356,11 @@ public class SalesEntity extends EntityHuman {
             Item cl = saleItem.saleItem.clone();
             cl.setCount(saleItem.stack);
             level.dropItem(this,cl);
+        }
+        for(DisplayPlayerPanel dis: SalesListener.chestPanelLinkedHashMap.values()){
+            if(dis.sales.equals(this)){
+                dis.inventory.close();
+            }
         }
         close();
     }
