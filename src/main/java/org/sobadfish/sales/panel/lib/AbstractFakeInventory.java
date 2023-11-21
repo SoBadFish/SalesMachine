@@ -39,7 +39,8 @@ public abstract class AbstractFakeInventory extends ContainerInventory {
 //        checkForClosed();
         this.viewers.add(who);
         if (OPEN.putIfAbsent(who, this) != null) {
-            throw new IllegalStateException("Inventory was already open");
+            return;
+//            throw new IllegalStateException("Inventory was already open");
         }
 
         List<BlockVector3> blocks = onOpenBlock(who);
@@ -74,6 +75,9 @@ public abstract class AbstractFakeInventory extends ContainerInventory {
         super.onClose(who);
         OPEN.remove(who, this);
         List<BlockVector3> blocks = blockPositions.get(who);
+        if(blocks == null){
+            return;
+        }
         for (int i = 0, size = blocks.size(); i < size; i++) {
             final int index = i;
             service.execute(() -> {

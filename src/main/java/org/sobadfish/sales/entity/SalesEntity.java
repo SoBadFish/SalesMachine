@@ -112,6 +112,7 @@ public class SalesEntity extends EntityHuman {
                     return count;
                 }else{
                     int count2 = tg.getInt("stack");
+                    saleItem.stack = 0;
                     cl.remove(tg);
                     items.remove(saleItem);
                     return count2;

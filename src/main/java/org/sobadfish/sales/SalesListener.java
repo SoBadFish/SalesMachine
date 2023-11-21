@@ -61,6 +61,7 @@ public class SalesListener implements Listener {
                         return;
                     }
                 }else{
+
                     DisplayPlayerPanel displayPlayerPanel = new DisplayPlayerPanel(entity1);
                     displayPlayerPanel.open(player);
                 }

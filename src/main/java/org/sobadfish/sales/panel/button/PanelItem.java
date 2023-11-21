@@ -72,6 +72,7 @@ public class PanelItem extends BasePlayPanelItemInstance{
                     Item cl = showItem.saleItem.clone();
                     cl.setCount(cc);
                     player.getInventory().addItem(cl);
+                    showItem.stack = 0;
                     inventory.sales.removeItem(showItem,showItem.saleItem.getCount());
                 }else{
                     SalesMainClass.sendMessageToObject("&c库存不足!",player);
