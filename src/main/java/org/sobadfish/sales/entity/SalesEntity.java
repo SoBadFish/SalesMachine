@@ -141,7 +141,13 @@ public class SalesEntity extends EntityHuman {
                 }
                 CompoundTag tg = cl.get(index);
                 tg.putInt("stack",tg.getInt("stack") + item.stack);
+                if(item.money > 0){
+                    tg.putDouble("money",item.money);
+                    saleItem.money = item.money;
+                }
                 saleItem.stack += item.stack;
+
+
                 return true;
             }
             index++;
