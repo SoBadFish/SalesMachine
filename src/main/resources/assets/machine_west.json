@@ -1,0 +1,39 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.sales",
+				"texture_width": 128,
+				"texture_height": 128,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 4,
+				"visible_bounds_offset": [0, 1, 0]
+			},
+			"bones": [
+				{
+					"name": "body",
+					"pivot": [0, 0, 0],
+					"rotation": [0, -90, 0],
+					"cubes": [
+						{"origin": [5, 0, -9], "size": [4, 37, 15], "uv": [29, 57]},
+						{"origin": [-10, 0, 6], "size": [19, 37, 2], "uv": [0, 69]},
+						{"origin": [-10, 0, -9], "size": [2, 37, 15], "uv": [36, 1]},
+						{"origin": [-10, 37, -9], "size": [19, 1, 17], "uv": [0, 110]},
+						{"origin": [-8, 0, -9], "size": [13, 1, 15], "uv": [21, 53]},
+						{"origin": [-9, 26, -7], "size": [14, 1, 13], "uv": [68, 30]},
+						{"origin": [-9, 13, -7], "size": [14, 1, 13], "uv": [68, 16]}
+					]
+				},
+				{
+					"name": "head",
+					"pivot": [9, 0, -9],
+					"cubes": [
+						{"origin": [9, 0, -9], "size": [1, 38, 14], "uv": [0, 3]},
+						{"origin": [10, 19, 4], "size": [1, 4, 1], "uv": [0, 0]}
+					]
+				}
+			]
+		}
+	]
+}

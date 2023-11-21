@@ -1,0 +1,15 @@
+name: SalesmMchine
+main: org.sobadfish.sales.SalesMainClass
+version: 1.0.4
+api-version: 1.0.11
+author: Sobadfish
+
+depend:
+  - EconomyAPI
+
+load: POSTWORLD
+
+commands:
+  sa:
+    description: "给予玩家售货机物品指令"
+    permission: op
