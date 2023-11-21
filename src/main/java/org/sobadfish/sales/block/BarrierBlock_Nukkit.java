@@ -1,45 +1,65 @@
 package org.sobadfish.sales.block;
 
 import cn.nukkit.block.Block;
+import cn.nukkit.block.BlockAir;
 import cn.nukkit.block.BlockSolid;
+import cn.nukkit.block.BlockSolidMeta;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.BlockColor;
+import cn.nukkit.utils.DyeColor;
+import cn.nukkit.utils.TerracottaColor;
 import cn.nukkit.utils.TextFormat;
 
 /**
  * @author Sobadfish
  * @date 2023/11/21
  */
-public class BarrierBlock_Nukkit extends BlockSolid implements IBarrier {
+public class BarrierBlock_Nukkit extends BlockSolidMeta implements IBarrier {
     public BarrierBlock_Nukkit() {
+        super(0);
     }
 
     @Override
     public int getId() {
-        return 95;
+        return -161;
     }
 
     @Override
     public String getName() {
-        return "Invisible Bedrock";
+        return "Barrier";
     }
 
     @Override
-    public double getHardness() {
-        return -1.0D;
+    public boolean canBeActivated() {
+        return true;
     }
 
     @Override
     public double getResistance() {
-        return 1.8E7D;
+        return 2.5D;
+    }
+
+    @Override
+    public double getHardness() {
+        return 0.5D;
+    }
+
+    @Override
+    public int getToolType() {
+        return 2;
+    }
+
+    @Override
+    public boolean onActivate(Item item) {
+        return true;
     }
 
     @Override
     public boolean isBreakable(Item item) {
-        return false;
+        return true;
     }
 
     @Override
@@ -54,8 +74,12 @@ public class BarrierBlock_Nukkit extends BlockSolid implements IBarrier {
 
     @Override
     public Item toItem() {
-        return new ItemBlock(Block.get(0));
+
+        return new ItemBlock(new BlockAir());
     }
+
+
+
 
     @Override
     public Item getShaleItem(){
@@ -69,8 +93,13 @@ public class BarrierBlock_Nukkit extends BlockSolid implements IBarrier {
         return item;
     }
 
+
+    public DyeColor getDyeColor() {
+        return DyeColor.getByWoolData(this.getDamage());
+    }
+
     @Override
     public int getBid() {
-        return 95;
+        return -161;
     }
 }

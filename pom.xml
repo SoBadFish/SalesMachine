@@ -29,20 +29,20 @@
         </repository>
     </repositories>
     <dependencies>
-        <dependency>
-            <groupId>cn.nukkit</groupId>
-            <artifactId>nukkit</artifactId>
-            <version>MOT-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath> ${project.basedir}/lib/nukkitx.jar</systemPath>
-        </dependency>
 <!--        <dependency>-->
 <!--            <groupId>cn.nukkit</groupId>-->
 <!--            <artifactId>nukkit</artifactId>-->
 <!--            <version>MOT-SNAPSHOT</version>-->
 <!--            <scope>system</scope>-->
-<!--            <systemPath> ${project.basedir}/lib/Nukkit-PM1E-MOT-SNAPSHOT.jar</systemPath>-->
+<!--            <systemPath> ${project.basedir}/lib/nukkitx.jar</systemPath>-->
 <!--        </dependency>-->
+        <dependency>
+            <groupId>cn.nukkit</groupId>
+            <artifactId>nukkit</artifactId>
+            <version>MOT-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath> ${project.basedir}/lib/Nukkit-PM1E-MOT-SNAPSHOT.jar</systemPath>
+        </dependency>
         <dependency>
             <groupId>me.onebone</groupId>
             <artifactId>economyapi</artifactId>

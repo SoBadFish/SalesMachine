@@ -12,6 +12,7 @@ import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.entity.data.Skin;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.enchantment.Enchantment;
+import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.plugin.PluginBase;
@@ -48,30 +49,28 @@ public class SalesMainClass extends PluginBase {
 
     public static SalesMainClass INSTANCE;
 
-    @Override
-    public void onLoad() {
-
-        Entity.registerEntity(SalesEntity.ENTITY_TYPE,SalesEntity.class);
-        BlockEntity.registerBlockEntity(SalesEntity.SalesBlockEntity.ENTITY_TYPE,SalesEntity.SalesBlockEntity.class);
-        if(Block.list.length <= 256){
-            Block.list[95] = BarrierBlock_Nukkit.class;
-            iBarrier = new BarrierBlock_Nukkit();
-        }else{
-            Block.list[416] = BarrierBlock.class;
-            iBarrier = new BarrierBlock();
-        }
-
-
-
-
-    }
 
     @Override
     public void onEnable() {
         INSTANCE = this;
         sendMessageToConsole("&a正在加载售卖机插件");
-        checkServer();
+
         initSkin();
+
+        if(Block.list.length <= 256){
+//            Block block = new BarrierBlock_Nukkit();
+            sendMessageToConsole("&c当前核心不支持此插件！");
+            this.getServer().getPluginManager().disablePlugin(this);
+            return;
+
+        }else{
+            Block.list[416] = BarrierBlock.class;
+            iBarrier = new BarrierBlock();
+        }
+        Entity.registerEntity(SalesEntity.ENTITY_TYPE,SalesEntity.class);
+        BlockEntity.registerBlockEntity(SalesEntity.SalesBlockEntity.ENTITY_TYPE,SalesEntity.SalesBlockEntity.class);
+
+        checkServer();
         this.getServer().getPluginManager().registerEvents(new SalesListener(this),this);
 
 //

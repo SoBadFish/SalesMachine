@@ -15,6 +15,7 @@ import cn.nukkit.utils.TextFormat;
  */
 public class BarrierBlock extends BlockSolid implements IBarrier {
     public BarrierBlock() {
+
     }
 
     @Override
@@ -46,6 +47,8 @@ public class BarrierBlock extends BlockSolid implements IBarrier {
     public int getToolType() {
         return 2;
     }
+
+
 
 
 

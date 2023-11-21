@@ -4,15 +4,18 @@ import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockAir;
 import cn.nukkit.blockentity.BlockEntity;
+import cn.nukkit.entity.Entity;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
 import cn.nukkit.event.block.BlockUpdateEvent;
+import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.inventory.InventoryTransactionEvent;
 import cn.nukkit.event.player.PlayerFormRespondedEvent;
+import cn.nukkit.event.player.PlayerInteractEntityEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.form.response.FormResponseCustom;
 import cn.nukkit.inventory.ChestInventory;
@@ -26,7 +29,9 @@ import org.sobadfish.sales.panel.DisplayPlayerPanel;
 import org.sobadfish.sales.panel.button.BasePlayPanelItemInstance;
 import org.sobadfish.sales.panel.lib.ChestPanel;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * @author Sobadfish
@@ -38,20 +43,25 @@ public class SalesListener implements Listener {
 
     public static LinkedHashMap<String,DisplayPlayerPanel> chestPanelLinkedHashMap = new LinkedHashMap<>();
 
+    public List<Player> breakLock = new ArrayList<>();
+
     public SalesListener(SalesMainClass salesMainClass){
         this.main = salesMainClass;
     }
 
+
+
     @EventHandler
     public void onPlayerInteractEvent(PlayerInteractEvent event){
         Block block = event.getBlock();
-        if(block.getId() == main.iBarrier.getBid()){
-            BlockEntity entity = block.level.getBlockEntity(block);
-            if(entity instanceof SalesEntity.SalesBlockEntity){
+        BlockEntity entity = block.level.getBlockEntity(block);
 
-                SalesEntity entity1 = ((SalesEntity.SalesBlockEntity) entity).sales;
-                Player player = event.getPlayer();
-                if(player.isSneaking()){
+        if(entity instanceof SalesEntity.SalesBlockEntity){
+
+            SalesEntity entity1 = ((SalesEntity.SalesBlockEntity) entity).sales;
+            Player player = event.getPlayer();
+            if(player.isSneaking()){
+                if(event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
                     if(player.isOp() || (entity1.master != null && entity1.master.equalsIgnoreCase(player.getName()))){
                         if(player.getInventory().getItemInHand().getId() == 0){
                             return;
@@ -59,19 +69,28 @@ public class SalesListener implements Listener {
                         SellItemForm sellItemForm = new SellItemForm(entity1,player.getInventory().getItemInHand());
                         sellItemForm.display(player);
 
-                    }else{
-                        return;
                     }
-                }else{
+                }
 
+            }else{
+                if(player.isCreative() && event.getAction() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK ){
+                    if(player.isOp()){
+                        breakLock.add(player);
+                    }
+                }
+                if(event.getAction() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK || event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
                     DisplayPlayerPanel displayPlayerPanel = new DisplayPlayerPanel(entity1);
                     displayPlayerPanel.open(player);
                     chestPanelLinkedHashMap.put(player.getName(),displayPlayerPanel);
+                    event.setCancelled();
 
                 }
-                event.setCancelled();
+
             }
+
         }
+
+//        }
     }
 
     @EventHandler
@@ -118,6 +137,7 @@ public class SalesListener implements Listener {
         Block upblock = event.getBlock();
         Block old = upblock.level.getBlock(upblock);
         if(old.getId() != main.iBarrier.getBid() && upblock.getId() == main.iBarrier.getBid()){
+
             BlockEntity entity = old.level.getBlockEntity(old);
             if(entity instanceof SalesEntity.SalesBlockEntity){
                 SalesEntity entity1 = ((SalesEntity.SalesBlockEntity) entity).sales;
@@ -137,10 +157,16 @@ public class SalesListener implements Listener {
             return;
         }
         if(event.getPlayer().isOp()){
+            Player player = event.getPlayer();
             if(block.getId() == main.iBarrier.getBid()){
-                event.setCancelled();
                 BlockEntity entity = block.level.getBlockEntity(block);
                 if(entity instanceof SalesEntity.SalesBlockEntity){
+                    if(breakLock.contains(player)){
+                        breakLock.remove(player);
+                        event.setCancelled();
+                        return;
+                    }
+                    event.setCancelled();
                     SalesEntity entity1 = ((SalesEntity.SalesBlockEntity) entity).sales;
                     entity1.toClose();
 
@@ -180,6 +206,7 @@ public class SalesListener implements Listener {
     public void onEntityDamage(EntityDamageEvent event){
         if(event.getEntity() instanceof SalesEntity){
             event.setCancelled();
+
         }
     }
 }

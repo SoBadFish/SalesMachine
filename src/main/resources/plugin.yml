@@ -1,12 +1,13 @@
 name: SalesmMchine
 main: org.sobadfish.sales.SalesMainClass
 version: 1.0.5
-api-version: 1.0.11
+api:
+  - 1.0.14
 author: Sobadfish
 
 depend: []
 
-load: POSTWORLD
+load: STARTUP
 
 commands:
   sa:
