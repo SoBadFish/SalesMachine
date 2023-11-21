@@ -33,6 +33,7 @@ import org.sobadfish.sales.panel.DisplayPlayerPanel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -357,10 +358,12 @@ public class SalesEntity extends EntityHuman {
             cl.setCount(saleItem.stack);
             level.dropItem(this,cl);
         }
-        for(DisplayPlayerPanel dis: SalesListener.chestPanelLinkedHashMap.values()){
-            if(dis.sales.equals(this)){
-                dis.inventory.close();
+        for(Map.Entry<String,DisplayPlayerPanel> dis: SalesListener.chestPanelLinkedHashMap.entrySet()){
+            if(dis.getValue().sales.equals(this)){
+                dis.getValue().close();
+                SalesListener.chestPanelLinkedHashMap.remove(dis.getKey());
             }
+
         }
         close();
     }

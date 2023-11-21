@@ -55,6 +55,13 @@ public class DisplayPlayerPanel implements InventoryHolder {
         displayPlayer(player,items,"售货机");
     }
 
+    public void close(){
+        if(inventory != null){
+            ChestPanel chestPanel = (ChestPanel) inventory;
+            chestPanel.close(chestPanel.getPlayer());
+        }
+    }
+
 
     public void displayPlayer(Player player, Map<Integer, BasePlayPanelItemInstance> itemMap, String name){
         ChestPanel panel = new ChestPanel(player,this,name);
@@ -63,6 +70,7 @@ public class DisplayPlayerPanel implements InventoryHolder {
         inventory = panel;
         panel.sales = sales;
         panel.getPlayer().addWindow(panel);
+
 
     }
 }
