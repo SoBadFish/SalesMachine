@@ -105,6 +105,12 @@ public class SalesListener implements Listener {
                 }
             }
         }
+        if(event.getBlockAgainst().getId() == main.iBarrier.getBid()) {
+            BlockEntity entity = event.getBlockAgainst().level.getBlockEntity(event.getBlockAgainst());
+            if (entity instanceof SalesEntity.SalesBlockEntity) {
+                event.setCancelled();
+            }
+        }
     }
 
     @EventHandler
