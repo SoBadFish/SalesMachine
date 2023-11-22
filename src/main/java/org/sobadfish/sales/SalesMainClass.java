@@ -51,6 +51,7 @@ public class SalesMainClass extends PluginBase {
 
         if(Block.list.length <= 256){
 //            Block block = new BarrierBlock_Nukkit();
+            //TODO 放弃了 使用Nkx后好多都没法用 比如实体点击不到
             sendMessageToConsole("&c当前核心不支持此插件！");
             this.getServer().getPluginManager().disablePlugin(this);
             return;
@@ -65,7 +66,6 @@ public class SalesMainClass extends PluginBase {
         checkServer();
         this.getServer().getPluginManager().registerEvents(new SalesListener(this),this);
 
-//
         sendMessageToConsole("&a加载完成!");
 
     }
