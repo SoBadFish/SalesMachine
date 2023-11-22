@@ -1,6 +1,7 @@
 package org.sobadfish.sales.items;
 
 import cn.nukkit.item.Item;
+import cn.nukkit.nbt.tag.CompoundTag;
 
 /**
  * @author Sobadfish
@@ -12,9 +13,19 @@ public class SaleItem {
 
     public int stack;
 
+
+    public CompoundTag tag = new CompoundTag();
+
     public double money;
 
-    public SaleItem(Item saleItem,int stack,double money){
+    public SaleItem(CompoundTag tag,Item saleItem, int stack, double money){
+        this.tag = tag;
+        this.saleItem = saleItem;
+        this.stack = stack;
+        this.money = money;
+    }
+
+    public SaleItem(Item saleItem, int stack, double money){
         this.saleItem = saleItem;
         this.stack = stack;
         this.money = money;

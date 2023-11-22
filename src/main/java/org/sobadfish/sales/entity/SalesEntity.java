@@ -86,7 +86,7 @@ public class SalesEntity extends EntityHuman {
                 Item item = NBTIO.getItemHelper(compoundTag.getCompound("item"));
                 int stack = compoundTag.getInt("stack");
                 double money = compoundTag.getDouble("money");
-                items.add(new SaleItem(item,stack,money));
+                items.add(new SaleItem(compoundTag,item,stack,money));
 
             }
         }
@@ -170,12 +170,15 @@ public class SalesEntity extends EntityHuman {
         if(item.saleItem.getId() == 0){
             return false;
         }
-        items.add(item);
-        CompoundTag ct = new CompoundTag();
+
+        CompoundTag ct = item.tag;
         ct.putCompound("item",NBTIO.putItemHelper(item.saleItem));
         ct.putInt("stack",item.stack);
         ct.putDouble("money",item.money);
+
         cl.add(ct);
+        item.tag = ct;
+        items.add(item);
         namedTag.putList(cl);
         removePackets();
         return true;

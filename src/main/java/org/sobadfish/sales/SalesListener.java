@@ -24,6 +24,7 @@ import cn.nukkit.inventory.transaction.InventoryTransaction;
 import cn.nukkit.inventory.transaction.action.InventoryAction;
 import cn.nukkit.item.Item;
 import org.sobadfish.sales.entity.SalesEntity;
+import org.sobadfish.sales.form.AdminForm;
 import org.sobadfish.sales.form.SellItemForm;
 import org.sobadfish.sales.panel.DisplayPlayerPanel;
 import org.sobadfish.sales.panel.button.BasePlayPanelItemInstance;
@@ -121,6 +122,18 @@ public class SalesListener implements Listener {
                 SellItemForm.DISPLAY_FROM.remove(event.getPlayer());
             }else{
                 SellItemForm.DISPLAY_FROM.remove(event.getPlayer());
+            }
+        }
+        if(AdminForm.DISPLAY_FROM.containsKey(event.getPlayer())){
+            AdminForm form = AdminForm.DISPLAY_FROM.get(event.getPlayer());
+            if(form.getId() == event.getFormID()){
+                if(event.getResponse() instanceof FormResponseCustom){
+                    form.onListener(event.getPlayer(), (FormResponseCustom) event.getResponse());
+
+                }
+                AdminForm.DISPLAY_FROM.remove(event.getPlayer());
+            }else{
+                AdminForm.DISPLAY_FROM.remove(event.getPlayer());
             }
         }
     }

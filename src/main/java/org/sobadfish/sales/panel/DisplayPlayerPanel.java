@@ -9,6 +9,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.utils.TextFormat;
 import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.items.SaleItem;
+import org.sobadfish.sales.panel.button.AdminSettingItem;
 import org.sobadfish.sales.panel.button.BasePlayPanelItemInstance;
 import org.sobadfish.sales.panel.button.PanelItem;
 import org.sobadfish.sales.panel.button.RemoveSales;
@@ -49,6 +50,10 @@ public class DisplayPlayerPanel implements InventoryHolder {
             i = InventoryType.CHEST.getDefaultSize() - 1;
 
             items.put(i,new RemoveSales());
+
+        }
+        if(player.isOp()){
+            items.put(i - 1,new AdminSettingItem(sales));
         }
 
 
@@ -65,10 +70,11 @@ public class DisplayPlayerPanel implements InventoryHolder {
 
     public void displayPlayer(Player player, Map<Integer, BasePlayPanelItemInstance> itemMap, String name){
         ChestPanel panel = new ChestPanel(player,this,name);
+        panel.sales = sales;
         panel.setPanel(itemMap);
         panel.id = ++Entity.entityCount;
         inventory = panel;
-        panel.sales = sales;
+
         panel.getPlayer().addWindow(panel);
 
 

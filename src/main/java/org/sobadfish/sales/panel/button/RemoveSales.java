@@ -6,6 +6,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.utils.TextFormat;
 import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.block.BarrierBlock;
+import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.panel.lib.ChestPanel;
 
 /**
@@ -23,7 +24,7 @@ public class RemoveSales extends BasePlayPanelItemInstance{
 
     @Override
     public Item getItem() {
-        return null;
+        return Item.get(35,14);
     }
 
     @Override
@@ -42,7 +43,7 @@ public class RemoveSales extends BasePlayPanelItemInstance{
 
     @Override
     public Item getPanelItem(Player info, int index) {
-        Item tools = Item.get(35,14);
+        Item tools = getItem();
         tools.setCustomName(TextFormat.colorize('&',"&r&c&l拆除"));
         tools.setLore(TextFormat.colorize('&',"&r&7&l\n拆除此售卖机"));
         tools.setNamedTag(tools.getNamedTag().putInt("index",index));
