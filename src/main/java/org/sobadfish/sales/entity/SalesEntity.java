@@ -291,28 +291,28 @@ public class SalesEntity extends EntityHuman {
         BlockFace right = blockFace.rotateY();
         if(right.getXOffset() > 0){
            if(index % 2 == 0){
-               pos = new Position(this.x + 0.22,this.y + yy,this.z + 0.22);
+               pos = new Position(this.x + 0.15,this.y + yy,this.z + 0.15);
            }else{
-               pos = new Position(this.x - 0.34,this.y + yy,this.z + 0.22);
+               pos = new Position(this.x - 0.34,this.y + yy,this.z + 0.15);
            }
         }else if(right.getXOffset() < 0){
             if(index % 2 == 0){
-                pos = new Position(this.x + 0.22,this.y + yy,this.z + 0.22);
+                pos = new Position(this.x + 0.15,this.y + yy,this.z + 0.15);
             }else{
-                pos = new Position(this.x - 0.34,this.y + yy,this.z + 0.22);
+                pos = new Position(this.x - 0.34,this.y + yy,this.z + 0.15);
             }
         }else{
             if(right.getZOffset() > 0){
                 if(index % 2 == 0){
-                    pos = new Position(this.x + 0.22,this.y + yy,this.z - 0.34);
+                    pos = new Position(this.x + 0.15,this.y + yy,this.z - 0.22);
                 }else{
-                    pos = new Position(this.x + 0.22,this.y + yy,this.z + 0.22);
+                    pos = new Position(this.x + 0.15,this.y + yy,this.z + 0.15);
                 }
             }else {
                 if(index % 2 == 0){
-                    pos = new Position(this.x + 0.22,this.y + yy,this.z + 0.22);
+                    pos = new Position(this.x + 0.15,this.y + yy,this.z +0.22);
                 }else{
-                    pos = new Position(this.x +0.22,this.y + yy,this.z - 0.34);
+                    pos = new Position(this.x +0.15,this.y + yy,this.z - 0.1 );
                 }
             }
         }

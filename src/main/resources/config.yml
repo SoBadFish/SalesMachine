@@ -1,1 +1,9 @@
-money-coint: []
+# 展示物品各个方向的偏移距离
+sales-face_item:
+  north:
+    - x: 0.15
+      y: 1.23
+      z: 0.22
+    - x: -0.34
+      y: 1.23
+      z: 0.22
