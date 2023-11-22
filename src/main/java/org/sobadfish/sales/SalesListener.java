@@ -43,7 +43,7 @@ public class SalesListener implements Listener {
 
     public static LinkedHashMap<String,DisplayPlayerPanel> chestPanelLinkedHashMap = new LinkedHashMap<>();
 
-    public List<Player> breakLock = new ArrayList<>();
+//    public List<Player> breakLock = new ArrayList<>();
 
     public SalesListener(SalesMainClass salesMainClass){
         this.main = salesMainClass;
@@ -68,16 +68,10 @@ public class SalesListener implements Listener {
                         }
                         SellItemForm sellItemForm = new SellItemForm(entity1,player.getInventory().getItemInHand());
                         sellItemForm.display(player);
-
+                        event.setCancelled();
                     }
                 }
-
             }else{
-                if(player.isCreative() && event.getAction() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK ){
-                    if(player.isOp()){
-                        breakLock.add(player);
-                    }
-                }
                 if(event.getAction() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK || event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
                     DisplayPlayerPanel displayPlayerPanel = new DisplayPlayerPanel(entity1);
                     displayPlayerPanel.open(player);
@@ -157,15 +151,14 @@ public class SalesListener implements Listener {
             return;
         }
         if(event.getPlayer().isOp()){
-            Player player = event.getPlayer();
             if(block.getId() == main.iBarrier.getBid()){
                 BlockEntity entity = block.level.getBlockEntity(block);
                 if(entity instanceof SalesEntity.SalesBlockEntity){
-                    if(breakLock.contains(player)){
-                        breakLock.remove(player);
-                        event.setCancelled();
-                        return;
-                    }
+//                    if(breakLock.contains(player)){
+//                        breakLock.remove(player);
+//                        event.setCancelled();
+//                        return;
+//                    }
                     event.setCancelled();
                     SalesEntity entity1 = ((SalesEntity.SalesBlockEntity) entity).sales;
                     entity1.toClose();
