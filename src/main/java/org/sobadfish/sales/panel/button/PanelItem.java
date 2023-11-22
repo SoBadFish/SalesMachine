@@ -65,7 +65,7 @@ public class PanelItem extends BasePlayPanelItemInstance{
                         SalesMainClass.sendMessageToObject("&c金钱不足!",player);
                     }
                 }
-                inventory.sales.removeItem(showItem,showItem.saleItem.getCount());
+                inventory.sales.removeItem(player.getName(),showItem,showItem.saleItem.getCount());
             }else{
                 if(inventory.sales.master.equalsIgnoreCase(player.getName())){
                     int cc = showItem.stack;
@@ -73,7 +73,7 @@ public class PanelItem extends BasePlayPanelItemInstance{
                     cl.setCount(cc);
                     player.getInventory().addItem(cl);
                     showItem.stack = 0;
-                    inventory.sales.removeItem(showItem,showItem.saleItem.getCount());
+                    inventory.sales.removeItem(player.getName(),showItem,showItem.saleItem.getCount());
                 }else{
                     SalesMainClass.sendMessageToObject("&c库存不足!",player);
                 }

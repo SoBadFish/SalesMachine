@@ -99,7 +99,7 @@ public class SalesEntity extends EntityHuman {
      * @param item 需要移除的物品
      * @return 实际移除的数量
      * */
-    public int removeItem(SaleItem item,int count){
+    public int removeItem(String playerName,SaleItem item,int count){
         ListTag<CompoundTag> cl = namedTag.getList("sale_items",CompoundTag.class);
         int index = 0;
         for(SaleItem saleItem: new ArrayList<>(items)) {
@@ -110,17 +110,27 @@ public class SalesEntity extends EntityHuman {
                     return 0;
                 }
                 CompoundTag tg = cl.get(index);
-                if(tg.getInt("stack") >= count){
-                    tg.putInt("stack",tg.getInt("stack") - count);
-                    saleItem.stack -= count;
-                    return count;
-                }else{
-                    int count2 = tg.getInt("stack");
-                    saleItem.stack = 0;
+                //如果传入的是 0 直接移除就行
+                if(count == 0 && master.equalsIgnoreCase(playerName)){
                     cl.remove(tg);
                     items.remove(saleItem);
-                    return count2;
+
+                    return 0;
+                }else{
+
+                    if(tg.getInt("stack") >= count){
+                        tg.putInt("stack",tg.getInt("stack") - count);
+                        saleItem.stack -= count;
+                        return count;
+                    }else{
+                        int count2 = tg.getInt("stack");
+                        saleItem.stack = 0;
+                        cl.remove(tg);
+                        items.remove(saleItem);
+                        return count2;
+                    }
                 }
+
             }
             index++;
         }
