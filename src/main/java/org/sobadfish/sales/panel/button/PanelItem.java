@@ -52,6 +52,9 @@ public class PanelItem extends BasePlayPanelItemInstance{
         }else{
             //触发购买...
             int size = (int) Math.floor(showItem.stack / (float)showItem.saleItem.getCount());
+            if(showItem.tag.contains("noreduce") && showItem.tag.getBoolean("noreduce")){
+                size = 1;
+            }
             if(size > 0){
                 if(inventory.sales.master.equalsIgnoreCase(player.getName())){
                     //店主不花钱
@@ -92,7 +95,7 @@ public class PanelItem extends BasePlayPanelItemInstance{
                         SalesMainClass.sendMessageToObject("&c金钱不足!",player);
                     }
                 }
-                if(!inventory.sales.namedTag.contains("noreduce") || !inventory.sales.namedTag.getBoolean("noreduce")){
+                if(!showItem.tag.contains("noreduce") || !showItem.tag.getBoolean("noreduce")){
                     inventory.sales.removeItem(player.getName(),showItem,showItem.saleItem.getCount());
                 }
 

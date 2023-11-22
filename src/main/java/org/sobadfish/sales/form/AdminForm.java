@@ -47,7 +47,7 @@ public class AdminForm {
         FormWindowCustom custom = new FormWindowCustom("售货机 ————— 管理");
 
         boolean b = sales.tag.contains("noreduce") && sales.tag.getBoolean("noreduce");
-        custom.addElement(new ElementToggle("是否消耗库存",b));
+        custom.addElement(new ElementToggle("是否不消耗库存",b));
         custom.addElement(new ElementInput("玩家限购次数","若设置-1则不限制玩家购买次数","-1"));
         custom.addElement(new ElementInput("刷新时间(h)","若设置-1则不刷新","-1"));
 
@@ -72,7 +72,7 @@ public class AdminForm {
         }
         sales.tag.putBoolean("noreduce",b);
         sales.tag.putInt("limitCount",limit);
-        sales.tag.putInt("limitHour",hour);
+        sales.tag.putInt("limitTime",hour * 60 * 60 * 1000);
 
         SalesMainClass.sendMessageToObject("&a设置成功",player);
 
