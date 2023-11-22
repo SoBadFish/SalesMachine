@@ -2,8 +2,8 @@ package org.sobadfish.sales.panel.button;
 
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
-import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.panel.lib.ChestPanel;
+
 
 /**
  * @author SoBadFish

@@ -5,9 +5,8 @@ import cn.nukkit.Server;
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.TextFormat;
 import org.sobadfish.sales.SalesMainClass;
-import org.sobadfish.sales.block.BarrierBlock;
-import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.panel.lib.ChestPanel;
+
 
 /**
  * @author Sobadfish

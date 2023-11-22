@@ -1,7 +1,6 @@
 package org.sobadfish.sales;
 
 import cn.nukkit.Player;
-
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.blockentity.BlockEntity;
@@ -11,22 +10,15 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.entity.data.Skin;
 import cn.nukkit.item.Item;
-import cn.nukkit.item.enchantment.Enchantment;
-import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
-import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import cn.nukkit.utils.Utils;
 import org.sobadfish.sales.block.BarrierBlock;
-import org.sobadfish.sales.block.BarrierBlock_Nukkit;
 import org.sobadfish.sales.block.IBarrier;
 import org.sobadfish.sales.entity.SalesEntity;
-
-import org.sobadfish.sales.manager.SalesManager;
 import org.sobadfish.sales.panel.lib.AbstractFakeInventory;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;

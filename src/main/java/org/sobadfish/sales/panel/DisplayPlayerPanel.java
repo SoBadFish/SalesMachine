@@ -5,8 +5,6 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.inventory.Inventory;
 import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.inventory.InventoryType;
-import cn.nukkit.item.Item;
-import cn.nukkit.utils.TextFormat;
 import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.items.SaleItem;
 import org.sobadfish.sales.panel.button.AdminSettingItem;

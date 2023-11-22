@@ -1,8 +1,6 @@
 package org.sobadfish.sales.block;
 
-import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockAir;
-import cn.nukkit.block.BlockSolid;
 import cn.nukkit.block.BlockSolidMeta;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
@@ -10,7 +8,6 @@ import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.BlockColor;
 import cn.nukkit.utils.DyeColor;
-import cn.nukkit.utils.TerracottaColor;
 import cn.nukkit.utils.TextFormat;
 
 /**

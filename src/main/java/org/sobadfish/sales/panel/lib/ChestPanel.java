@@ -8,10 +8,8 @@ import cn.nukkit.item.Item;
 import cn.nukkit.network.protocol.ContainerOpenPacket;
 import cn.nukkit.network.protocol.RemoveEntityPacket;
 import org.sobadfish.sales.SalesListener;
-import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.panel.button.BasePlayPanelItemInstance;
-import org.sobadfish.sales.panel.lib.DoubleChestFakeInventory;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

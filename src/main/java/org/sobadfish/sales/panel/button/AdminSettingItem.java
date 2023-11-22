@@ -6,7 +6,6 @@ import cn.nukkit.block.BlockRedstoneTorch;
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.TextFormat;
 import org.sobadfish.sales.entity.SalesEntity;
-import org.sobadfish.sales.form.AdminForm;
 import org.sobadfish.sales.items.SaleItem;
 import org.sobadfish.sales.panel.lib.ChestPanel;
 

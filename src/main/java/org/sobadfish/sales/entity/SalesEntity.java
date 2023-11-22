@@ -4,8 +4,6 @@ import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockAir;
-
-
 import cn.nukkit.block.BlockStone;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.entity.Entity;
@@ -14,7 +12,6 @@ import cn.nukkit.entity.data.EntityMetadata;
 import cn.nukkit.entity.data.Skin;
 import cn.nukkit.inventory.InventoryType;
 import cn.nukkit.item.Item;
-import cn.nukkit.level.ParticleEffect;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.level.particle.DestroyBlockParticle;
@@ -27,7 +24,6 @@ import cn.nukkit.network.protocol.DataPacket;
 import cn.nukkit.network.protocol.RemoveEntityPacket;
 import org.sobadfish.sales.SalesListener;
 import org.sobadfish.sales.SalesMainClass;
-import org.sobadfish.sales.block.BarrierBlock;
 import org.sobadfish.sales.items.SaleItem;
 import org.sobadfish.sales.panel.DisplayPlayerPanel;
 
