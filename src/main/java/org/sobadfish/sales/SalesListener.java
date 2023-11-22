@@ -173,11 +173,6 @@ public class SalesListener implements Listener {
             if(block.getId() == main.iBarrier.getBid()){
                 BlockEntity entity = block.level.getBlockEntity(block);
                 if(entity instanceof SalesEntity.SalesBlockEntity){
-//                    if(breakLock.contains(player)){
-//                        breakLock.remove(player);
-//                        event.setCancelled();
-//                        return;
-//                    }
                     event.setCancelled();
                     SalesEntity entity1 = ((SalesEntity.SalesBlockEntity) entity).sales;
                     entity1.toClose();
