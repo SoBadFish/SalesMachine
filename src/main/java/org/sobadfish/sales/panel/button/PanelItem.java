@@ -13,6 +13,7 @@ import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.items.SaleItem;
 import org.sobadfish.sales.panel.lib.ChestPanel;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -133,6 +134,19 @@ public class PanelItem extends BasePlayPanelItemInstance{
             if(limit > 0){
                 int upsLimit = getUserLimitCount(info);
                 lore.add(format(Utils.getCentontString("&r&e▶&7 限购: &e"+upsLimit+" &7/&7 "+limit,length)));
+                if(!showItem.tag.contains("limit")){
+                    CompoundTag limitList = showItem.tag.getCompound("limit");
+
+                    if(limitList.contains(info.getName())) {
+                        CompoundTag user = limitList.getCompound(info.getName());
+                        if(user.contains("buyTime")){
+                            long lastByTime = user.getLong("buyTime");
+                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH");
+                            String date = format.format(lastByTime);//注意这里返回的是string类型
+                            lore.add(format(Utils.getCentontString("&r&e▶&7 首次购买: &e"+date,length)));
+                        }
+                    }
+                }
             }
         }
         lore.add("  ");
