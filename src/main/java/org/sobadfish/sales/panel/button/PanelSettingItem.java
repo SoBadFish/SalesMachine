@@ -47,7 +47,7 @@ public class PanelSettingItem extends BasePlayPanelItemInstance{
             Server.getInstance().getScheduler().scheduleDelayedTask(() -> {
                 AdminForm adminForm = new AdminForm(showItem);
                 adminForm.display(player);
-            },20);
+            },10);
 
         }
     }
