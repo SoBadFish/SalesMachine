@@ -6,7 +6,7 @@
 				"identifier": "geometry.sales",
 				"texture_width": 128,
 				"texture_height": 128,
-				"visible_bounds_width": 5,
+				"visible_bounds_width": 3,
 				"visible_bounds_height": 4,
 				"visible_bounds_offset": [0, 1, 0]
 			},
@@ -29,8 +29,12 @@
 					"name": "head",
 					"pivot": [9, 0, 9],
 					"cubes": [
-						{"origin": [-5, 0, 9], "size": [14, 38, 1], "uv": [0, 16]},
-						{"origin": [-5, 19, 10], "size": [1, 4, 1], "uv": [0, 0]}
+						{"origin": [-4, 1, 9], "size": [13, 36, 1], "uv": [0, 17]},
+						{"origin": [-5, 20, 10], "size": [1, 4, 1], "uv": [0, 0]},
+						{"origin": [-5, 0, 9], "size": [15, 1, 1], "uv": [80, 45]},
+						{"origin": [9, 1, 9], "size": [1, 37, 1], "uv": [124, 45]},
+						{"origin": [-5, 37, 9], "size": [14, 1, 1], "uv": [81, 45]},
+						{"origin": [-5, 1, 9], "size": [1, 36, 1], "uv": [124, 45]}
 					]
 				}
 			]
