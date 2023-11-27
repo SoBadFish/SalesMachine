@@ -1,4 +1,4 @@
-# <div align="center">SalesMachine</div>  
+# <div align="center">SalesMachine-MOT</div>  
 
 ------
 ![](https://img.shields.io/badge/license-GPL3.0-blue) <a href="https://github.com/Sobadfish/SalesMachine/releases/latest" alt="Latest release">
@@ -17,6 +17,7 @@
 ### 📝Function
 |     |    功能     |
 |:---:|:---------:|
+|  ✅  | 自定义物品  |
 |  ✅  | 增加物品以及出售  |
 |  ✅  | 是否支持自定义物品 |
 |  ✅  |  商品无限库存   |
