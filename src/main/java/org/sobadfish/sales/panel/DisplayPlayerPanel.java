@@ -14,6 +14,7 @@ import org.sobadfish.sales.panel.button.RemoveSales;
 import org.sobadfish.sales.panel.lib.AbstractFakeInventory;
 import org.sobadfish.sales.panel.lib.ChestPanel;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -40,7 +41,11 @@ public class DisplayPlayerPanel implements InventoryHolder {
 
         LinkedHashMap<Integer,BasePlayPanelItemInstance> items = new LinkedHashMap<>();
         int i = 0;
-        for(SaleItem item: sales.items){
+        for(SaleItem item: new ArrayList<>(sales.items)){
+            if(item.isRemove){
+                sales.items.remove(item);
+                continue;
+            }
             items.put(i++, new PanelItem(item));
 
         }

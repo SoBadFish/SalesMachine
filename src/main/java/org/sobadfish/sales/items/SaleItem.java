@@ -11,7 +11,10 @@ public class SaleItem {
 
     public Item saleItem;
 
+
     public int stack;
+
+    public boolean isRemove;
 
 
     public CompoundTag tag = new CompoundTag();
@@ -23,6 +26,14 @@ public class SaleItem {
         this.saleItem = saleItem;
         this.stack = stack;
         this.money = money;
+    }
+
+    public String getItemName(){
+        if(saleItem.hasCustomName()){
+            String id = saleItem.getId()+":"+saleItem.getDamage();
+            return saleItem.getCustomName()+"&7 (&r"+id+"&7)";
+        }
+        return saleItem.getName()+"&7 (&r"+saleItem.getId()+":"+saleItem.getDamage()+"&7)";
     }
 
     public SaleItem(Item saleItem, int stack, double money){

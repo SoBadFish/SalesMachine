@@ -2,17 +2,20 @@ package org.sobadfish.sales.panel.button;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.inventory.Inventory;
 import cn.nukkit.item.Item;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.TextFormat;
 import me.onebone.economyapi.EconomyAPI;
 import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.Utils;
+import org.sobadfish.sales.items.MoneyItem;
 import org.sobadfish.sales.items.SaleItem;
 import org.sobadfish.sales.panel.lib.ChestPanel;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -54,45 +57,39 @@ public class PanelItem extends BasePlayPanelItemInstance{
                 size = 1;
             }
             if(size > 0){
-                if(inventory.sales.master.equalsIgnoreCase(player.getName())){
-                    //店主不花钱
-                    player.getInventory().addItem(showItem.saleItem);
-
-                }else{
-                    if(EconomyAPI.getInstance().myMoney(player) >= showItem.money){
-                        //限购
-                        if(showItem.tag.contains("limitCount") ){
-                            int limit = showItem.tag.getInt("limitCount");
-                            int upsLimit = 0;
-                            if(!showItem.tag.contains("limit")){
-                                showItem.tag.putCompound("limit",new CompoundTag());
-                            }
-                            CompoundTag limitList = showItem.tag.getCompound("limit");
-
-                            if(!limitList.contains(player.getName())) {
-                                limitList.putCompound(player.getName(),new CompoundTag());
-                            }
-                            CompoundTag user = limitList.getCompound(player.getName());
-                            if (user.contains("buy")) {
-                                upsLimit = user.getInt("buy");
-                            }
-                            if(upsLimit == limit){
-                                SalesMainClass.sendMessageToObject("&c购买失败! 已到达最大购买次数!",player);
-                                return;
-                            }
-                            user.putInt("buy",++upsLimit);
-                            if(!user.contains("buyTime")){
-                                user.putLong("buyTime",System.currentTimeMillis());
-                            }
+                if(showItem.tag.contains("sales_exchange") && showItem.tag.getBoolean("sales_exchange",false)){
+                    int count = getInventoryItemCount(player.getInventory(),showItem.saleItem);
+                    if(count >= showItem.saleItem.getCount()){
+                        if(chunkLimit(player)){
+                            player.getInventory().removeItem(showItem.saleItem);
+                            player.getInventory().addItem(new MoneyItem(showItem.money).getItem());
                         }
 
-                        EconomyAPI.getInstance().reduceMoney(player,showItem.money);
-                        EconomyAPI.getInstance().addMoney(inventory.sales.master,showItem.money);
-                        player.getInventory().addItem(showItem.saleItem);
                     }else{
-                        SalesMainClass.sendMessageToObject("&c金钱不足!",player);
+                        SalesMainClass.sendMessageToObject("&c购买失败! 物品不足!",player);
+                        return;
+                    }
+                }else{
+                    if(inventory.sales.master.equalsIgnoreCase(player.getName())){
+                        //店主不花钱
+                        player.getInventory().addItem(showItem.saleItem);
+
+                    }else{
+
+                        if(EconomyAPI.getInstance().myMoney(player) >= showItem.money){
+
+                            if(chunkLimit(player)){
+                                EconomyAPI.getInstance().reduceMoney(player,showItem.money);
+                                EconomyAPI.getInstance().addMoney(inventory.sales.master,showItem.money);
+                                player.getInventory().addItem(showItem.saleItem);
+                            }
+
+                        }else{
+                            SalesMainClass.sendMessageToObject("&c金钱不足!",player);
+                        }
                     }
                 }
+
                 if(!showItem.tag.contains("noreduce") || !showItem.tag.getBoolean("noreduce")){
                     inventory.sales.removeItem(player.getName(),showItem,showItem.saleItem.getCount());
                 }
@@ -117,15 +114,61 @@ public class PanelItem extends BasePlayPanelItemInstance{
 
     }
 
+    public boolean chunkLimit(Player player){
+        //限购
+        if(showItem.tag.contains("limitCount") ){
+            int limit = showItem.tag.getInt("limitCount");
+            int upsLimit = 0;
+            if(!showItem.tag.contains("limit")){
+                showItem.tag.putCompound("limit",new CompoundTag());
+            }
+            CompoundTag limitList = showItem.tag.getCompound("limit");
+
+            if(!limitList.contains(player.getName())) {
+                limitList.putCompound(player.getName(),new CompoundTag());
+            }
+            CompoundTag user = limitList.getCompound(player.getName());
+            if (user.contains("buy")) {
+                upsLimit = user.getInt("buy");
+            }
+            if(upsLimit == limit){
+                SalesMainClass.sendMessageToObject("&c购买失败! 已到达最大购买次数!",player);
+                return false;
+            }
+            user.putInt("buy",++upsLimit);
+            if(!user.contains("buyTime")){
+                user.putLong("buyTime",System.currentTimeMillis());
+            }
+        }
+        return true;
+    }
+
+    public int getInventoryItemCount(Inventory inventory,Item item){
+        int c = 0;
+        for(Item item1: inventory.getContents().values()){
+            if(item1.equals(item,true,true)){
+                c += item1.count;
+            }
+        }
+        return c;
+    }
+
     @Override
     public Item getPanelItem(Player info, int index) {
-        Item i =  showItem.saleItem.clone();
 
-        List<String> lore = new ArrayList<String>();
+        Item i =  showItem.saleItem.clone();
+        List<String> lore = new ArrayList<String>(Arrays.asList(i.getLore()));
         int length = 25;
         lore.add(" ");
-        lore.add(format(Utils.getCentontString("&r&e▶&7 库存: &a"+(getStockStr()),length)));
-        lore.add(format(Utils.getCentontString("&r&e▶&7 价格: &e"+(showItem.money != 0?showItem.money:"免费"),length)));
+
+        if(showItem.tag.contains("sales_exchange") && showItem.tag.getBoolean("sales_exchange",false)){
+            i = new MoneyItem(showItem.money).getItem();
+            lore.add(format(Utils.getCentontString("&r&e▶&7 需要: &e"+(showItem.getItemName()+" &r*&a "+showItem.saleItem.getCount()),length)));
+        }else{
+            lore.add(format(Utils.getCentontString("&r&e▶&7 库存: &a"+(getStockStr()),length)));
+            lore.add(format(Utils.getCentontString("&r&e▶&7 价格: &e"+(showItem.money != 0?showItem.money:"免费"),length)));
+        }
+//
         if(showItem.tag.contains("limitCount") ){
             int limit = showItem.tag.getInt("limitCount");
             if(limit > 0){
