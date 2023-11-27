@@ -5,7 +5,7 @@
 <img src="https://img.shields.io/github/v/release/Sobadfish/SalesMachine?include_prereleases" alt="Latest release">
 </a>
 
-###⚠️Server
+### ⚠️Server
 
 | 核心           | 是否支持 |
 |--------------|:----:|
