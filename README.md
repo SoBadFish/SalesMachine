@@ -11,7 +11,7 @@
 |--------------|:----:|
 | NukkitX      |  ❌   |
 | PowerNukkitX |  ✅   |
-| Nukkit-PM1E  |  ✅   |
+| Nukkit-PM1E  |  ❌   |
 | Nukkit-MOT   |  ✅   |
 
 ### 📝Function
