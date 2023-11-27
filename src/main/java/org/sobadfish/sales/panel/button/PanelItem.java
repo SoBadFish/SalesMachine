@@ -67,7 +67,6 @@ public class PanelItem extends BasePlayPanelItemInstance{
 
                     }else{
                         SalesMainClass.sendMessageToObject("&c购买失败! 物品不足!",player);
-                        return;
                     }
                 }else{
                     if(inventory.sales.master.equalsIgnoreCase(player.getName())){
@@ -88,10 +87,9 @@ public class PanelItem extends BasePlayPanelItemInstance{
                             SalesMainClass.sendMessageToObject("&c金钱不足!",player);
                         }
                     }
-                }
-
-                if(!showItem.tag.contains("noreduce") || !showItem.tag.getBoolean("noreduce")){
-                    inventory.sales.removeItem(player.getName(),showItem,showItem.saleItem.getCount());
+                    if(!showItem.tag.contains("noreduce") || !showItem.tag.getBoolean("noreduce")){
+                        inventory.sales.removeItem(player.getName(),showItem,showItem.saleItem.getCount());
+                    }
                 }
 
             }else{
@@ -190,6 +188,8 @@ public class PanelItem extends BasePlayPanelItemInstance{
             }
         }
         lore.add("  ");
+        lore.add(format(Utils.getCentontString("&r&e▶&7 双击购买",length)));
+
         i.setLore(lore.toArray(new String[0]));
         i.setNamedTag(i.getNamedTag().putInt("index",index));
         return i;
