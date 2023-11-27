@@ -1,7 +1,9 @@
 # <div align="center">SalesMachine</div>  
 
 ------
-![](https://img.shields.io/badge/license-GPL3.0-blue)
+![](https://img.shields.io/badge/license-GPL3.0-blue) <a href="https://github.com/Sobadfish/SalesMachine/releases/latest" alt="Latest release">
+<img src="https://img.shields.io/github/v/release/Sobadfish/SalesMachine?include_prereleases" alt="Latest release">
+</a>
 
 ###⚠️Server
 
