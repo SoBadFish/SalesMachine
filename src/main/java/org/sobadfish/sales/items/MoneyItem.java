@@ -1,7 +1,6 @@
 package org.sobadfish.sales.items;
 
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemIngotGold;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.TextFormat;
@@ -24,7 +23,7 @@ public class MoneyItem {
     public Item getItem(){
         Item item = new CustomSaleMoneyItem();
         item.addEnchantment(Enchantment.getEnchantment(0));
-        item.setCustomName(TextFormat.colorize('&',"&r&l&e金币 x&a"+money));
+        item.setCustomName(TextFormat.colorize('&',"&r&l&e金币 &7x &a"+money));
         CompoundTag ct = item.getNamedTag();
         ct.putDouble(TAG,money);
         item.setNamedTag(ct);
