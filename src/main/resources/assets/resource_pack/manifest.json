@@ -4,7 +4,7 @@
 	{
 		"uuid":"99c2fc21-e978-4159-8d1d-b244ac7e0281",
 		"name":"Sales Item",
-		"version":[0,0,6],
+		"version":[0,0,7],
 		"min_engine_version":[1,18,0],
 		"description":"售货机物品材质"
 		
@@ -12,7 +12,7 @@
 	"modules":[
 	{
 		"description":"",
-		"version":[0,0,6],
+		"version":[0,0,7],
 		"uuid":"c7a9b35d-aad7-4469-aafb-b89ccdfa5ed9",
 		"type":"resources"
 	}]

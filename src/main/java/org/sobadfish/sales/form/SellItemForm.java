@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.form.element.ElementInput;
 import cn.nukkit.form.element.ElementLabel;
 import cn.nukkit.form.element.ElementSlider;
+import cn.nukkit.form.element.ElementToggle;
 import cn.nukkit.form.response.FormResponseCustom;
 import cn.nukkit.form.window.FormWindowCustom;
 import cn.nukkit.item.Item;
@@ -37,7 +38,7 @@ public class SellItemForm {
 
     public Item item;
 
-    public SellItemForm(SalesEntity sales,Item item) {
+    public SellItemForm(SalesEntity sales, Item item) {
         this.item = item;
         this.sales = sales;
         this.id = getRid();
@@ -52,6 +53,10 @@ public class SellItemForm {
                         "&r\n&l数量: &r&a"+item.getCount()+"\n")));
         custom.addElement(new ElementSlider("请选择商品的数量",0,item.getCount(),1,0));
         custom.addElement(new ElementInput("请输入价格 若不填则默认为 0 ","商品的价格"));
+        if(player.isOp()){
+            custom.addElement(new ElementToggle("是否为物品兑换模式"));
+        }
+
 //        custom.addElement(new ElementToggle("是否收购"));
         player.showFormWindow(custom,getId());
         DISPLAY_FROM.put(player,this);
@@ -80,7 +85,10 @@ public class SellItemForm {
         Item cl = item.clone();
         cl.setCount(stack);
         SaleItem saleItem = new SaleItem(cl,stack,money);
-//        saleItem.tag.getBoolean("sales_recycle",responseCustom.getToggleResponse(3));
+        if(responseCustom.getToggleResponse(3)){
+            saleItem.tag.putBoolean("sales_exchange",responseCustom.getToggleResponse(3));
+        }
+
         if(sales.addItem(saleItem)){
             SalesMainClass.sendMessageToObject("&a添加成功!",player);
             player.getInventory().removeItem(cl);

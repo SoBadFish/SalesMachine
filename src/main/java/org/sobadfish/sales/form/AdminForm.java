@@ -45,6 +45,7 @@ public class AdminForm {
         custom.addElement(new ElementToggle("是否不消耗库存",b));
         custom.addElement(new ElementInput("玩家限购次数","若设置-1则不限制玩家购买次数","-1"));
         custom.addElement(new ElementInput("刷新时间(h)","若设置-1则不刷新","-1"));
+        custom.addElement(new ElementToggle("移除"));
 
 
         player.showFormWindow(custom,getId());
@@ -65,9 +66,15 @@ public class AdminForm {
         if(hour < -1){
             hour = -1;
         }
-        sales.tag.putBoolean("noreduce",b);
-        sales.tag.putInt("limitCount",limit);
-        sales.tag.putInt("limitTime",hour * 60 * 60 * 1000);
+        if(responseCustom.getToggleResponse(3)){
+            sales.isRemove = true;
+        }else{
+            sales.tag.putBoolean("noreduce",b);
+            sales.tag.putInt("limitCount",limit);
+            sales.tag.putInt("limitTime",hour * 60 * 60 * 1000);
+        }
+
+
 
         SalesMainClass.sendMessageToObject("&a设置成功",player);
 

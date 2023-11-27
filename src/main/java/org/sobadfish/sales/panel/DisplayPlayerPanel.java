@@ -41,6 +41,10 @@ public class DisplayPlayerPanel implements InventoryHolder {
         LinkedHashMap<Integer,BasePlayPanelItemInstance> items = new LinkedHashMap<>();
         int i = 0;
         for(SaleItem item: sales.items){
+            if(item.isRemove){
+                sales.items.remove(item);
+                continue;
+            }
             items.put(i++, new PanelItem(item));
 
         }

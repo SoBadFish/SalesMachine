@@ -11,6 +11,9 @@
 		},
 		"sale_remove": {
 			"textures":"textures/items/sale_remove.png"
+		},
+		"sale_money": {
+			"textures":"textures/items/sale_money.png"
 		}
 	}
 }
