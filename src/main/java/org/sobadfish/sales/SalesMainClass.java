@@ -48,7 +48,7 @@ public class SalesMainClass extends PluginBase {
         sendMessageToConsole("&a正在加载售卖机插件");
 
         initSkin();
-
+        checkServer();
         if(Block.list.length <= 256){
 //            Block block = new BarrierBlock_Nukkit();
             //TODO 放弃了 使用Nkx后好多都没法用 比如实体点击不到
@@ -63,7 +63,7 @@ public class SalesMainClass extends PluginBase {
         Entity.registerEntity(SalesEntity.ENTITY_TYPE,SalesEntity.class);
         BlockEntity.registerBlockEntity(SalesEntity.SalesBlockEntity.ENTITY_TYPE,SalesEntity.SalesBlockEntity.class);
 
-        checkServer();
+
         this.getServer().getPluginManager().registerEvents(new SalesListener(this),this);
 
         sendMessageToConsole("&a加载完成!");
