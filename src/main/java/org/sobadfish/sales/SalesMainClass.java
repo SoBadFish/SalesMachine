@@ -19,6 +19,7 @@ import org.sobadfish.sales.block.BarrierBlock;
 import org.sobadfish.sales.block.IBarrier;
 import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.items.CustomSaleItem;
+import org.sobadfish.sales.items.CustomSaleMoneyItem;
 import org.sobadfish.sales.items.CustomSaleRemoveItem;
 import org.sobadfish.sales.items.CustomSaleSettingItem;
 import org.sobadfish.sales.panel.lib.AbstractFakeInventory;
@@ -89,6 +90,7 @@ public class SalesMainClass extends PluginBase {
         Item.registerCustomItem(CustomSaleItem.class);
         Item.registerCustomItem(CustomSaleSettingItem.class);
         Item.registerCustomItem(CustomSaleRemoveItem.class);
+        Item.registerCustomItem(CustomSaleMoneyItem.class);
     }
 
 
