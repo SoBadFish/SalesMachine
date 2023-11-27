@@ -77,7 +77,7 @@ public class PanelItem extends BasePlayPanelItemInstance{
                                 upsLimit = user.getInt("buy");
                             }
                             if(upsLimit == limit){
-                                SalesMainClass.sendMessageToObject("&c已到达最大购买次数!",player);
+                                SalesMainClass.sendMessageToObject("&c购买失败! 已到达最大购买次数!",player);
                                 return;
                             }
                             user.putInt("buy",++upsLimit);
