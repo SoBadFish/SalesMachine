@@ -58,8 +58,7 @@ public class SalesMainClass extends PluginBase {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        Server.getInstance().enableExperimentMode = true;
-        Server.getInstance().forceResources = true;
+
 
 
         initSkin();
@@ -225,6 +224,7 @@ public class SalesMainClass extends PluginBase {
             c.getField("NUKKIT_PM1E");
             ver = true;
 
+
         } catch (ClassNotFoundException | NoSuchFieldException ignore) { }
         try {
             Class<?> c = Class.forName("cn.nukkit.Nukkit");
@@ -235,7 +235,9 @@ public class SalesMainClass extends PluginBase {
 
         AbstractFakeInventory.IS_PM1E = ver;
         if(ver){
-            sendMessageToConsole("&e当前核心为 Nukkit PM1E");
+            sendMessageToConsole("&e当前核心为 Nukkit MOT");
+            Server.getInstance().enableExperimentMode = true;
+            Server.getInstance().forceResources = true;
         }else{
             sendMessageToConsole("&e当前核心为 Nukkit");
         }
