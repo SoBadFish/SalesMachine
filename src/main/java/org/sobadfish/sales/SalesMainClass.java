@@ -58,7 +58,7 @@ public class SalesMainClass extends PluginBase {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
-
+        checkServer();
 
 
         initSkin();
@@ -78,7 +78,7 @@ public class SalesMainClass extends PluginBase {
         Entity.registerEntity(SalesEntity.ENTITY_TYPE,SalesEntity.class);
         BlockEntity.registerBlockEntity(SalesEntity.SalesBlockEntity.ENTITY_TYPE,SalesEntity.SalesBlockEntity.class);
 
-        checkServer();
+
         this.getServer().getPluginManager().registerEvents(new SalesListener(this),this);
 
         sendMessageToConsole("&a加载完成!");
