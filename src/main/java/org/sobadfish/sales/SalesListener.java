@@ -18,9 +18,11 @@ import cn.nukkit.inventory.Inventory;
 import cn.nukkit.inventory.transaction.InventoryTransaction;
 import cn.nukkit.inventory.transaction.action.InventoryAction;
 import cn.nukkit.item.Item;
+import me.onebone.economyapi.EconomyAPI;
 import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.form.AdminForm;
 import org.sobadfish.sales.form.SellItemForm;
+import org.sobadfish.sales.items.MoneyItem;
 import org.sobadfish.sales.panel.DisplayPlayerPanel;
 import org.sobadfish.sales.panel.button.BasePlayPanelItemInstance;
 import org.sobadfish.sales.panel.lib.ChestPanel;
@@ -76,6 +78,16 @@ public class SalesListener implements Listener {
 
             }
 
+        }
+        //使用金币
+        Item item = event.getItem();
+        Player player = event.getPlayer();
+        if(item.hasCompoundTag() && item.getNamedTag().contains(MoneyItem.TAG)){
+            Item cl = event.getItem().clone();
+            cl.setCount(1);
+            double money = item.getNamedTag().getDouble(MoneyItem.TAG);
+            EconomyAPI.getInstance().addMoney(player,money);
+            player.getInventory().removeItem(cl);
         }
 
 //        }
