@@ -5,6 +5,7 @@ import cn.nukkit.Server;
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.TextFormat;
 import org.sobadfish.sales.SalesMainClass;
+import org.sobadfish.sales.items.CustomSaleRemoveItem;
 import org.sobadfish.sales.panel.lib.ChestPanel;
 
 
@@ -23,7 +24,7 @@ public class RemoveSales extends BasePlayPanelItemInstance{
 
     @Override
     public Item getItem() {
-        return Item.get(35,14);
+        return new CustomSaleRemoveItem();
     }
 
     @Override

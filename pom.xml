@@ -6,7 +6,7 @@
 
     <groupId>org.sobadfish</groupId>
     <artifactId>SalesMachine</artifactId>
-    <version>1.0.9</version>
+    <version>1.0.9-MOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -41,7 +41,7 @@
             <artifactId>nukkit</artifactId>
             <version>MOT-SNAPSHOT</version>
             <scope>system</scope>
-            <systemPath> ${project.basedir}/lib/Nukkit-PM1E-MOT-SNAPSHOT.jar</systemPath>
+            <systemPath> ${project.basedir}/lib/Nukkit-MOT.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>me.onebone</groupId>

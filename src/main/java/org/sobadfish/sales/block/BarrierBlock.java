@@ -8,6 +8,7 @@ import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.BlockColor;
 import cn.nukkit.utils.TextFormat;
+import org.sobadfish.sales.items.CustomSaleItem;
 
 /**
  * @author Sobadfish
@@ -75,7 +76,7 @@ public class BarrierBlock extends BlockSolid implements IBarrier {
 
     @Override
     public Item getShaleItem(){
-        Item item = Item.get(54);
+        Item item = new CustomSaleItem();
         item.setCustomName(TextFormat.colorize('&',"&r&l&e售卖机"));
 
         item.setLore(TextFormat.colorize('&',"&r&7\n放置即可生成"));

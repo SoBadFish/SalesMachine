@@ -83,21 +83,7 @@ public class SalesListener implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event){
-        Item it = event.getItem();
-        if(it.hasCompoundTag()){
-            if(it.getNamedTag().contains("saleskey")){
-                event.setCancelled();
-                Player player = event.getPlayer();
-                if(SalesEntity.spawnToAll(event.getBlock(),player.getDirection(),player.getName())){
-                    SalesMainClass.sendMessageToObject("&a生成成功！",player);
-                    Item re = it.clone();
-                    re.setCount(1);
-                    player.getInventory().removeItem(re);
-                }else{
-                    SalesMainClass.sendMessageToObject("&c生成失败！ 请保证周围没有其他方块",player);
-                }
-            }
-        }
+
         if(event.getBlockAgainst().getId() == main.iBarrier.getBid()) {
             BlockEntity entity = event.getBlockAgainst().level.getBlockEntity(event.getBlockAgainst());
             if (entity instanceof SalesEntity.SalesBlockEntity) {
