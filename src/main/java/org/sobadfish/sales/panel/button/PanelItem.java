@@ -167,8 +167,9 @@ public class PanelItem extends BasePlayPanelItemInstance{
         lore.add(" ");
 
         if(showItem.tag.contains("sales_exchange") && showItem.tag.getBoolean("sales_exchange",false)){
-            i = new MoneyItem(showItem.money).getItem();
-            lore.add(format(Utils.getCentontString("&r&e▶&7 需要: &e"+(showItem.getItemName()+" &r*&a "+showItem.saleItem.getCount()),length)));
+            lore.add(format(Utils.getCentontString("&r&e▶&7 回收价: &r金币 &7* &e"+(showItem.money != 0?showItem.money:"免费"),length)));
+//            i = new MoneyItem(showItem.money).getItem();
+//            lore.add(format(Utils.getCentontString("&r&e▶&7 回收价: &e"+(showItem.getItemName()+" &r*&a "+showItem.saleItem.getCount()),length)));
         }else{
             lore.add(format(Utils.getCentontString("&r&e▶&7 库存: &a"+(getStockStr()),length)));
             lore.add(format(Utils.getCentontString("&r&e▶&7 价格: &e"+(showItem.money != 0?showItem.money:"免费"),length)));

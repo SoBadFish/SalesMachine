@@ -87,9 +87,16 @@ public class SalesListener implements Listener {
             double money = item.getNamedTag().getDouble(MoneyItem.TAG) * item.getCount();
             item.setCount(item.getCount() - item.getCount());
             player.getInventory().setItemInHand(item);
-            EconomyAPI.getInstance().addMoney(player,money);
-            player.level.addSound(player, Sound.ARMOR_EQUIP_IRON);
-            SalesMainClass.sendMessageToObject("&r获得金币 x &e"+money,player);
+            try {
+                Class.forName("me.onebone.economyapi.EconomyAPI");
+                EconomyAPI.getInstance().addMoney(player,money);
+                player.level.addSound(player, Sound.ARMOR_EQUIP_IRON);
+                SalesMainClass.sendMessageToObject("&r获得金币 x &e"+money,player);
+            } catch (ClassNotFoundException e) {
+                SalesMainClass.sendMessageToObject("&c无经济核心!",player);
+
+            }
+
         }
 
 //        }
