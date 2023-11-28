@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.inventory.Inventory;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Sound;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.TextFormat;
 import me.onebone.economyapi.EconomyAPI;
@@ -67,6 +68,7 @@ public class PanelItem extends BasePlayPanelItemInstance{
 
                     }else{
                         SalesMainClass.sendMessageToObject("&c购买失败! 物品不足!",player);
+                        return;
                     }
                 }else{
                     if(inventory.sales.master.equalsIgnoreCase(player.getName())){
@@ -85,12 +87,15 @@ public class PanelItem extends BasePlayPanelItemInstance{
 
                         }else{
                             SalesMainClass.sendMessageToObject("&c金钱不足!",player);
+                            return;
                         }
                     }
                     if(!showItem.tag.contains("noreduce") || !showItem.tag.getBoolean("noreduce")){
                         inventory.sales.removeItem(player.getName(),showItem,showItem.saleItem.getCount());
                     }
                 }
+                player.getLevel().addSound(player.getPosition(),Sound.RANDOM_ORB);
+
 
 
 

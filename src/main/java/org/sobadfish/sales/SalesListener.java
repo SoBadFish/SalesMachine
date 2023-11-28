@@ -83,11 +83,10 @@ public class SalesListener implements Listener {
         Item item = event.getItem();
         Player player = event.getPlayer();
         if(item.hasCompoundTag() && item.getNamedTag().contains(MoneyItem.TAG)){
-            Item cl = event.getItem().clone();
-            cl.setCount(1);
-            double money = item.getNamedTag().getDouble(MoneyItem.TAG);
+            double money = item.getNamedTag().getDouble(MoneyItem.TAG) * item.getCount();
+            item.setCount(item.getCount() - item.getCount());
+            player.getInventory().setItemInHand(item);
             EconomyAPI.getInstance().addMoney(player,money);
-            player.getInventory().removeItem(cl);
         }
 
 //        }
