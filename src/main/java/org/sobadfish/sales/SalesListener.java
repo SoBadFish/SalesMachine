@@ -18,6 +18,7 @@ import cn.nukkit.inventory.Inventory;
 import cn.nukkit.inventory.transaction.InventoryTransaction;
 import cn.nukkit.inventory.transaction.action.InventoryAction;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Sound;
 import me.onebone.economyapi.EconomyAPI;
 import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.form.AdminForm;
@@ -87,6 +88,8 @@ public class SalesListener implements Listener {
             item.setCount(item.getCount() - item.getCount());
             player.getInventory().setItemInHand(item);
             EconomyAPI.getInstance().addMoney(player,money);
+            player.level.addSound(player, Sound.ARMOR_EQUIP_IRON);
+            SalesMainClass.sendMessageToObject("&r获得金币 x &e"+money,player);
         }
 
 //        }
