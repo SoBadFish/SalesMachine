@@ -162,7 +162,7 @@ public class PanelItem extends BasePlayPanelItemInstance{
     public Item getPanelItem(Player info, int index) {
 
         Item i =  showItem.saleItem.clone();
-        List<String> lore = new ArrayList<>(Arrays.asList(i.getLore()));
+        List<String> lore = new ArrayList<>(Arrays.asList(showItem.saleItem.getLore()));
         int length = 25;
         lore.add(" ");
 
