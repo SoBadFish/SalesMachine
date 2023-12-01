@@ -13,39 +13,41 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
     </properties>
+
     <distributionManagement>
-        <snapshotRepository>
-            <id>repo-lanink-cn</id>
-            <url>https://repo.lanink.cn/repository/maven-snapshots/</url>
-        </snapshotRepository>
         <repository>
-            <id>repo-lanink-cn</id>
-            <url>https://repo.lanink.cn/repository/maven-releases/</url>
+            <id>maven-repo</id>
+            <url>file:/www/wwwroot/repo.lanink.cn</url>
         </repository>
     </distributionManagement>
 
-<!--    <distributionManagement>-->
-<!--        <repository>-->
-<!--            <id>maven-repo</id>-->
-<!--            <url>file:/www/wwwroot/repo.lanink.cn</url>-->
-<!--        </repository>-->
-<!--    </distributionManagement>-->
-
-
-<!--    <repositories>-->
-<!--        <repository>-->
-<!--            <id>repo-lanink-cn</id>-->
-<!--            <url>https://repo.lanink.cn/repository/maven-public/</url>-->
-<!--        </repository>-->
-<!--    </repositories>-->
+    <repositories>
+        <repository>
+            <id>opencollab-repo-release</id>
+            <url>https://repo.opencollab.dev/maven-releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>opencollab-repo-snapshot</id>
+            <url>https://repo.opencollab.dev/maven-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>repo-lanink-cn</id>
+            <url>https://repo.lanink.cn/</url>
+        </repository>
+    </repositories>
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>cn.nukkit</groupId>-->
-<!--            <artifactId>nukkit</artifactId>-->
-<!--            <version>MOT-SNAPSHOT</version>-->
-<!--            <scope>system</scope>-->
-<!--            <systemPath> ${project.basedir}/lib/nukkitx.jar</systemPath>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>cn.nukkit</groupId>
             <artifactId>nukkit</artifactId>
