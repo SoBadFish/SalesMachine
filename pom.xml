@@ -15,23 +15,39 @@
     </properties>
 
     <distributionManagement>
-        <snapshotRepository>
-            <id>repo-lanink-cn</id>
-            <url>https://repo.lanink.cn/repository/maven-snapshots/</url>
-        </snapshotRepository>
         <repository>
-            <id>repo-lanink-cn</id>
-            <url>https://repo.lanink.cn/repository/maven-releases/</url>
+            <id>maven-repo</id>
+            <url>file:/www/wwwroot/repo.lanink.cn</url>
         </repository>
     </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>opencollab-repo-release</id>
+            <url>https://repo.opencollab.dev/maven-releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>opencollab-repo-snapshot</id>
+            <url>https://repo.opencollab.dev/maven-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>repo-lanink-cn</id>
+            <url>https://repo.lanink.cn/</url>
+        </repository>
+    </repositories>
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>cn.nukkit</groupId>-->
-<!--            <artifactId>nukkit</artifactId>-->
-<!--            <version>MOT-SNAPSHOT</version>-->
-<!--            <scope>system</scope>-->
-<!--            <systemPath> ${project.basedir}/lib/nukkitx.jar</systemPath>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>cn.nukkit</groupId>
             <artifactId>nukkit</artifactId>
@@ -68,13 +84,15 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.5.1</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>17</source>
+                    <target>17</target>
 
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
+
 
 
 
