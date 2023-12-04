@@ -18,6 +18,7 @@ import cn.nukkit.inventory.Inventory;
 import cn.nukkit.inventory.transaction.InventoryTransaction;
 import cn.nukkit.inventory.transaction.action.InventoryAction;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Sound;
 import me.onebone.economyapi.EconomyAPI;
 import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.form.AdminForm;
@@ -83,31 +84,27 @@ public class SalesListener implements Listener {
         Item item = event.getItem();
         Player player = event.getPlayer();
         if(item.hasCompoundTag() && item.getNamedTag().contains(MoneyItem.TAG)){
-            Item cl = event.getItem().clone();
-            cl.setCount(1);
-            double money = item.getNamedTag().getDouble(MoneyItem.TAG);
-            EconomyAPI.getInstance().addMoney(player,money);
-            player.getInventory().removeItem(cl);
+            double money = item.getNamedTag().getDouble(MoneyItem.TAG) * item.getCount();
+            item.setCount(item.getCount() - item.getCount());
+            player.getInventory().setItemInHand(item);
+            try {
+                Class.forName("me.onebone.economyapi.EconomyAPI");
+                EconomyAPI.getInstance().addMoney(player,money);
+                player.level.addSound(player, Sound.ARMOR_EQUIP_IRON);
+                SalesMainClass.sendMessageToObject("&r获得金币 x &e"+money,player);
+            } catch (ClassNotFoundException e) {
+                SalesMainClass.sendMessageToObject("&c无经济核心!",player);
+
+            }
+
         }
+
+//        }
     }
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event){
-        Item it = event.getItem();
-        if(it.hasCompoundTag()){
-            if(it.getNamedTag().contains("saleskey")){
-                event.setCancelled();
-                Player player = event.getPlayer();
-                if(SalesEntity.spawnToAll(event.getBlock(),player.getDirection(),player.getName())){
-                    SalesMainClass.sendMessageToObject("&a生成成功！",player);
-                    Item re = it.clone();
-                    re.setCount(1);
-                    player.getInventory().removeItem(re);
-                }else{
-                    SalesMainClass.sendMessageToObject("&c生成失败！ 请保证周围没有其他方块",player);
-                }
-            }
-        }
+
         if(event.getBlockAgainst().getId() == main.iBarrier.getBid()) {
             BlockEntity entity = event.getBlockAgainst().level.getBlockEntity(event.getBlockAgainst());
             if (entity instanceof SalesEntity.SalesBlockEntity) {

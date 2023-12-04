@@ -1,0 +1,19 @@
+{
+	"resource_pack_name": "Sales Item",
+	"texture_name":"atlas.items",
+	"texture_data":
+	{
+		"sale_item":{
+			"textures":"textures/items/sale_item.png"
+		},
+		"sale_setting": {
+			"textures":"textures/items/sale_setting.png"
+		},
+		"sale_remove": {
+			"textures":"textures/items/sale_remove.png"
+		},
+		"sale_money": {
+			"textures":"textures/items/sale_money.png"
+		}
+	}
+}

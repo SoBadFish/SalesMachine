@@ -18,7 +18,12 @@ import cn.nukkit.utils.Utils;
 import org.sobadfish.sales.block.BarrierBlock;
 import org.sobadfish.sales.block.IBarrier;
 import org.sobadfish.sales.entity.SalesEntity;
+import org.sobadfish.sales.items.CustomSaleItem;
+import org.sobadfish.sales.items.CustomSaleMoneyItem;
+import org.sobadfish.sales.items.CustomSaleRemoveItem;
+import org.sobadfish.sales.items.CustomSaleSettingItem;
 import org.sobadfish.sales.panel.lib.AbstractFakeInventory;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -45,10 +50,21 @@ public class SalesMainClass extends PluginBase {
     @Override
     public void onEnable() {
         INSTANCE = this;
-        sendMessageToConsole("&a正在加载售卖机插件");
+        sendMessageToConsole("&a正在加载售卖机插件 MOT系列");
+        //检查是否支持自定义物品
+        try{
+            Class.forName("cn.nukkit.item.customitem.CustomItem");
+        }catch (Exception ignore){
+            sendMessageToConsole("&c当前核心不支持自定义物品！");
+            this.getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+        checkServer();
+
 
         initSkin();
-        checkServer();
+        initItem();
+
         if(Block.list.length <= 256){
 //            Block block = new BarrierBlock_Nukkit();
             //TODO 放弃了 使用Nkx后好多都没法用 比如实体点击不到
@@ -69,6 +85,14 @@ public class SalesMainClass extends PluginBase {
         sendMessageToConsole("&a加载完成!");
 
     }
+
+    private void initItem() {
+        Item.registerCustomItem(CustomSaleItem.class);
+        Item.registerCustomItem(CustomSaleSettingItem.class);
+        Item.registerCustomItem(CustomSaleRemoveItem.class);
+        Item.registerCustomItem(CustomSaleMoneyItem.class);
+    }
+
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -202,6 +226,7 @@ public class SalesMainClass extends PluginBase {
             c.getField("NUKKIT_PM1E");
             ver = true;
 
+
         } catch (ClassNotFoundException | NoSuchFieldException ignore) { }
         try {
             Class<?> c = Class.forName("cn.nukkit.Nukkit");
@@ -212,7 +237,9 @@ public class SalesMainClass extends PluginBase {
 
         AbstractFakeInventory.IS_PM1E = ver;
         if(ver){
-            sendMessageToConsole("&e当前核心为 Nukkit PM1E");
+            sendMessageToConsole("&e当前核心为 Nukkit MOT");
+            Server.getInstance().enableExperimentMode = true;
+            Server.getInstance().forceResources = true;
         }else{
             sendMessageToConsole("&e当前核心为 Nukkit");
         }

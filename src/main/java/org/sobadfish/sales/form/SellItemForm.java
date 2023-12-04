@@ -38,7 +38,7 @@ public class SellItemForm {
 
     public Item item;
 
-    public SellItemForm(SalesEntity sales,Item item) {
+    public SellItemForm(SalesEntity sales, Item item) {
         this.item = item;
         this.sales = sales;
         this.id = getRid();

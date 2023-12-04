@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.inventory.Inventory;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Sound;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.TextFormat;
 import me.onebone.economyapi.EconomyAPI;
@@ -67,6 +68,7 @@ public class PanelItem extends BasePlayPanelItemInstance{
 
                     }else{
                         SalesMainClass.sendMessageToObject("&c购买失败! 物品不足!",player);
+                        return;
                     }
                 }else{
                     if(inventory.sales.master.equalsIgnoreCase(player.getName())){
@@ -85,12 +87,17 @@ public class PanelItem extends BasePlayPanelItemInstance{
 
                         }else{
                             SalesMainClass.sendMessageToObject("&c金钱不足!",player);
+                            return;
                         }
                     }
                     if(!showItem.tag.contains("noreduce") || !showItem.tag.getBoolean("noreduce")){
                         inventory.sales.removeItem(player.getName(),showItem,showItem.saleItem.getCount());
                     }
                 }
+                player.getLevel().addSound(player.getPosition(),Sound.RANDOM_ORB);
+
+
+
 
             }else{
                 if(inventory.sales.master.equalsIgnoreCase(player.getName())){
@@ -155,13 +162,14 @@ public class PanelItem extends BasePlayPanelItemInstance{
     public Item getPanelItem(Player info, int index) {
 
         Item i =  showItem.saleItem.clone();
-        List<String> lore = new ArrayList<String>(Arrays.asList(i.getLore()));
+        List<String> lore = new ArrayList<>(Arrays.asList(showItem.saleItem.getLore()));
         int length = 25;
         lore.add(" ");
 
         if(showItem.tag.contains("sales_exchange") && showItem.tag.getBoolean("sales_exchange",false)){
-            i = new MoneyItem(showItem.money).getItem();
-            lore.add(format(Utils.getCentontString("&r&e▶&7 需要: &e"+(showItem.getItemName()+" &r*&a "+showItem.saleItem.getCount()),length)));
+            lore.add(format(Utils.getCentontString("&r&e▶&7 回收价: &r金币 &7* &e"+(showItem.money != 0?showItem.money:"免费"),length)));
+//            i = new MoneyItem(showItem.money).getItem();
+//            lore.add(format(Utils.getCentontString("&r&e▶&7 回收价: &e"+(showItem.getItemName()+" &r*&a "+showItem.saleItem.getCount()),length)));
         }else{
             lore.add(format(Utils.getCentontString("&r&e▶&7 库存: &a"+(getStockStr()),length)));
             lore.add(format(Utils.getCentontString("&r&e▶&7 价格: &e"+(showItem.money != 0?showItem.money:"免费"),length)));
@@ -189,7 +197,6 @@ public class PanelItem extends BasePlayPanelItemInstance{
         }
         lore.add("  ");
         lore.add(format(Utils.getCentontString("&r&e▶&7 双击购买",length)));
-
         i.setLore(lore.toArray(new String[0]));
         i.setNamedTag(i.getNamedTag().putInt("index",index));
         return i;
