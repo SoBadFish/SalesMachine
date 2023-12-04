@@ -98,6 +98,23 @@ public class SalesListener implements Listener {
             }
 
         }
+        //TODO 自定义物品的放置
+        //TODO 放置物品
+        if(SalesMainClass.LOAD_CUSTOM){
+            if(item.hasCompoundTag() && item.getNamedTag().contains("saleskey")){
+                if(SalesEntity.spawnToAll(block.getSide(event.getFace()),player.getDirection(),player.getName())){
+                    if (player.isSurvival() || player.isAdventure()) {
+                        Item item2 = player.getInventory().getItemInHand();
+                        item2.setCount(item2.getCount() - 1);
+                        player.getInventory().setItemInHand(item2);
+                    }
+                }else{
+                    SalesMainClass.sendMessageToObject("&c生成失败！ 请保证周围没有其他方块",player);
+                }
+
+            }
+        }
+
 
 //        }
     }

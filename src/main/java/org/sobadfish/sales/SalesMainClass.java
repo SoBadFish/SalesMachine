@@ -1,5 +1,6 @@
 package org.sobadfish.sales;
 
+import cn.lanink.customitemapi.CustomItemAPI;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
@@ -46,11 +47,13 @@ public class SalesMainClass extends PluginBase {
 
     public static SalesMainClass INSTANCE;
 
+    public static boolean LOAD_CUSTOM = false;
+
 
     @Override
     public void onEnable() {
         INSTANCE = this;
-        sendMessageToConsole("&a正在加载售卖机插件 MOT系列");
+        sendMessageToConsole("&a正在加载售卖机插件");
         //检查是否支持自定义物品
         try{
             Class.forName("cn.nukkit.item.customitem.CustomItem");
@@ -87,10 +90,23 @@ public class SalesMainClass extends PluginBase {
     }
 
     private void initItem() {
-        Item.registerCustomItem(CustomSaleItem.class);
-        Item.registerCustomItem(CustomSaleSettingItem.class);
-        Item.registerCustomItem(CustomSaleRemoveItem.class);
-        Item.registerCustomItem(CustomSaleMoneyItem.class);
+        try{
+            Class.forName("cn.lanink.customitemapi.item.ItemCustom");
+            LOAD_CUSTOM = true;
+        }catch (Exception ignore){}
+        if(LOAD_CUSTOM){
+            CustomItemAPI.getInstance().registerCustomItem(1992, org.sobadfish.sales.items.custom.CustomSaleItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(1993, org.sobadfish.sales.items.custom.CustomSaleSettingItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(1994, org.sobadfish.sales.items.custom.CustomSaleRemoveItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(1995, org.sobadfish.sales.items.custom.CustomSaleMoneyItem.class);
+        }else{
+            Item.registerCustomItem(CustomSaleItem.class);
+            Item.registerCustomItem(CustomSaleSettingItem.class);
+            Item.registerCustomItem(CustomSaleRemoveItem.class);
+            Item.registerCustomItem(CustomSaleMoneyItem.class);
+        }
+
+
     }
 
 

@@ -7,12 +7,12 @@
 
 ### ⚠️Server
 
-| 核心           | 是否支持 |
-|--------------|:----:|
-| NukkitX      |  ❌   |
-| PowerNukkitX |  ✅   |
-| Nukkit-PM1E  |  ❌   |
-| Nukkit-MOT   |  ✅   |
+| 核心           |         是否支持         |
+|--------------|:--------------------:|
+| NukkitX      |          ❌           |
+| PowerNukkitX |          ✅           |
+| Nukkit-PM1E  | ✅(需要CustomItemAPI前置) |
+| Nukkit-MOT   |          ✅           |
 
 ### 📝Function
 |     |    功能     |
