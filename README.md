@@ -1,4 +1,4 @@
-# <div align="center">SalesMachine-MOT</div>  
+# <div align="center">SalesMachine</div>  
 
 ------
 ![](https://img.shields.io/badge/license-GPL3.0-blue) <a href="https://github.com/Sobadfish/SalesMachine/releases/latest" alt="Latest release">
