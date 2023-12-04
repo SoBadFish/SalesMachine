@@ -46,6 +46,7 @@ public class AdminForm {
         custom.addElement(new ElementInput("玩家限购次数","若设置-1则不限制玩家购买次数","-1"));
         custom.addElement(new ElementInput("刷新时间(h)","若设置-1则不刷新","-1"));
         custom.addElement(new ElementToggle("是否为收购", sales.tag.contains("sales_exchange") && sales.tag.getBoolean("sales_exchange")));
+        custom.addElement(new ElementInput("商品价格","商品的价格 出售/回收","0"));
         custom.addElement(new ElementToggle("移除"));
 
 
@@ -67,16 +68,20 @@ public class AdminForm {
         if(hour < -1){
             hour = -1;
         }
-        if(responseCustom.getToggleResponse(4)){
+        if(responseCustom.getToggleResponse(5)){
             sales.isRemove = true;
         }else{
             sales.tag.putBoolean("sales_exchange",responseCustom.getToggleResponse(3));
             sales.tag.putBoolean("noreduce",b);
             sales.tag.putInt("limitCount",limit);
             sales.tag.putInt("limitTime",hour * 60 * 60 * 1000);
+            float money = 0;
+            try{
+                money = Float.parseFloat(responseCustom.getInputResponse(4));
+            }catch (Exception ignore){}
+            sales.money = money;
+            sales.tag.putDouble("money",money);
         }
-
-
 
         SalesMainClass.sendMessageToObject("&a设置成功",player);
 
