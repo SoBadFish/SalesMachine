@@ -47,6 +47,8 @@ public class SalesMainClass extends PluginBase {
 
     public static SalesMainClass INSTANCE;
 
+    public static LinkedHashMap<String,Item> CUSTOM_ITEMS = new LinkedHashMap<>();
+
     public static boolean LOAD_CUSTOM = false;
 
 
@@ -95,15 +97,25 @@ public class SalesMainClass extends PluginBase {
             LOAD_CUSTOM = true;
         }catch (Exception ignore){}
         if(LOAD_CUSTOM){
+
             CustomItemAPI.getInstance().registerCustomItem(1992, org.sobadfish.sales.items.custom.CustomSaleItem.class);
             CustomItemAPI.getInstance().registerCustomItem(1993, org.sobadfish.sales.items.custom.CustomSaleSettingItem.class);
             CustomItemAPI.getInstance().registerCustomItem(1994, org.sobadfish.sales.items.custom.CustomSaleRemoveItem.class);
             CustomItemAPI.getInstance().registerCustomItem(1995, org.sobadfish.sales.items.custom.CustomSaleMoneyItem.class);
+            CUSTOM_ITEMS.put("sale",new org.sobadfish.sales.items.custom.CustomSaleItem());
+            CUSTOM_ITEMS.put("setting",new org.sobadfish.sales.items.custom.CustomSaleSettingItem());
+            CUSTOM_ITEMS.put("remove",new org.sobadfish.sales.items.custom.CustomSaleRemoveItem());
+            CUSTOM_ITEMS.put("money",new org.sobadfish.sales.items.custom.CustomSaleMoneyItem());
+
         }else{
             Item.registerCustomItem(CustomSaleItem.class);
             Item.registerCustomItem(CustomSaleSettingItem.class);
             Item.registerCustomItem(CustomSaleRemoveItem.class);
             Item.registerCustomItem(CustomSaleMoneyItem.class);
+            CUSTOM_ITEMS.put("sale",new CustomSaleItem());
+            CUSTOM_ITEMS.put("setting",new CustomSaleSettingItem());
+            CUSTOM_ITEMS.put("remove",new CustomSaleRemoveItem());
+            CUSTOM_ITEMS.put("money",new CustomSaleMoneyItem());
         }
 
 

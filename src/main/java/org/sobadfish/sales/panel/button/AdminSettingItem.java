@@ -4,8 +4,8 @@ import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.TextFormat;
+import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.entity.SalesEntity;
-import org.sobadfish.sales.items.CustomSaleSettingItem;
 import org.sobadfish.sales.items.SaleItem;
 import org.sobadfish.sales.panel.lib.ChestPanel;
 
@@ -32,7 +32,7 @@ public class AdminSettingItem extends BasePlayPanelItemInstance{
 
     @Override
     public Item getItem() {
-        return new CustomSaleSettingItem();
+        return SalesMainClass.CUSTOM_ITEMS.get("setting");
     }
 
     @Override
