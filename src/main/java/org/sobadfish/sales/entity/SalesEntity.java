@@ -387,6 +387,10 @@ public class SalesEntity extends EntityHuman {
     public static boolean spawnToAll(Position position,BlockFace bf,String master){
 
 
+        if(bf == null){
+            bf = BlockFace.EAST;
+        }
+
         Position pos = new Position(
                 position.getFloorX() + 0.5,
                 position.getFloorY(),
