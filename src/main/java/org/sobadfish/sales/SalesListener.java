@@ -109,6 +109,7 @@ public class SalesListener implements Listener {
                         Item item2 = player.getInventory().getItemInHand();
                         item2.setCount(item2.getCount() - 1);
                         player.getInventory().setItemInHand(item2);
+
                     }
                 }else{
                     SalesMainClass.sendMessageToObject("&c生成失败！ 请保证周围没有其他方块",player);

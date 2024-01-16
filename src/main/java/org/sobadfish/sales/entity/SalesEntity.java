@@ -417,7 +417,7 @@ public class SalesEntity extends EntityHuman {
             tg.putCompound(SalesEntity.ENTITY_TYPE,sales.namedTag);
             tg.putByte("face",bf.getIndex());
             BlockEntity.createBlockEntity(SalesBlockEntity.ENTITY_TYPE,pos.getChunk(),tg,sales);
-            BlockEntity.createBlockEntity(SalesBlockEntity.ENTITY_TYPE,p2.getChunk(),BlockEntity.getDefaultCompound(p2, SalesBlockEntity.ENTITY_TYPE),sales);
+            BlockEntity.createBlockEntity(SalesBlockEntity.ENTITY_TYPE,p2.getChunk(),BlockEntity.getDefaultCompound(p2, SalesBlockEntity.ENTITY_TYPE_TOP),sales);
             position.getLevel().setBlock(position, (Block) SalesMainClass.INSTANCE.iBarrier,false,false);
             position.getLevel().setBlock(position.add(0,1), (Block) SalesMainClass.INSTANCE.iBarrier,false,false);
 
@@ -429,6 +429,8 @@ public class SalesEntity extends EntityHuman {
     public static class SalesBlockEntity extends BlockEntity{
 
         public static final String ENTITY_TYPE = "SalesBlock";
+
+        public static final String ENTITY_TYPE_TOP = "SalesBlockTop";
 
         public SalesEntity sales;
 
