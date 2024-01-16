@@ -351,7 +351,7 @@ public class SalesEntity extends EntityHuman {
     public void close() {
         Position[] p3 = new Position[]{this,this.add(0,1)};
         for(Position position: p3){
-            level.setBlock(position,new BlockAir());
+            level.setBlock(position,new BlockAir(),true);
             level.addParticle(new DestroyBlockParticle(position,new BlockStone()));
             BlockEntity be = position.level.getBlockEntity(position);
             if(be != null){

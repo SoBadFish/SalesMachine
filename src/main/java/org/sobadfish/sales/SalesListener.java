@@ -63,17 +63,19 @@ public class SalesListener implements Listener {
                         if(player.getInventory().getItemInHand().getId() == 0){
                             return;
                         }
+                        event.setCancelled();
                         SellItemForm sellItemForm = new SellItemForm(entity1,player.getInventory().getItemInHand());
                         sellItemForm.display(player);
-                        event.setCancelled();
+
                     }
                 }
             }else{
                 if(event.getAction() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK || event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
+                    event.setCancelled();
                     DisplayPlayerPanel displayPlayerPanel = new DisplayPlayerPanel(entity1);
                     displayPlayerPanel.open(player);
                     chestPanelLinkedHashMap.put(player.getName(),displayPlayerPanel);
-                    event.setCancelled();
+
 
                 }
 
