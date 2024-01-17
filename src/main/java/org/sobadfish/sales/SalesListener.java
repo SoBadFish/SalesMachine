@@ -3,6 +3,7 @@ package org.sobadfish.sales;
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.blockentity.BlockEntity;
+import cn.nukkit.entity.Entity;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
@@ -52,10 +53,27 @@ public class SalesListener implements Listener {
     public void onPlayerInteractEvent(PlayerInteractEvent event){
         Block block = event.getBlock();
         BlockEntity entity = block.level.getBlockEntity(block);
+        if(entity == null){
+            entity = block.level.getBlockEntity(block.add(0,-1));
+        }
 
         if(entity instanceof SalesEntity.SalesBlockEntity){
 
             SalesEntity entity1 = ((SalesEntity.SalesBlockEntity) entity).sales;
+            if(entity1 == null){
+                //直接炸掉
+                for(Entity entity2: block.getChunk().getEntities().values()){
+                    if(entity2.distance(entity) <= 1){
+                        if(entity2 instanceof SalesEntity){
+//                            ((SalesEntity) entity2).toClose();
+
+                            ((SalesEntity.SalesBlockEntity) entity).sales = (SalesEntity) entity2;
+                        }
+                    }
+                }
+                return;
+            }
+
             Player player = event.getPlayer();
             if(player.isSneaking()){
                 if(event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){

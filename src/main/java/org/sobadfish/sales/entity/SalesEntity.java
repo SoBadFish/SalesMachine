@@ -27,10 +27,7 @@ import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.items.SaleItem;
 import org.sobadfish.sales.panel.DisplayPlayerPanel;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @author Sobadfish
@@ -66,7 +63,12 @@ public class SalesEntity extends EntityHuman {
 
     @Override
     public void saveNBT() {
-
+        BlockEntity be = getLevel().getBlockEntity(this);
+        if(be instanceof SalesBlockEntity){
+            be.namedTag.putCompound(SalesEntity.ENTITY_TYPE,this.namedTag);
+            be.namedTag.putByte("face",blockFace.getIndex());
+        }
+//        this.close();
     }
 
     public SalesEntity(FullChunk chunk, CompoundTag nbt, BlockFace face,String master) {
@@ -351,14 +353,17 @@ public class SalesEntity extends EntityHuman {
     public void close() {
         Position[] p3 = new Position[]{this,this.add(0,1)};
         for(Position position: p3){
-            level.setBlock(position,new BlockAir(),true);
+            level.setBlock(position,new BlockAir(),true,true);
             level.addParticle(new DestroyBlockParticle(position,new BlockStone()));
             BlockEntity be = position.level.getBlockEntity(position);
-            if(be != null){
+            if(be instanceof SalesBlockEntity){
+                be.namedTag.remove(SalesEntity.ENTITY_TYPE);
                 level.removeBlockEntity(be);
+                be.close();
             }
 
         }
+
         removePackets();
         super.close();
 
@@ -382,6 +387,7 @@ public class SalesEntity extends EntityHuman {
 
         }
         close();
+        level.save(true);
     }
 
     public static boolean spawnToAll(Position position,BlockFace bf,String master){
@@ -400,8 +406,7 @@ public class SalesEntity extends EntityHuman {
 
             Skin skin = SalesMainClass.ENTITY_SKIN.get(bf);
 
-            Position p2 = pos.add(0,1);
-            CompoundTag tg = BlockEntity.getDefaultCompound(pos, SalesBlockEntity.ENTITY_TYPE);
+            CompoundTag tg = BlockEntity.getDefaultCompound(pos, UUID.randomUUID().toString());
             CompoundTag tag = EntityHuman.getDefaultNBT(pos);
             tag.putString(SALE_MASTER_TAG,master);
             tag.putCompound("Skin",new CompoundTag()
@@ -416,8 +421,8 @@ public class SalesEntity extends EntityHuman {
 
             tg.putCompound(SalesEntity.ENTITY_TYPE,sales.namedTag);
             tg.putByte("face",bf.getIndex());
-            BlockEntity.createBlockEntity(SalesBlockEntity.ENTITY_TYPE,pos.getChunk(),tg,sales);
-            BlockEntity.createBlockEntity(SalesBlockEntity.ENTITY_TYPE,p2.getChunk(),BlockEntity.getDefaultCompound(p2, SalesBlockEntity.ENTITY_TYPE_TOP),sales);
+            BlockEntity.createBlockEntity(SalesBlockEntity.BLOCK_ENTITY_TYPE,pos.getChunk(),tg,sales);
+//            BlockEntity.createBlockEntity(SalesBlockEntity.BLOCK_ENTITY_TYPE,p2.getChunk(),BlockEntity.getDefaultCompound(p2, SalesBlockEntity.BLOCK_ENTITY_TYPE),sales);
             position.getLevel().setBlock(position, (Block) SalesMainClass.INSTANCE.iBarrier,false,false);
             position.getLevel().setBlock(position.add(0,1), (Block) SalesMainClass.INSTANCE.iBarrier,false,false);
 
@@ -428,34 +433,52 @@ public class SalesEntity extends EntityHuman {
 
     public static class SalesBlockEntity extends BlockEntity{
 
-        public static final String ENTITY_TYPE = "SalesBlock";
+        public static final String BLOCK_ENTITY_TYPE = "SalesBlock";
 
-        public static final String ENTITY_TYPE_TOP = "SalesBlockTop";
 
         public SalesEntity sales;
 
         public SalesBlockEntity(FullChunk chunk, CompoundTag nbt) {
             super(chunk, nbt);
+            if(this.closed){
+                return;
+            }
 
-            if(this.level.getBlock(this).getId() != SalesMainClass.INSTANCE.iBarrier.getBid()
-                    && this.level.getBlock(this.add(0,1)).getId() != SalesMainClass.INSTANCE.iBarrier.getBid()
-                    && this.level.getBlock(this.add(0,-1)).getId() != SalesMainClass.INSTANCE.iBarrier.getBid()){
+            if(namedTag.contains(BLOCK_ENTITY_TYPE)){
+                namedTag.remove(SalesEntity.ENTITY_TYPE);
+                namedTag.remove(BLOCK_ENTITY_TYPE);
                 this.level.removeBlockEntity(this);
-                //移除相关实体
-                for(Entity entity: level.getEntities()){
-                    if(entity instanceof SalesEntity){
-                        if(level.getBlockEntity(entity) == null){
-                            ((SalesEntity) entity).toClose();
-                        }
+                this.close();
+
+                return;
+            }
+            //将同一个Y轴的BlockEntity干掉
+            BlockEntity by1 = this.level.getBlockEntity(this.add(0,1));
+            if(by1 instanceof SalesBlockEntity){
+                by1.namedTag.remove(SalesEntity.ENTITY_TYPE);
+
+                this.level.removeBlockEntity(by1);
+                by1.close();
+                return;
+            }
+            BlockEntity by2 = this.level.getBlockEntity(this.add(0,-1));
+            if(by2 instanceof SalesBlockEntity){
+                by2.namedTag.remove(SalesEntity.ENTITY_TYPE);
+                this.level.removeBlockEntity(by2);
+                by2.close();
+                return;
+            }
+
+            //检测周围如果有生成的实体 那么跳过
+            for(Entity entity: getChunk().getEntities().values()){
+                if(entity instanceof SalesEntity){
+                    if(entity.distance(this) < 0.8){
+                        ((SalesEntity) entity).toClose();
                     }
                 }
-                return;
             }
             if(sales == null){
                 if(nbt.contains(SalesEntity.ENTITY_TYPE)){
-                    //重新生成方块
-                    level.setBlock(this,new BlockAir(),false,false);
-                    level.setBlock(this.add(0,1),new BlockAir(),false,false);
                     CompoundTag ct = nbt.getCompound(SalesEntity.ENTITY_TYPE);
                     BlockFace bf = BlockFace.fromIndex(nbt.getByte("face"));
                     Skin skin = SalesMainClass.ENTITY_SKIN.get(bf);
@@ -467,23 +490,19 @@ public class SalesEntity extends EntityHuman {
                     if(ct.contains(SALE_MASTER_TAG)){
                         master = ct.getString(SALE_MASTER_TAG);
                     }
-                    SalesEntity sales = new SalesEntity(chunk,ct,bf,master);
-                    sales.setSkin(skin);
-                    sales.spawnToAll();
-//                System.out.println("生成位置: "+sales.getPosition());
-                    level.setBlock(this, (Block) SalesMainClass.INSTANCE.iBarrier,false,false);
-                    level.setBlock(this.add(0,1), (Block) SalesMainClass.INSTANCE.iBarrier,false,false);
-                    this.sales = sales;
-                    BlockEntity be = level.getBlockEntity(this.add(0,1));
-
-                    if(be instanceof SalesBlockEntity){
-                        ((SalesBlockEntity) be).sales = this.sales;
-                    }
+                    SalesEntity se = new SalesEntity(chunk,ct,bf,master);
+                    se.setSkin(skin);
+                    se.spawnToAll();
+                    this.level.setBlock(this,Block.get(SalesMainClass.INSTANCE.iBarrier.getBid()));
+                    this.level.setBlock(this.add(0,1),Block.get(SalesMainClass.INSTANCE.iBarrier.getBid()));
+                    this.sales = se;
                 }else{
-                    BlockEntity be = level.getBlockEntity(this.add(0,-1));
-                    if(be instanceof SalesBlockEntity){
-                        this.sales = ((SalesBlockEntity) be).sales;
+                    BlockEntity be = this.level.getBlockEntity(this);
+                    if(be != null){
+                        this.level.removeBlockEntity(be);
+                        be.close();
                     }
+
                 }
             }
 
@@ -499,6 +518,19 @@ public class SalesEntity extends EntityHuman {
         }
 
 
+        @Override
+        public void close() {
+            Position[] p3 = new Position[]{this,this.add(0,1)};
+            for(Position position: p3) {
+                Block bk = level.getBlock(position);
+                if(bk != null && bk.getId() == SalesMainClass.INSTANCE.iBarrier.getBid() ){
+                    level.setBlock(position, new BlockAir(), true, true);
+                }
+
+            }
+
+            super.close();
+        }
 
         @Override
         public boolean isBlockEntityValid() {
