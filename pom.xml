@@ -59,6 +59,7 @@
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.34.0</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>cn.lanink</groupId>
@@ -92,7 +93,29 @@
         <finalName>${project.artifactId}_v${project.version}</finalName>
         <plugins>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <configuration>
+                    <!-- 此处按需编写更具体的配置 -->
+                    <artifactSet>
+                        <includes>
+                            <include>org.xerial:sqlite-jdbc</include>
+                        </includes>
+                    </artifactSet>
 
+                </configuration>
+                <executions>
+                    <execution>
+                        <!-- 和 package 阶段绑定 -->
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
