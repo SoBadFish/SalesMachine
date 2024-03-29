@@ -34,7 +34,7 @@ public class SellItemForm {
         return id;
     }
 
-    public static LinkedHashMap<Player, SellItemForm> DISPLAY_FROM = new LinkedHashMap<>();
+    public static LinkedHashMap<String, SellItemForm> DISPLAY_FROM = new LinkedHashMap<>();
 
     public Item item;
 
@@ -59,7 +59,7 @@ public class SellItemForm {
 
 //        custom.addElement(new ElementToggle("是否收购"));
         player.showFormWindow(custom,getId());
-        DISPLAY_FROM.put(player,this);
+        DISPLAY_FROM.put(player.getName(),this);
 
     }
 

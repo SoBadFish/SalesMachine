@@ -29,7 +29,7 @@ public class AdminForm {
         return id;
     }
 
-    public static LinkedHashMap<Player, AdminForm> DISPLAY_FROM = new LinkedHashMap<>();
+    public static LinkedHashMap<String, AdminForm> DISPLAY_FROM = new LinkedHashMap<>();
 
 
     public AdminForm(SaleItem sales) {
@@ -51,7 +51,7 @@ public class AdminForm {
 
 
         player.showFormWindow(custom,getId());
-        DISPLAY_FROM.put(player,this);
+        DISPLAY_FROM.put(player.getName(),this);
 
     }
     public void onListener(Player player, FormResponseCustom responseCustom){
