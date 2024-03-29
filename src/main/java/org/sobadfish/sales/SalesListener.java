@@ -139,7 +139,6 @@ public class SalesListener implements Listener {
                     }, SalesData.class);
             if(!salesData.isEmpty()){
                 Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE, () -> {
-                    SalesMainClass.INSTANCE.getLogger().info(salesData.toString());
                     for(SalesData data : salesData){
                         if(!cacheEntitys.containsKey(data.location)){
                             SalesEntity entity = SalesEntity.spawnToAll(data.asPosition(), BlockFace.valueOf(data.bf.toUpperCase()),data.master,data, true);
