@@ -200,9 +200,8 @@ public class SalesListener implements Listener {
 
                 }
                 SellItemForm.DISPLAY_FROM.remove(event.getPlayer());
-            }else{
-                SellItemForm.DISPLAY_FROM.remove(event.getPlayer());
             }
+            SellItemForm.DISPLAY_FROM.remove(event.getPlayer());
         }
         if(AdminForm.DISPLAY_FROM.containsKey(event.getPlayer())){
             AdminForm form = AdminForm.DISPLAY_FROM.get(event.getPlayer());
@@ -212,9 +211,8 @@ public class SalesListener implements Listener {
 
                 }
                 AdminForm.DISPLAY_FROM.remove(event.getPlayer());
-            }else{
-                AdminForm.DISPLAY_FROM.remove(event.getPlayer());
             }
+            AdminForm.DISPLAY_FROM.remove(event.getPlayer());
         }
     }
 
