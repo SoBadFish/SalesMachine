@@ -184,7 +184,7 @@ public class SalesListener implements Listener {
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event){
 
-        SalesEntity entity1 = getEntityByPos(event.getBlock());
+        SalesEntity entity1 = getEntityByPos(event.getBlockAgainst());
         if(entity1 != null){
             event.setCancelled();
         }
