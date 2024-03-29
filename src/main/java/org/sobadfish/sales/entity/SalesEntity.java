@@ -438,6 +438,10 @@ public class SalesEntity extends EntityHuman {
     }
 
     public static SalesEntity spawnToAll(Position position,BlockFace bf,String master,SalesData data){
+        return spawnToAll(position,bf,master,data,false);
+    }
+
+    public static SalesEntity spawnToAll(Position position,BlockFace bf,String master,SalesData data, boolean ignoreBlocks){
         if(bf == null){
             bf = BlockFace.EAST;
         }
@@ -447,7 +451,7 @@ public class SalesEntity extends EntityHuman {
                 position.getFloorY(),
                 position.getFloorZ() + 0.5,
                 position.level);
-        if(position.level.getBlock(position).getId() == 0 && position.level.getBlock(position.add(0,1)).getId() == 0){
+        if(ignoreBlocks || (position.level.getBlock(position).getId() == 0 && position.level.getBlock(position.add(0,1)).getId() == 0)){
 
             Skin skin = SalesMainClass.ENTITY_SKIN.get(bf);
 
