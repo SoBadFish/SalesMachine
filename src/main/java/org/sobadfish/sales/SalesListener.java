@@ -1,6 +1,7 @@
 package org.sobadfish.sales;
 
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.event.EventHandler;
@@ -130,26 +131,22 @@ public class SalesListener implements Listener {
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent event){
         //加载区间下的所有 实体
-
         if( SalesMainClass.INSTANCE.sqliteHelper != null){
-            SalesMainClass.INSTANCE.getLogger().info("chunk: "+event.getChunk().getX()+" -- "+event.getChunk().getZ());
             List<SalesData> salesData = SalesMainClass.INSTANCE.sqliteHelper.getDataByString(SalesMainClass.DB_TABLE,
                     "chunkx = ? and chunkz = ?",new String[]{
                             (event.getChunk().getX())+"",
-
                             (event.getChunk().getZ())+""
                     }, SalesData.class);
-            if(salesData.size() > 0){
-                SalesMainClass.INSTANCE.getLogger().info(salesData.toString());
-                for(SalesData data : salesData){
-
-                    if(!cacheEntitys.containsKey(data.location)){
-
-                        SalesEntity entity = SalesEntity.spawnToAll(data.asPosition(), BlockFace.valueOf(data.bf.toUpperCase()),data.master,data);
-                        cacheEntitys.put(data.location,entity);
+            if(!salesData.isEmpty()){
+                Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE, () -> {
+                    SalesMainClass.INSTANCE.getLogger().info(salesData.toString());
+                    for(SalesData data : salesData){
+                        if(!cacheEntitys.containsKey(data.location)){
+                            SalesEntity entity = SalesEntity.spawnToAll(data.asPosition(), BlockFace.valueOf(data.bf.toUpperCase()),data.master,data, true);
+                            cacheEntitys.put(data.location,entity);
+                        }
                     }
-
-                }
+                }, 1);
             }
 
         }
