@@ -34,7 +34,7 @@ public class CustomSaleItem extends ItemCustom {
 
     @Override
     public boolean onActivate(Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        if(SalesEntity.spawnToAll(block,player.getDirection(),player.getName())){
+        if(SalesEntity.spawnToAll(block,player.getDirection(),player.getName(),null) != null){
             if (player.isSurvival() || player.isAdventure()) {
                 Item item = player.getInventory().getItemInHand();
                 item.setCount(item.getCount() - 1);

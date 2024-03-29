@@ -4,7 +4,6 @@ import cn.lanink.customitemapi.CustomItemAPI;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
-import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.entity.Entity;
@@ -18,6 +17,8 @@ import cn.nukkit.utils.TextFormat;
 import cn.nukkit.utils.Utils;
 import org.sobadfish.sales.block.BarrierBlock;
 import org.sobadfish.sales.block.IBarrier;
+import org.sobadfish.sales.config.SalesData;
+import org.sobadfish.sales.db.SqliteHelper;
 import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.items.CustomSaleItem;
 import org.sobadfish.sales.items.CustomSaleMoneyItem;
@@ -29,6 +30,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +54,17 @@ public class SalesMainClass extends PluginBase {
     public static boolean LOAD_CUSTOM = false;
 
 
+    public SqliteHelper sqliteHelper;
+
+    public static final String DB_TABLE = "salelocation";
+
+    @Override
+    public void onLoad(){
+
+
+    }
+
+
     @Override
     public void onEnable() {
         INSTANCE = this;
@@ -64,7 +77,20 @@ public class SalesMainClass extends PluginBase {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
+
         checkServer();
+        saveResource("data.db",false);
+        try {
+            sqliteHelper = new SqliteHelper(getDataFolder()+"/data.db");
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+
+        if(sqliteHelper != null){
+            if(!sqliteHelper.exists(DB_TABLE)){
+                sqliteHelper.addTable(DB_TABLE, SqliteHelper.DBTable.asDbTable(SalesData.class));
+            }
+        }
 
 
         initSkin();
@@ -82,10 +108,11 @@ public class SalesMainClass extends PluginBase {
             iBarrier = new BarrierBlock();
         }
         Entity.registerEntity(SalesEntity.ENTITY_TYPE,SalesEntity.class);
-        BlockEntity.registerBlockEntity(SalesEntity.SalesBlockEntity.BLOCK_ENTITY_TYPE,SalesEntity.SalesBlockEntity.class);
+//        BlockEntity.registerBlockEntity(SalesEntity.SalesBlockEntity.BLOCK_ENTITY_TYPE,SalesEntity.SalesBlockEntity.class);
 
 
         this.getServer().getPluginManager().registerEvents(new SalesListener(this),this);
+
 
         sendMessageToConsole("&a加载完成!");
 
@@ -120,6 +147,7 @@ public class SalesMainClass extends PluginBase {
 
 
     }
+
 
 
     @Override

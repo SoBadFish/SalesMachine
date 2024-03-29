@@ -7,6 +7,7 @@ author: Sobadfish
 
 depend:
   - EconomyAPI
+  - DbLib
 
 softdepend:
   - CustomItemAPI
