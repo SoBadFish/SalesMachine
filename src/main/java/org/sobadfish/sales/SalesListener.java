@@ -100,6 +100,9 @@ public class SalesListener implements Listener {
         //使用金币
         Item item = event.getItem();
         Player player = event.getPlayer();
+        if(item == null){
+            return;
+        }
         if(item.hasCompoundTag() && item.getNamedTag().contains(MoneyItem.TAG)){
             double money = item.getNamedTag().getDouble(MoneyItem.TAG) * item.getCount();
             item.setCount(item.getCount() - item.getCount());
