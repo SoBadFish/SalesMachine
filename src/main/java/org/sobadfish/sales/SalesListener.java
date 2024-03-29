@@ -60,47 +60,49 @@ public class SalesListener implements Listener {
     @EventHandler
     public void onPlayerInteractEvent(PlayerInteractEvent event){
         Block block = event.getBlock();
-        Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE, new Runnable() {
-            @Override
-            public void run() {
-                SalesEntity entity1 = getEntityByPos(block);
-                if(entity1 != null){
-                    if(entity1.finalClose){
-                        return;
-                    }
-                    if(SellItemForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
-                        return;
-                    }
-                    if(AdminForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
-                        return;
-                    }
-                    Player player = event.getPlayer();
-                    if(player.isSneaking()){
-                        if(event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
-                            if(player.isOp() || (entity1.master != null && entity1.master.equalsIgnoreCase(player.getName()))){
-                                if(player.getInventory().getItemInHand().getId() == 0){
-                                    return;
-                                }
-                                event.setCancelled();
-                                SellItemForm sellItemForm = new SellItemForm(entity1,player.getInventory().getItemInHand());
-                                sellItemForm.display(player);
-                            }
-                        }
-                    }else{
-                        if(event.getAction() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK || event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
-                            event.setCancelled();
-                            DisplayPlayerPanel displayPlayerPanel = new DisplayPlayerPanel(entity1);
-                            displayPlayerPanel.open(player);
-                            chestPanelLinkedHashMap.put(player.getName(),displayPlayerPanel);
-
-                        }
-
-                    }
-
-                }
-
+        SalesEntity entity1 = getEntityByPos(block);
+        if(entity1 != null){
+            if(entity1.finalClose){
+                return;
             }
-        },5);
+            event.setCancelled();
+            Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE, new Runnable() {
+                @Override
+                public void run() {
+                        if(SellItemForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
+                            return;
+                        }
+                        if(AdminForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
+                            return;
+                        }
+                        Player player = event.getPlayer();
+                        if(player.isSneaking()){
+                            if(event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
+                                if(player.isOp() || (entity1.master != null && entity1.master.equalsIgnoreCase(player.getName()))){
+                                    if(player.getInventory().getItemInHand().getId() == 0){
+                                        return;
+                                    }
+
+                                    SellItemForm sellItemForm = new SellItemForm(entity1,player.getInventory().getItemInHand());
+                                    sellItemForm.display(player);
+                                }
+                            }
+                        }else{
+                            if(event.getAction() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK || event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
+                                DisplayPlayerPanel displayPlayerPanel = new DisplayPlayerPanel(entity1);
+                                displayPlayerPanel.open(player);
+                                chestPanelLinkedHashMap.put(player.getName(),displayPlayerPanel);
+
+                            }
+
+                        }
+
+                    }
+
+
+            },5);
+            return;
+        }
 
 //        }
         //使用金币
