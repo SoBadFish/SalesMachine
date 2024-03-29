@@ -62,6 +62,9 @@ public class SalesListener implements Listener {
         Block block = event.getBlock();
         SalesEntity entity1 = getEntityByPos(block);
         if(entity1 != null){
+            if(entity1.finalClose){
+                return;
+            }
             Player player = event.getPlayer();
             if(player.isSneaking()){
                 if(event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
@@ -244,6 +247,7 @@ public class SalesListener implements Listener {
         }
 
     }
+
 
     @EventHandler(ignoreCancelled = true,priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent event){
