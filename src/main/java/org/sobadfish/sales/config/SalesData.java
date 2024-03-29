@@ -49,7 +49,8 @@ public class SalesData {
             try {
                 list.add(NBTIO.read(
                         entry.toString().getBytes(StandardCharsets.UTF_8)));
-            } catch (IOException ignore) {
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
         return list;
@@ -61,7 +62,8 @@ public class SalesData {
         for (CompoundTag compoundTag: list.getAll()){
             try {
                 strings.add(new String(NBTIO.write(compoundTag),StandardCharsets.UTF_8));
-            } catch (IOException ignore) {
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
         }

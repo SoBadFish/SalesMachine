@@ -46,6 +46,8 @@ public class SalesEntity extends EntityHuman {
     public List<AddItemEntityPacket> ipacket = new ArrayList<>();
 
     public List<SaleItem> items = new ArrayList<>();
+
+    public ListTag<CompoundTag> loadItems;
     
     public List<String> clickPlayers = new ArrayList<>();
 
@@ -77,15 +79,16 @@ public class SalesEntity extends EntityHuman {
 //        this.close();
     }
 
-    public SalesEntity(FullChunk chunk, CompoundTag nbt, BlockFace face,String master) {
+    public SalesEntity(FullChunk chunk, CompoundTag nbt, BlockFace face,String master,ListTag<CompoundTag> load) {
         super(chunk, nbt);
         this.blockFace = face;
+        this.loadItems = load;
         setScale(0.9f);
         this.master = master;
         //解包物品
         setImmobile();
-        if(nbt.contains("sale_items")){
-            ListTag<CompoundTag> cl =  nbt.getList("sale_items",CompoundTag.class);
+        if(loadItems != null){
+            ListTag<CompoundTag> cl = loadItems;
             for(CompoundTag compoundTag: cl.getAll()){
                 Item item = NBTIO.getItemHelper(compoundTag.getCompound("item"));
                 int stack = compoundTag.getInt("stack");
@@ -105,7 +108,7 @@ public class SalesEntity extends EntityHuman {
      * */
     public int removeItem(String playerName,SaleItem item,int count){
 //        ListTag<CompoundTag> cl = namedTag.getList("sale_items",CompoundTag.class);
-        ListTag<CompoundTag> cl = salesData.asItemSlots();
+        ListTag<CompoundTag> cl = loadItems;
         int index = 0;
         int cc = 0;
         for(SaleItem saleItem: new ArrayList<>(items)) {
@@ -158,11 +161,9 @@ public class SalesEntity extends EntityHuman {
 
     public void saveData(){
         String location = asLocation(this);
-        System.out.println("保存: "+location);
         if(SalesMainClass.INSTANCE.sqliteHelper.hasData(SalesMainClass.DB_TABLE,"location",location)){
             SqlData data = new SqlData();
             data.put("location",location);
-            System.out.println("写入: "+salesData);
             SalesMainClass.INSTANCE.sqliteHelper.set(SalesMainClass.DB_TABLE,data,salesData);
         }
     }
@@ -170,7 +171,7 @@ public class SalesEntity extends EntityHuman {
 
     public boolean addItem(SaleItem item){
 
-        ListTag<CompoundTag> cl = salesData.asItemSlots();
+        ListTag<CompoundTag> cl = loadItems;
 //        ListTag<CompoundTag> cl = namedTag.getList("sale_items",CompoundTag.class);
         int index = 0;
         for(SaleItem saleItem: items){
@@ -430,7 +431,6 @@ public class SalesEntity extends EntityHuman {
         }
         close();
         String as = asLocation(this);
-        System.out.println("移除: "+as);
         SalesMainClass.INSTANCE.sqliteHelper.remove(SalesMainClass.DB_TABLE,"location",as);
         SalesListener.cacheEntitys.remove(as);
 
@@ -461,7 +461,11 @@ public class SalesEntity extends EntityHuman {
                     .putByteArray("Data", skin.getSkinData().data)
                     .putString("ModelId",skin.getSkinId())
             );
-            SalesEntity sales = new SalesEntity(position.getChunk(),tag,bf,master);
+            ListTag<CompoundTag> tagListTag = new ListTag<>();
+            if(data != null){
+                tagListTag = data.asItemSlots();
+            }
+            SalesEntity sales = new SalesEntity(position.getChunk(),tag,bf,master,tagListTag);
 
             sales.setSkin(skin);
             sales.spawnToAll();
@@ -475,16 +479,22 @@ public class SalesEntity extends EntityHuman {
             if(data == null){
                 String ps = asLocation(position);
                 data = new SalesData();
-                data.saveItemSlots(new ListTag<>());
+                data.saveItemSlots(tagListTag);
                 data.chunkx = pos.getChunkX();
                 data.chunkz = pos.getChunkZ();
                 data.location = ps;
                 data.master = master;
                 data.bf = bf.getName();
-                SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE,data);
+                if(SalesMainClass.INSTANCE.sqliteHelper.hasData(SalesMainClass.DB_TABLE,"location",ps)){
+                    SalesMainClass.INSTANCE.sqliteHelper.set(SalesMainClass.DB_TABLE,"location",ps,data);
+                }else{
+                    SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE,data);
+                }
+
                 SalesListener.cacheEntitys.put(ps,sales);
             }
             sales.salesData = data;
+
 
             return sales;
         }
