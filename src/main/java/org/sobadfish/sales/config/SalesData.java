@@ -8,8 +8,8 @@ import cn.nukkit.nbt.tag.ListTag;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -47,8 +47,7 @@ public class SalesData {
         List<?> js = gson.fromJson(itemjson,List.class);
         for(Object entry : js){
             try {
-                list.add(NBTIO.read(
-                        entry.toString().getBytes(StandardCharsets.UTF_8)));
+                list.add(NBTIO.read(Base64.getDecoder().decode(entry.toString())));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -61,7 +60,7 @@ public class SalesData {
         List<String> strings = new ArrayList<>();
         for (CompoundTag compoundTag: list.getAll()){
             try {
-                strings.add(new String(NBTIO.write(compoundTag),StandardCharsets.UTF_8));
+                strings.add(Base64.getEncoder().encodeToString(NBTIO.write(compoundTag)));
             } catch (IOException e) {
                 e.printStackTrace();
             }
