@@ -134,11 +134,10 @@ public class SalesListener implements Listener {
         if( SalesMainClass.INSTANCE.sqliteHelper != null){
             SalesMainClass.INSTANCE.getLogger().info("chunk: "+event.getChunk().getX()+" -- "+event.getChunk().getZ());
             List<SalesData> salesData = SalesMainClass.INSTANCE.sqliteHelper.getDataByString(SalesMainClass.DB_TABLE,
-                    "chunkx >= ? and chunkx <= ? and chunkz >= ? and chunkz <= ?",new String[]{
-                            (event.getChunk().getX() - 1)+"",
-                            (event.getChunk().getX() + 1)+"",
-                            (event.getChunk().getZ() - 1)+"",
-                            (event.getChunk().getZ() + 1)+"",
+                    "chunkx = ? and chunkz = ?",new String[]{
+                            (event.getChunk().getX())+"",
+
+                            (event.getChunk().getZ())+""
                     }, SalesData.class);
             if(salesData.size() > 0){
                 SalesMainClass.INSTANCE.getLogger().info(salesData.toString());

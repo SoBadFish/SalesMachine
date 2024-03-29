@@ -470,19 +470,17 @@ public class SalesEntity extends EntityHuman {
 
             if(data == null){
                 String ps = asLocation(position);
-                SalesData salesData = new SalesData();
-                salesData.saveItemSlots(new ListTag<>());
-                salesData.chunkx = pos.getChunkX();
-                salesData.chunkz = pos.getChunkZ();
-                salesData.location = ps;
-                salesData.master = master;
-                salesData.bf = bf.getName();
-
-                SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE,salesData);
+                data = new SalesData();
+                data.saveItemSlots(new ListTag<>());
+                data.chunkx = pos.getChunkX();
+                data.chunkz = pos.getChunkZ();
+                data.location = ps;
+                data.master = master;
+                data.bf = bf.getName();
+                SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE,data);
                 SalesListener.cacheEntitys.put(ps,sales);
-            }else{
-                sales.salesData = data;
             }
+            sales.salesData = data;
 
             return sales;
         }
