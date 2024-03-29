@@ -200,6 +200,8 @@ public class SalesListener implements Listener {
     @EventHandler
     public void onFormListener(PlayerFormRespondedEvent event) {
         if (event.wasClosed()) {
+            SellItemForm.DISPLAY_FROM.remove(event.getPlayer().getName());
+            SellItemForm.DISPLAY_FROM.remove(event.getPlayer().getName());
             return;
         }
         if(SellItemForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
