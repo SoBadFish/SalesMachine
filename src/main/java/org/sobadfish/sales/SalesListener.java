@@ -124,7 +124,11 @@ public class SalesListener implements Listener {
             if(item == null){
                 return;
             }
+
             if(item.hasCompoundTag() && item.getNamedTag().contains(MoneyItem.TAG)){
+                if(player.isSneaking()){
+                    return;
+                }
                 double money = item.getNamedTag().getDouble(MoneyItem.TAG) * item.getCount();
                 item.setCount(item.getCount() - item.getCount());
                 player.getInventory().setItemInHand(item);
