@@ -188,7 +188,8 @@ public class SalesEntity extends EntityHuman {
                     saleItem.money = item.money;
                 }
                 saleItem.stack += item.stack;
-
+                salesData.saveItemSlots(cl);
+                saveData();
 
                 return true;
             }
