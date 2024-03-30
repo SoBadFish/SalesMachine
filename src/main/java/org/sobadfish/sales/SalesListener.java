@@ -63,11 +63,23 @@ public class SalesListener implements Listener {
         if(event.getPlayer().isBreakingBlock()){
             return;
         }
+        Player player = event.getPlayer();
+
         if(entity1 != null){
             if(entity1.finalClose){
                 return;
             }
-            event.setCancelled();
+
+            if(!event.getItem().equals(SalesMainClass.CUSTOM_ITEMS.get("ct")) &&
+                    !event.getItem().equals(SalesMainClass.CUSTOM_ITEMS.get("ct_sale"))){
+                event.setCancelled();
+            }else{
+                if(!player.isSneaking()){
+                    return;
+                }
+
+            }
+
             Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE, new Runnable() {
                 @Override
                 public void run() {
@@ -77,7 +89,7 @@ public class SalesListener implements Listener {
                         if(AdminForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
                             return;
                         }
-                        Player player = event.getPlayer();
+
                         if(player.isSneaking()){
                             if(event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
                                 if(player.isOp() || (entity1.master != null && entity1.master.equalsIgnoreCase(player.getName()))){
@@ -109,7 +121,6 @@ public class SalesListener implements Listener {
         if(!event.isCancelled()){
             //使用金币
             Item item = event.getItem();
-            Player player = event.getPlayer();
             if(item == null){
                 return;
             }
@@ -173,6 +184,7 @@ public class SalesListener implements Listener {
                 }, 1);
             }
 
+
         }
 
 
@@ -232,7 +244,7 @@ public class SalesListener implements Listener {
         }
     }
 
-    public SalesEntity getEntityByPos(Position position){
+    public static SalesEntity getEntityByPos(Position position){
         String[] vl = new String[]{
                 SalesEntity.asLocation(position),
                 SalesEntity.asLocation(position.add(0,-1))

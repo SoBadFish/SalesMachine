@@ -388,18 +388,16 @@ public class SalesEntity extends EntityHuman {
 
     public boolean finalClose;
 
+    public boolean isPackage;
+
     @Override
     public void close() {
         Position[] p3 = new Position[]{this,this.add(0,1)};
         for(Position position: p3){
             level.setBlock(position,new BlockAir(),true,true);
-            level.addParticle(new DestroyBlockParticle(position,new BlockStone()));
-//            BlockEntity be = position.level.getBlockEntity(position);
-//            if(be instanceof SalesBlockEntity){
-//                be.namedTag.remove(SalesEntity.ENTITY_TYPE);
-//                level.removeBlockEntity(be);
-//                be.close();
-//            }
+            if(!isPackage){
+                level.addParticle(new DestroyBlockParticle(position,new BlockStone()));
+            }
 
         }
 
@@ -411,6 +409,27 @@ public class SalesEntity extends EntityHuman {
         removePackets();
         super.close();
 
+
+    }
+
+    //打包带走
+    public CompoundTag toPackage(){
+        //直接打包成tag 然后移除
+        CompoundTag tag = salesData.toPackage();
+        finalClose = true;
+        isPackage = true;
+        for(Map.Entry<String,DisplayPlayerPanel> dis: SalesListener.chestPanelLinkedHashMap.entrySet()){
+            if(dis.getValue().sales.equals(this)){
+                dis.getValue().close();
+                SalesListener.chestPanelLinkedHashMap.remove(dis.getKey());
+            }
+
+        }
+        close();
+        String as = asLocation(this);
+        SalesMainClass.INSTANCE.sqliteHelper.remove(SalesMainClass.DB_TABLE,"location",as);
+        SalesListener.cacheEntitys.remove(as);
+        return tag;
 
     }
 

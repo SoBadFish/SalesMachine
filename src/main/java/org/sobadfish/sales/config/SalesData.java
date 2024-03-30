@@ -34,6 +34,36 @@ public class SalesData {
 
     public String itemjson;
 
+    //整体打包
+    public CompoundTag toPackage(){
+        CompoundTag tag = new CompoundTag("sale_data");
+        tag.putInt("chunkx",chunkx);
+        tag.putInt("chunkz",chunkz);
+
+        tag.putString("location",location);
+        tag.putString("bf",bf);
+
+        tag.putString("master",master);
+        tag.putString("itemjson",itemjson);
+
+        return tag;
+    }
+
+    public static SalesData getSaleDataByCompoundTag(CompoundTag tag){
+        SalesData salesData = new SalesData();
+        salesData.chunkx = tag.getInt("chunkx");
+        salesData.chunkz = tag.getInt("chunkz");
+
+        salesData.location = tag.getString("location");
+        salesData.bf = tag.getString("bf");
+
+        salesData.master = tag.getString("master");
+        salesData.itemjson = tag.getString("itemjson");
+
+        return salesData;
+
+    }
+
 
     public Position asPosition(){
         String[] sl = location.split(":");

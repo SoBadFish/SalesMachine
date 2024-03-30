@@ -14,6 +14,12 @@
 		},
 		"sale_money": {
 			"textures":"textures/items/sale_money.png"
+		},
+		"ct_iron": {
+			"textures":"textures/items/ct_iron.png"
+		},
+		"ct_iron_sale": {
+			"textures":"textures/items/ct_iron_sale.png"
 		}
 	}
 }

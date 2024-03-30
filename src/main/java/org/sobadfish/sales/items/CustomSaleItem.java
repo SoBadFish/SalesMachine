@@ -18,7 +18,7 @@ import org.sobadfish.sales.entity.SalesEntity;
 public class CustomSaleItem extends ItemCustom {
 
     public CustomSaleItem() {
-        super("minecraft:sale", "售卖机", "sale_item");
+        super("minecraft:sale", "售货机", "sale_item");
     }
 
 

@@ -2,8 +2,8 @@
 	"format_version":2,
 	"header":
 	{
-		"uuid":"99c2fc21-e978-4159-8d1d-b244ac7e0281",
-		"name":"Sales Item",
+		"uuid":"26f72d3c-79e1-4e68-b2b8-daae9d0b61d8",
+		"name":"Sales Item v2.0",
 		"version":[0,0,8],
 		"min_engine_version":[1,18,0],
 		"description":"售货机物品材质"
@@ -13,7 +13,7 @@
 	{
 		"description":"",
 		"version":[0,0,8],
-		"uuid":"c7a9b35d-aad7-4469-aafb-b89ccdfa5ed9",
+		"uuid":"b01d7e44-b30a-4b49-924c-0ef4b4c49307",
 		"type":"resources"
 	}]
 }

@@ -21,10 +21,7 @@ import org.sobadfish.sales.block.IBarrier;
 import org.sobadfish.sales.config.SalesData;
 import org.sobadfish.sales.db.SqliteHelper;
 import org.sobadfish.sales.entity.SalesEntity;
-import org.sobadfish.sales.items.CustomSaleItem;
-import org.sobadfish.sales.items.CustomSaleMoneyItem;
-import org.sobadfish.sales.items.CustomSaleRemoveItem;
-import org.sobadfish.sales.items.CustomSaleSettingItem;
+import org.sobadfish.sales.items.*;
 import org.sobadfish.sales.panel.lib.AbstractFakeInventory;
 
 import javax.imageio.ImageIO;
@@ -130,20 +127,31 @@ public class SalesMainClass extends PluginBase {
             CustomItemAPI.getInstance().registerCustomItem(1993, org.sobadfish.sales.items.custom.CustomSaleSettingItem.class);
             CustomItemAPI.getInstance().registerCustomItem(1994, org.sobadfish.sales.items.custom.CustomSaleRemoveItem.class);
             CustomItemAPI.getInstance().registerCustomItem(1995, org.sobadfish.sales.items.custom.CustomSaleMoneyItem.class);
+
+            CustomItemAPI.getInstance().registerCustomItem(1996, org.sobadfish.sales.items.custom.CustomCtItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(1997, org.sobadfish.sales.items.custom.CustomCtSaleItem.class);
+
             CUSTOM_ITEMS.put("sale",new org.sobadfish.sales.items.custom.CustomSaleItem());
             CUSTOM_ITEMS.put("setting",new org.sobadfish.sales.items.custom.CustomSaleSettingItem());
             CUSTOM_ITEMS.put("remove",new org.sobadfish.sales.items.custom.CustomSaleRemoveItem());
             CUSTOM_ITEMS.put("money",new org.sobadfish.sales.items.custom.CustomSaleMoneyItem());
+            CUSTOM_ITEMS.put("ct",new org.sobadfish.sales.items.custom.CustomCtItem());
+            CUSTOM_ITEMS.put("ct_sale",new org.sobadfish.sales.items.custom.CustomCtSaleItem());
 
         }else{
             Item.registerCustomItem(CustomSaleItem.class);
             Item.registerCustomItem(CustomSaleSettingItem.class);
             Item.registerCustomItem(CustomSaleRemoveItem.class);
             Item.registerCustomItem(CustomSaleMoneyItem.class);
+
+            Item.registerCustomItem(CustomCtItem.class);
+            Item.registerCustomItem(CustomCtSaleItem.class);
             CUSTOM_ITEMS.put("sale",new CustomSaleItem());
             CUSTOM_ITEMS.put("setting",new CustomSaleSettingItem());
             CUSTOM_ITEMS.put("remove",new CustomSaleRemoveItem());
             CUSTOM_ITEMS.put("money",new CustomSaleMoneyItem());
+            CUSTOM_ITEMS.put("ct",new CustomCtItem());
+            CUSTOM_ITEMS.put("ct_sale",new CustomCtSaleItem());
         }
 
 
