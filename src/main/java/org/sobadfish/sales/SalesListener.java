@@ -60,6 +60,9 @@ public class SalesListener implements Listener {
     public void onPlayerInteractEvent(PlayerInteractEvent event){
         Block block = event.getBlock();
         SalesEntity entity1 = getEntityByPos(block);
+        if(event.getPlayer().isBreakingBlock()){
+            return;
+        }
         if(entity1 != null){
             if(entity1.finalClose){
                 return;
@@ -191,13 +194,9 @@ public class SalesListener implements Listener {
         SalesEntity entity1 = getEntityByPos(event.getBlockAgainst());
         if(entity1 != null){
             event.setCancelled();
+            //更新区块
+            event.getBlock().level.scheduleUpdate(event.getBlock(),10);
         }
-
-
-//            BlockEntity entity = event.getBlockAgainst().level.getBlockEntity(event.getBlockAgainst());
-//            if (entity instanceof SalesEntity.SalesBlockEntity) {
-//
-//            }
 
     }
 

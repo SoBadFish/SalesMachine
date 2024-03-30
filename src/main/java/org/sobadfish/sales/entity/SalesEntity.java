@@ -338,7 +338,8 @@ public class SalesEntity extends EntityHuman {
             if(index % 2 == 0){
                 pos = new Position(this.x + 0.15,this.y + yy,this.z + 0.15);
             }else{
-                pos = new Position(this.x - 0.34,this.y + yy,this.z + 0.15);
+                //一次修改
+                pos = new Position(this.x - 0.15,this.y + yy,this.z + 0.15);
             }
         }else{
             if(right.getZOffset() > 0){
@@ -349,9 +350,9 @@ public class SalesEntity extends EntityHuman {
                 }
             }else {
                 if(index % 2 == 0){
-                    pos = new Position(this.x + 0.15,this.y + yy,this.z +0.22);
+                    pos = new Position(this.x + 0.15,this.y + yy,this.z + 0.15);
                 }else{
-                    pos = new Position(this.x +0.15,this.y + yy,this.z - 0.34);
+                    pos = new Position(this.x +0.15,this.y + yy,this.z - 0.15);
                 }
             }
         }
