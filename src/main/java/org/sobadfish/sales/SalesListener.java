@@ -47,7 +47,6 @@ public class SalesListener implements Listener {
 
     public static LinkedHashMap<String,DisplayPlayerPanel> chestPanelLinkedHashMap = new LinkedHashMap<>();
 
-//    public List<Player> breakLock = new ArrayList<>();
 
     public SalesListener(SalesMainClass salesMainClass){
         this.main = salesMainClass;
@@ -104,45 +103,48 @@ public class SalesListener implements Listener {
             return;
         }
 
-//        }
-        //使用金币
-        Item item = event.getItem();
-        Player player = event.getPlayer();
-        if(item == null){
-            return;
-        }
-        if(item.hasCompoundTag() && item.getNamedTag().contains(MoneyItem.TAG)){
-            double money = item.getNamedTag().getDouble(MoneyItem.TAG) * item.getCount();
-            item.setCount(item.getCount() - item.getCount());
-            player.getInventory().setItemInHand(item);
-            try {
-                Class.forName("me.onebone.economyapi.EconomyAPI");
-                EconomyAPI.getInstance().addMoney(player,money);
-                player.level.addSound(player, Sound.ARMOR_EQUIP_IRON);
-                SalesMainClass.sendMessageToObject("&r获得金币 x &e"+money,player);
-            } catch (ClassNotFoundException e) {
-                SalesMainClass.sendMessageToObject("&c无经济核心!",player);
-
+        if(!event.isCancelled()){
+            //使用金币
+            Item item = event.getItem();
+            Player player = event.getPlayer();
+            if(item == null){
+                return;
             }
+            if(item.hasCompoundTag() && item.getNamedTag().contains(MoneyItem.TAG)){
+                double money = item.getNamedTag().getDouble(MoneyItem.TAG) * item.getCount();
+                item.setCount(item.getCount() - item.getCount());
+                player.getInventory().setItemInHand(item);
+                try {
+                    Class.forName("me.onebone.economyapi.EconomyAPI");
+                    EconomyAPI.getInstance().addMoney(player,money);
+                    player.level.addSound(player, Sound.ARMOR_EQUIP_IRON);
+                    SalesMainClass.sendMessageToObject("&r获得金币 x &e"+money,player);
+                } catch (ClassNotFoundException e) {
+                    SalesMainClass.sendMessageToObject("&c无经济核心!",player);
 
-        }
-        //TODO 自定义物品的放置
-        //TODO 放置物品
-        if(SalesMainClass.LOAD_CUSTOM){
-            if(item.hasCompoundTag() && item.getNamedTag().contains("saleskey")){
-                if(SalesEntity.spawnToAll(block.getSide(event.getFace()),player.getDirection(),player.getName(),null) != null){
-                    if (player.isSurvival() || player.isAdventure()) {
-                        Item item2 = player.getInventory().getItemInHand();
-                        item2.setCount(item2.getCount() - 1);
-                        player.getInventory().setItemInHand(item2);
-
-                    }
-                }else{
-                    SalesMainClass.sendMessageToObject("&c生成失败！ 请保证周围没有其他方块",player);
                 }
 
             }
+            //TODO 自定义物品的放置
+            //TODO 放置物品
+            if(SalesMainClass.LOAD_CUSTOM){
+                if(item.hasCompoundTag() && item.getNamedTag().contains("saleskey")){
+                    if(SalesEntity.spawnToAll(block.getSide(event.getFace()),player.getDirection(),player.getName(),null) != null){
+                        if (player.isSurvival() || player.isAdventure()) {
+                            Item item2 = player.getInventory().getItemInHand();
+                            item2.setCount(item2.getCount() - 1);
+                            player.getInventory().setItemInHand(item2);
+
+                        }
+                    }else{
+                        SalesMainClass.sendMessageToObject("&c生成失败！ 请保证周围没有其他方块",player);
+                    }
+
+                }
+            }
+
         }
+//        }
 
 
 //        }
@@ -257,11 +259,6 @@ public class SalesListener implements Listener {
                 entity1.toClose();
 
             }
-//            BlockEntity entity = old.level.getBlockEntity(old);
-//            if(entity instanceof SalesEntity.SalesBlockEntity){
-//                SalesEntity entity1 = ((SalesEntity.SalesBlockEntity) entity).sales;
-
-//            }
         }
 
     }

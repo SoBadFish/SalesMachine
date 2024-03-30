@@ -163,23 +163,22 @@ public class PanelItem extends BasePlayPanelItemInstance{
 
         Item i =  showItem.saleItem.clone();
         List<String> lore = new ArrayList<>(Arrays.asList(showItem.saleItem.getLore()));
-        int length = 25;
-        lore.add(" ");
-
+        int length = 0;
+        List<String> vl = new ArrayList<>();
         if(showItem.tag.contains("sales_exchange") && showItem.tag.getBoolean("sales_exchange",false)){
-            lore.add(format(Utils.getCentontString("&r&e▶&7 回收价: &r金币 &7* &e"+(showItem.money != 0?showItem.money:"免费"),length)));
+            vl.add(format("&r&7 &r金币 &7* &e"+(showItem.money != 0?showItem.money:"免费")));
 //            i = new MoneyItem(showItem.money).getItem();
 //            lore.add(format(Utils.getCentontString("&r&e▶&7 回收价: &e"+(showItem.getItemName()+" &r*&a "+showItem.saleItem.getCount()),length)));
         }else{
-            lore.add(format(Utils.getCentontString("&r&e▶&7 库存: &a"+(getStockStr()),length)));
-            lore.add(format(Utils.getCentontString("&r&e▶&7 价格: &e"+(showItem.money != 0?showItem.money:"免费"),length)));
+            vl.add(format("&r&7 库存: &a"+(getStockStr())));
+            vl.add(format("&r&7 价格: &e"+(showItem.money != 0?showItem.money:"免费")));
         }
 //
         if(showItem.tag.contains("limitCount") ){
             int limit = showItem.tag.getInt("limitCount");
             if(limit > 0){
                 int upsLimit = getUserLimitCount(info);
-                lore.add(format(Utils.getCentontString("&r&e▶&7 限购: &e"+upsLimit+" &7/&7 "+limit,length)));
+                vl.add(format("&r&7 限购: &e"+upsLimit+" &7/&7 "+limit));
                 if(!showItem.tag.contains("limit")){
                     CompoundTag limitList = showItem.tag.getCompound("limit");
 
@@ -189,14 +188,24 @@ public class PanelItem extends BasePlayPanelItemInstance{
                             long lastByTime = user.getLong("buyTime");
                             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH");
                             String date = format.format(lastByTime);//注意这里返回的是string类型
-                            lore.add(format(Utils.getCentontString("&r&e▶&7 首次购买: &e"+date,length)));
+                            vl.add(format("&r&7 首次购买: &e"+date));
                         }
                     }
                 }
             }
         }
-        lore.add("  ");
-        lore.add(format(Utils.getCentontString("&r&e▶&7 双击购买",length)));
+        //找出最长的
+        for (String mvl : vl){
+            int l = mvl.length();
+            if(l > length){
+                length = l;
+            }
+        }
+        for(String mvl : vl){
+            lore.add(Utils.getCentontString(mvl,length));
+        }
+
+        lore.add(format(Utils.getCentontString("&r&e▶&7 双击购买 &e◀",length)));
         i.setLore(lore.toArray(new String[0]));
         i.setNamedTag(i.getNamedTag().putInt("index",index));
         return i;

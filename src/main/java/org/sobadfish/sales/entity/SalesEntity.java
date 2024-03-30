@@ -343,7 +343,7 @@ public class SalesEntity extends EntityHuman {
         }else{
             if(right.getZOffset() > 0){
                 if(index % 2 == 0){
-                    pos = new Position(this.x + 0.15,this.y + yy,this.z - 0.22);
+                    pos = new Position(this.x + 0.15,this.y + yy,this.z - 0.34);
                 }else{
                     pos = new Position(this.x + 0.15,this.y + yy,this.z + 0.15);
                 }
@@ -351,7 +351,7 @@ public class SalesEntity extends EntityHuman {
                 if(index % 2 == 0){
                     pos = new Position(this.x + 0.15,this.y + yy,this.z +0.22);
                 }else{
-                    pos = new Position(this.x +0.15,this.y + yy,this.z - 0.1 );
+                    pos = new Position(this.x +0.15,this.y + yy,this.z - 0.34);
                 }
             }
         }

@@ -43,10 +43,15 @@ public class AdminForm {
 
         boolean b = sales.tag.contains("noreduce") && sales.tag.getBoolean("noreduce");
         custom.addElement(new ElementToggle("是否不消耗库存",b));
-        custom.addElement(new ElementInput("玩家限购次数","若设置-1则不限制玩家购买次数","-1"));
-        custom.addElement(new ElementInput("刷新时间(h)","若设置-1则不刷新","-1"));
+
+        String dbuy = sales.tag.contains("limitCount")?sales.tag.getInt("limitCount")+"":"-1";
+        String dre = sales.tag.contains("limitTime")?sales.tag.getInt("limitTime")+"":"-1";
+        String dm = sales.tag.contains("money")?sales.tag.getDouble("money")+"":"0";
+
+        custom.addElement(new ElementInput("玩家限购次数","若设置-1则不限制玩家购买次数",dbuy));
+        custom.addElement(new ElementInput("刷新时间(h)","若设置-1则不刷新",dre));
         custom.addElement(new ElementToggle("是否为收购", sales.tag.contains("sales_exchange") && sales.tag.getBoolean("sales_exchange")));
-        custom.addElement(new ElementInput("商品价格","商品的价格 出售/回收","0"));
+        custom.addElement(new ElementInput("商品价格","商品的价格 出售/回收",dm));
         custom.addElement(new ElementToggle("移除"));
 
 
