@@ -153,6 +153,9 @@ public class SalesMainClass extends PluginBase {
             CUSTOM_ITEMS.put("ct",new CustomCtItem());
             CUSTOM_ITEMS.put("ct_sale",new CustomCtSaleItem());
         }
+        Item.removeCreativeItem(CUSTOM_ITEMS.get("ct_sale"));
+
+
 
 
     }
