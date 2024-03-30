@@ -226,25 +226,25 @@ public class SalesListener implements Listener {
         }
         if(SellItemForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
             SellItemForm form = SellItemForm.DISPLAY_FROM.get(event.getPlayer().getName());
-            if(form.getId() == event.getFormID()){
+          //  if(form.getId() == event.getFormID()){
                 if(event.getResponse() instanceof FormResponseCustom){
                     form.onListener(event.getPlayer(), (FormResponseCustom) event.getResponse());
 
                 }
                 SellItemForm.DISPLAY_FROM.remove(event.getPlayer().getName());
-            }
-            SellItemForm.DISPLAY_FROM.remove(event.getPlayer().getName());
+           // }
+            //SellItemForm.DISPLAY_FROM.remove(event.getPlayer().getName());
         }
         if(AdminForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
             AdminForm form = AdminForm.DISPLAY_FROM.get(event.getPlayer().getName());
-            if(form.getId() == event.getFormID()){
+          //  if(form.getId() == event.getFormID()){
                 if(event.getResponse() instanceof FormResponseCustom){
                     form.onListener(event.getPlayer(), (FormResponseCustom) event.getResponse());
 
                 }
                 AdminForm.DISPLAY_FROM.remove(event.getPlayer().getName());
-            }
-            AdminForm.DISPLAY_FROM.remove(event.getPlayer().getName());
+          //  }
+           // AdminForm.DISPLAY_FROM.remove(event.getPlayer().getName());
         }
     }
 
