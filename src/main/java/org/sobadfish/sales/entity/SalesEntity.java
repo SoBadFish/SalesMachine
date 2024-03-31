@@ -404,8 +404,11 @@ public class SalesEntity extends EntityHuman {
 
 //        //重新写入
 //        salesData.saveItemSlots(cl);
-//
-//        saveData();
+      //  saveData();
+        if(!finalClose){
+            salesData.saveItemSlots(loadItems);
+            saveData();
+        }
 
         removePackets();
         super.close();
@@ -416,6 +419,7 @@ public class SalesEntity extends EntityHuman {
     //打包带走
     public CompoundTag toPackage(){
         //直接打包成tag 然后移除
+        salesData.saveItemSlots(loadItems);
         CompoundTag tag = salesData.toPackage();
         finalClose = true;
         isPackage = true;
