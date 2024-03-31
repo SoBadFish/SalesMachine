@@ -44,29 +44,6 @@ public class CustomCtSaleItem extends ItemCustom {
 
     @Override
     public boolean onActivate(Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        //编写放置的逻辑
-        if(player.isSneaking()){
-            return false;
-        }
-        if (hasCompoundTag()){
-            CompoundTag tag = getNamedTag();
-            if(tag.contains("sale_data")){
-                Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE, () -> {
-                    CompoundTag data = tag.getCompound("sale_data");
-                    SalesData salesData = SalesData.getSaleDataByCompoundTag(data);
-                    salesData.bf = player.getDirection().getName();
-                    salesData.location = SalesEntity.asLocation(block);
-                    SalesEntity entity = SalesEntity.spawnToAll(salesData.asPosition(),
-                            BlockFace.valueOf(salesData.bf.toUpperCase()), salesData.master, salesData,
-                            true);
-                    SalesListener.cacheEntitys.put(salesData.location, entity);
-                    SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE, salesData);
-                },1);
-                player.getInventory().setItemInHand(SalesMainClass.CUSTOM_ITEMS.get("ct"));
-            }
-        }
-
-
-        return false;
+        return ItemAction.onSaleActivate(this,level,player,block,target,face,fx,fy,fz);
     }
 }

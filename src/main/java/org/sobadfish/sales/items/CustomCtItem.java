@@ -42,25 +42,6 @@ public class CustomCtItem extends ItemCustom {
 
     @Override
     public boolean onActivate(Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        //编写拿取的逻辑
-        if(player.isSneaking()){
-            return false;
-        }
-        SalesEntity salesEntity = SalesListener.getEntityByPos(target);
-        if(salesEntity != null){
-            if(player.isOp() || salesEntity.master.equalsIgnoreCase(player.getName())){
-                Item sitem = SalesMainClass.CUSTOM_ITEMS.get("ct_sale");
-                sitem.setCount(1);
-                sitem.addEnchantment(Enchantment.getEnchantment(0));
-                CompoundTag compoundTag = sitem.getNamedTag();
-                compoundTag.putCompound(salesEntity.toPackage());
-                sitem.setCompoundTag(compoundTag);
-                player.getInventory().setItemInHand(sitem);
-            }
-        }
-
-
-
-        return false;
+       return ItemAction.onCtActivate(level,player,block,target,face,fx,fy,fz);
     }
 }

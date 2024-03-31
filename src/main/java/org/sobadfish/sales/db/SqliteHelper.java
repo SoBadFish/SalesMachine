@@ -2,9 +2,7 @@ package org.sobadfish.sales.db;
 
 import java.lang.reflect.Field;
 import java.sql.*;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Sobadfish
@@ -167,6 +165,38 @@ public class SqliteHelper {
         return this;
     }
 
+    public void addColumns(String table,String columns,Field type){
+        try {
+            if (statement != null) {
+                statement.execute("alter table " + table + " add column '"+columns+"' "+classTypeAsSql(type)+"");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+
+    /**
+     * 获取字段名称
+     * */
+    public List<String> getColumns(String table){
+        List<String> strings = new ArrayList<>();
+        if(statement != null) {
+            try{
+                ResultSet resultSet = statement.executeQuery("pragma  table_info("+table+")");
+                while (resultSet.next()){
+                    strings.add(resultSet.getString("name"));
+                }
+                resultSet.close();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+        }
+        return strings;
+    }
+
     /**
      * 更新数据
      * */
@@ -323,6 +353,18 @@ public class SqliteHelper {
         return datas;
     }
 
+    private String classTypeAsSql(Field type){
+        if(type.getType() == int.class ){
+            return "integer";
+        }
+        if(type.getType() == float.class || type.getType() == double.class){
+            return type.getType().getName();
+        }else{
+            return "text";
+        }
+
+    }
+
     private <T> T explainClass(ResultSet cursor, Class<?> tc, T t){
         try {
             ResultSetMetaData rsmd = cursor.getMetaData();
@@ -382,6 +424,8 @@ public class SqliteHelper {
 
         }
 
+
+
         public static DBTable asDbTable(Class<?> t){
             Field[] fields = t.getFields();
             LinkedHashMap<String,String> stringStringLinkedHashMap = new LinkedHashMap<>();
@@ -405,8 +449,10 @@ public class SqliteHelper {
                 }
                 if(field.getType() == float.class || field.getType() == double.class){
                     stringStringLinkedHashMap.put(field.getName().toLowerCase(),field.getType().getName());
+                }else if(field.getType() == int.class){
+                    stringStringLinkedHashMap.put(field.getName().toLowerCase(),"integer");
                 }else{
-                    stringStringLinkedHashMap.put(field.getName().toLowerCase(),"varchar(20)");
+                    stringStringLinkedHashMap.put(field.getName().toLowerCase(),"text");
                 }
             }
             return new DBTable(stringStringLinkedHashMap);

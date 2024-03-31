@@ -13,6 +13,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Config;
+import cn.nukkit.utils.Logger;
 import cn.nukkit.utils.TextFormat;
 import cn.nukkit.utils.Utils;
 import org.sobadfish.sales.block.BarrierBlock;
@@ -28,6 +29,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -77,6 +79,7 @@ public class SalesMainClass extends PluginBase {
         }
 
         checkServer();
+
         saveResource("data.db",false);
         try {
             sqliteHelper = new SqliteHelper(getDataFolder()+"/data.db");
@@ -90,6 +93,7 @@ public class SalesMainClass extends PluginBase {
             }
         }
 
+        chunkDb();
 
         initSkin();
         initItem();
@@ -113,6 +117,23 @@ public class SalesMainClass extends PluginBase {
 
 
         sendMessageToConsole("&a加载完成!");
+
+    }
+
+    private void chunkDb(){
+        //检查DB
+        if(sqliteHelper != null){
+            List<String> columns = sqliteHelper.getColumns(DB_TABLE);
+            Field[] fd = SalesData.class.getFields();
+            for (Field field : fd){
+                if(!columns.contains(field.getName())){
+                    //新增...
+                    sqliteHelper.addColumns(DB_TABLE,field.getName().toLowerCase(),field);
+                    getLogger().info("检测到新字段 "+field.getName()+" 正在写入数据库...");
+
+                }
+            }
+        }
 
     }
 

@@ -9,6 +9,7 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.entity.data.EntityMetadata;
 import cn.nukkit.entity.data.Skin;
+import cn.nukkit.entity.item.EntityArmorStand;
 import cn.nukkit.inventory.InventoryType;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Position;
@@ -18,6 +19,7 @@ import cn.nukkit.math.BlockFace;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
+import cn.nukkit.network.protocol.AddEntityPacket;
 import cn.nukkit.network.protocol.AddItemEntityPacket;
 import cn.nukkit.network.protocol.DataPacket;
 import cn.nukkit.network.protocol.RemoveEntityPacket;
@@ -314,7 +316,7 @@ public class SalesEntity extends EntityHuman {
                 long eid = (long) ((int) this.x + new Random().nextDouble() + (int) this.z + new Random().nextDouble()) + new Random().nextLong();
                 ipacket.add(i,getEntityTag(asPosition(i),items.get(i).saleItem,eid));
             }
-            for(DataPacket dataPacket: ipacket){
+            for(AddItemEntityPacket dataPacket: ipacket){
                 Server.broadcastPacket(Server.getInstance().getOnlinePlayers().values(),dataPacket);
             }
         }
@@ -363,7 +365,8 @@ public class SalesEntity extends EntityHuman {
 
 
 
-    private AddItemEntityPacket getEntityTag(Position position, Item item,long eid){
+    private AddItemEntityPacket getEntityTag(Position position, Item item, long eid){
+
         Item ic = item.clone();
         ic.setCount(1);
         AddItemEntityPacket pk = new AddItemEntityPacket();
@@ -382,7 +385,8 @@ public class SalesEntity extends EntityHuman {
                 .putBoolean(Entity.DATA_FLAG_IMMOBILE,true)
                 .putLong(Entity.DATA_LEAD_HOLDER_EID, -1)
                 .putFloat(Entity.DATA_SCALE, 0.5f)
-                .putBoolean(Entity.DATA_FLAG_GRAVITY,false);
+                .putBoolean(Entity.DATA_FLAG_GRAVITY,false)
+                .putInt(79,0);
 
         return pk;
     }
@@ -432,9 +436,22 @@ public class SalesEntity extends EntityHuman {
         }
         close();
         String as = asLocation(this);
-        SalesMainClass.INSTANCE.sqliteHelper.remove(SalesMainClass.DB_TABLE,"location",as);
+        //后台写入
+        Server.getInstance().getScheduler().scheduleTask(SalesMainClass.INSTANCE, new Runnable() {
+            @Override
+            public void run() {
+                SalesMainClass.INSTANCE.sqliteHelper.remove(SalesMainClass.DB_TABLE,"location",as);
+            }
+        });
+
         SalesListener.cacheEntitys.remove(as);
         return tag;
+
+    }
+
+    public void setCustomName(String name){
+        salesData.customname = name;
+        saveData();
 
     }
 
@@ -489,6 +506,7 @@ public class SalesEntity extends EntityHuman {
             ListTag<CompoundTag> tagListTag = new ListTag<>();
             if(data != null){
                 tagListTag = data.asItemSlots();
+
             }
             SalesEntity sales = new SalesEntity(position.getChunk(),tag,bf,master,tagListTag);
 
@@ -525,114 +543,6 @@ public class SalesEntity extends EntityHuman {
         }
         return null;
     }
-
-//    public static class SalesBlockEntity extends BlockEntity{
-//
-//        public static final String BLOCK_ENTITY_TYPE = "SalesBlock";
-//
-//
-//        public SalesEntity sales;
-//
-//        public SalesBlockEntity(FullChunk chunk, CompoundTag nbt) {
-//            super(chunk, nbt);
-//            if(this.closed){
-//                return;
-//            }
-//
-//            if(namedTag.contains(BLOCK_ENTITY_TYPE)){
-//                namedTag.remove(SalesEntity.ENTITY_TYPE);
-//                namedTag.remove(BLOCK_ENTITY_TYPE);
-//                this.level.removeBlockEntity(this);
-//                this.close();
-//
-//                return;
-//            }
-//            //将同一个Y轴的BlockEntity干掉
-//            BlockEntity by1 = this.level.getBlockEntity(this.add(0,1));
-//            if(by1 instanceof SalesBlockEntity){
-//                by1.namedTag.remove(SalesEntity.ENTITY_TYPE);
-//
-//                this.level.removeBlockEntity(by1);
-//                by1.close();
-//                return;
-//            }
-//            BlockEntity by2 = this.level.getBlockEntity(this.add(0,-1));
-//            if(by2 instanceof SalesBlockEntity){
-//                by2.namedTag.remove(SalesEntity.ENTITY_TYPE);
-//                this.level.removeBlockEntity(by2);
-//                by2.close();
-//                return;
-//            }
-//
-//            //检测周围如果有生成的实体 那么跳过
-//            for(Entity entity: getChunk().getEntities().values()){
-//                if(entity instanceof SalesEntity){
-//                    if(entity.distance(this) < 0.8){
-//                        ((SalesEntity) entity).toClose();
-//                    }
-//                }
-//            }
-//            if(sales == null){
-//                if(nbt.contains(SalesEntity.ENTITY_TYPE)){
-//                    CompoundTag ct = nbt.getCompound(SalesEntity.ENTITY_TYPE);
-//                    BlockFace bf = BlockFace.fromIndex(nbt.getByte("face"));
-//                    Skin skin = SalesMainClass.ENTITY_SKIN.get(bf);
-//                    ct.putCompound("Skin",new CompoundTag()
-//                            .putByteArray("Data", skin.getSkinData().data)
-//                            .putString("ModelId",skin.getSkinId())
-//                    );
-//                    String master = null;
-//                    if(ct.contains(SALE_MASTER_TAG)){
-//                        master = ct.getString(SALE_MASTER_TAG);
-//                    }
-//                    SalesEntity se = new SalesEntity(chunk,ct,bf,master);
-//                    se.setSkin(skin);
-//                    se.spawnToAll();
-//                    this.level.setBlock(this,Block.get(SalesMainClass.INSTANCE.iBarrier.getBid()));
-//                    this.level.setBlock(this.add(0,1),Block.get(SalesMainClass.INSTANCE.iBarrier.getBid()));
-//                    this.sales = se;
-//                }else{
-//                    BlockEntity be = this.level.getBlockEntity(this);
-//                    if(be != null){
-//                        this.level.removeBlockEntity(be);
-//                        be.close();
-//                    }
-//
-//                }
-//            }
-//
-//
-//        }
-//
-//
-//        public SalesBlockEntity(FullChunk chunk, CompoundTag nbt,SalesEntity sales) {
-//            super(chunk, nbt);
-//            this.sales = sales;
-//
-//
-//        }
-//
-//
-//        @Override
-//        public void close() {
-//            Position[] p3 = new Position[]{this,this.add(0,1)};
-//            for(Position position: p3) {
-//                Block bk = level.getBlock(position);
-//                if(bk != null && bk.getId() == SalesMainClass.INSTANCE.iBarrier.getBid() ){
-//                    level.setBlock(position, new BlockAir(), true, true);
-//                }
-//
-//            }
-//
-//            super.close();
-//        }
-//
-//        @Override
-//        public boolean isBlockEntityValid() {
-//            return true;
-//        }
-//    }
-
 
 
 }

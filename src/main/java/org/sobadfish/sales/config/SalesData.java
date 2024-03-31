@@ -31,6 +31,8 @@ public class SalesData {
 
     public String master;
 
+    public String customname;
+
 
     public String itemjson;
 
@@ -42,6 +44,10 @@ public class SalesData {
 
         tag.putString("location",location);
         tag.putString("bf",bf);
+        if(customname != null){
+            tag.putString("customname",customname);
+        }
+
 
         tag.putString("master",master);
         tag.putString("itemjson",itemjson);
@@ -56,6 +62,10 @@ public class SalesData {
 
         salesData.location = tag.getString("location");
         salesData.bf = tag.getString("bf");
+        if(tag.contains("customname")){
+            salesData.customname = tag.getString("customname");
+        }
+
 
         salesData.master = tag.getString("master");
         salesData.itemjson = tag.getString("itemjson");
@@ -109,6 +119,7 @@ public class SalesData {
                 ", location='" + location + '\'' +
                 ", bf='" + bf + '\'' +
                 ", master='" + master + '\'' +
+                ", customname='" + customname + '\'' +
                 ", itemjson='" + itemjson + '\'' +
                 '}';
     }

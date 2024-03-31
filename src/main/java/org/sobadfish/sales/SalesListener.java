@@ -21,9 +21,11 @@ import cn.nukkit.inventory.Inventory;
 import cn.nukkit.inventory.transaction.InventoryTransaction;
 import cn.nukkit.inventory.transaction.action.InventoryAction;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemNameTag;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.Sound;
 import cn.nukkit.math.BlockFace;
+import cn.nukkit.utils.TextFormat;
 import me.onebone.economyapi.EconomyAPI;
 import org.sobadfish.sales.config.SalesData;
 import org.sobadfish.sales.entity.SalesEntity;
@@ -69,20 +71,36 @@ public class SalesListener implements Listener {
             if(entity1.finalClose){
                 return;
             }
+            Item ei = event.getItem();
 
-            if(!event.getItem().equals(SalesMainClass.CUSTOM_ITEMS.get("ct")) &&
-                    !event.getItem().equals(SalesMainClass.CUSTOM_ITEMS.get("ct_sale"))){
+            if(!ei.equals(SalesMainClass.CUSTOM_ITEMS.get("ct")) &&
+                    !ei.equals(SalesMainClass.CUSTOM_ITEMS.get("ct_sale"))){
                 event.setCancelled();
             }else{
                 if(!player.isSneaking()){
                     return;
                 }
+            }
+            if(ei instanceof ItemNameTag){
+                event.setCancelled();
+                if(ei.hasCustomName()){
+                    String name = ei.getCustomName();
+                    entity1.setCustomName(TextFormat.colorize('&',name));
+                    SalesMainClass.sendMessageToObject("&a使用成功 售货机已命名为 :&r"+name,player);
+                    Item cll = ei.clone();
+                    cll.setCount(1);
+                    player.getInventory().removeItem(cll);
+                }
 
+                return;
             }
 
             Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE, new Runnable() {
                 @Override
                 public void run() {
+                    if(entity1.finalClose){
+                        return;
+                    }
                         /*if(SellItemForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
                             return;
                         }
@@ -180,10 +198,14 @@ public class SalesListener implements Listener {
             if(!salesData.isEmpty()){
                 Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE, () -> {
                     for(SalesData data : salesData){
-                        if(!cacheEntitys.containsKey(data.location)){
-                            SalesEntity entity = SalesEntity.spawnToAll(data.asPosition(), BlockFace.valueOf(data.bf.toUpperCase()),data.master,data, true);
-                            cacheEntitys.put(data.location,entity);
+                        Position position = data.asPosition();
+                        if(position.getLevel().getFolderName().equalsIgnoreCase(event.getLevel().getFolderName())){
+                            if(!cacheEntitys.containsKey(data.location)){
+                                SalesEntity entity = SalesEntity.spawnToAll(data.asPosition(), BlockFace.valueOf(data.bf.toUpperCase()),data.master,data, true);
+                                cacheEntitys.put(data.location,entity);
+                            }
                         }
+
                     }
                 }, 1);
             }
@@ -200,6 +222,11 @@ public class SalesListener implements Listener {
         //卸载区间下的所有 实体
         for(Entity e: event.getChunk().getEntities().values()){
             if(e instanceof SalesEntity){
+                //顺便移除缓存
+                SalesData salesData = ((SalesEntity) e).salesData;
+                if(salesData != null){
+                    cacheEntitys.remove(salesData.location);
+                }
                 e.close();
             }
         }

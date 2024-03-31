@@ -59,8 +59,12 @@ public class DisplayPlayerPanel implements InventoryHolder {
             items.put(i - 1,new AdminSettingItem(sales));
         }
 
+        String nm = sales.master+"的 售货机";
+        if(sales.salesData.customname != null){
+            nm = sales.salesData.customname;
+        }
 
-        displayPlayer(player,items,"售货机");
+        displayPlayer(player,items,nm);
     }
 
     public void close(){
