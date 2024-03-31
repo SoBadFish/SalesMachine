@@ -164,9 +164,11 @@ public class PanelItem extends BasePlayPanelItemInstance{
         Item i =  showItem.saleItem.clone();
         List<String> lore = new ArrayList<>(Arrays.asList(showItem.saleItem.getLore()));
         int length = 0;
+        boolean v = false;
         List<String> vl = new ArrayList<>();
         if(showItem.tag.contains("sales_exchange") && showItem.tag.getBoolean("sales_exchange",false)){
             vl.add(format("&r&7 &r金币 &7* &e"+(showItem.money != 0?showItem.money:"免费")));
+            v = true;
 //            i = new MoneyItem(showItem.money).getItem();
 //            lore.add(format(Utils.getCentontString("&r&e▶&7 回收价: &e"+(showItem.getItemName()+" &r*&a "+showItem.saleItem.getCount()),length)));
         }else{
@@ -205,7 +207,12 @@ public class PanelItem extends BasePlayPanelItemInstance{
             lore.add(Utils.getCentontString(mvl,length));
         }
 
-        lore.add(format(Utils.getCentontString("&r&e▶&7 双击购买 &e◀",length)));
+        if(v){
+            lore.add(format(Utils.getCentontString("&r&e▶&7 双击出售 &e◀",length)));
+        }else{
+            lore.add(format(Utils.getCentontString("&r&e▶&7 双击购买 &e◀",length)));
+        }
+        //lore.add(format(Utils.getCentontString("&r&e▶&7 双击购买 &e◀",length)));
         i.setLore(lore.toArray(new String[0]));
         i.setNamedTag(i.getNamedTag().putInt("index",index));
         return i;
