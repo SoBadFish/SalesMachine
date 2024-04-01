@@ -240,9 +240,12 @@ public class SalesListener implements Listener {
                 Item item = event.getItem();
                 if(salesEntity.hasItem(item)){
                     salesEntity.addItem(item);
+                }else{
+                    event.setCancelled();
                 }
+                inventoryHolder.clearAll();
             }
-            inventoryHolder.clearAll();
+
         }
 
     }
