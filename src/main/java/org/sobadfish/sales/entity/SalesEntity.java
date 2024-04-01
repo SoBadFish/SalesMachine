@@ -31,11 +31,9 @@ import org.sobadfish.sales.config.SalesData;
 import org.sobadfish.sales.db.SqlData;
 import org.sobadfish.sales.items.SaleItem;
 import org.sobadfish.sales.panel.DisplayPlayerPanel;
+import org.sobadfish.sales.panel.lib.ChestPanel;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @author Sobadfish
@@ -53,7 +51,7 @@ public class SalesEntity extends EntityHuman{
 
     public ListTag<CompoundTag> loadItems;
     
-    public List<String> clickPlayers = new ArrayList<>();
+    public Map<String, ChestPanel> clickPlayers = new LinkedHashMap<>();
 
     public SalesData salesData;
 
@@ -208,6 +206,8 @@ public class SalesEntity extends EntityHuman{
                 saleItem.stack += item.stack;
 //                salesData.saveItemSlots(cl);
 //                saveData();
+                updateInventory();
+
 
                 return true;
             }
@@ -232,11 +232,18 @@ public class SalesEntity extends EntityHuman{
         items.add(item);
 
         removePackets();
+        updateInventory();
         //重新写入
 //        salesData.saveItemSlots(cl);
 //
 //        saveData();
         return true;
+    }
+
+    public void updateInventory(){
+        for (ChestPanel chestPanel: clickPlayers.values()){
+            chestPanel.update();
+        }
     }
 
 
@@ -251,19 +258,12 @@ public class SalesEntity extends EntityHuman{
     
     public void openIt(Player who){
         animLoad = 1;
-        if(who != null){
-            if(!clickPlayers.contains(who.getName())){
-                clickPlayers.add(who.getName());
-            }
 
-        }
     }
 
     public void closeIt(Player who){
         animLoad = 2;
-        if(who != null){
-            clickPlayers.remove(who.getName());
-        }
+
     }
 
 

@@ -82,6 +82,7 @@ public class DisplayPlayerPanel implements InventoryHolder {
         panel.id = ++Entity.entityCount;
         inventory = panel;
 
+
         panel.getPlayer().addWindow(panel);
 
 

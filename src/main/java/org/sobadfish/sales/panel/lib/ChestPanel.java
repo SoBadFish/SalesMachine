@@ -12,6 +12,7 @@ import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.panel.button.BasePlayPanelItemInstance;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,6 +28,8 @@ public class ChestPanel extends ChestFakeInventory implements InventoryHolder {
     private final Player player;
 
     public int clickSolt;
+
+
 
     private Map<Integer, BasePlayPanelItemInstance> panel = new LinkedHashMap<>();
 
@@ -84,6 +87,12 @@ public class ChestPanel extends ChestFakeInventory implements InventoryHolder {
         pk.type = InventoryType.DOUBLE_CHEST.getNetworkType();
         who.dataPacket(pk);
         sales.openIt(who);
+        if(!sales.clickPlayers.containsKey(who.getName())){
+            sales.clickPlayers.put(who.getName(),this);
+        }
+
+
+
     }
 
     @Override
@@ -93,11 +102,11 @@ public class ChestPanel extends ChestFakeInventory implements InventoryHolder {
         who.dataPacket(pk);
         super.onClose(who);
         //关闭
+
         if(sales.clickPlayers.size() <= 1){
             sales.closeIt(who);
-        }else{
-            sales.clickPlayers.remove(who.getName());
         }
+        sales.clickPlayers.remove(who.getName());
         SalesListener.chestPanelLinkedHashMap.remove(who.getName());
 
     }
