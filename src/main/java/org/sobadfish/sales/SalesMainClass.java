@@ -70,10 +70,20 @@ public class SalesMainClass extends PluginBase {
         INSTANCE = this;
         sendMessageToConsole("&a正在加载售卖机插件");
         //检查是否支持自定义物品
+        boolean load = true;
         try{
             Class.forName("cn.nukkit.item.customitem.CustomItem");
         }catch (Exception ignore){
-            sendMessageToConsole("&c当前核心不支持自定义物品！");
+            try {
+                Class.forName("cn.lanink.customitemapi.CustomItemAPI");
+
+            }catch (Exception ignored){
+                load = false;
+            }
+
+        }
+        if(!load){
+            sendMessageToConsole("&c当前核心不支持自定义物品！ 推荐配合CustomItemAPI使用！");
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
