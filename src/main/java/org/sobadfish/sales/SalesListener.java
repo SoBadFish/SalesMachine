@@ -85,9 +85,7 @@ public class SalesListener implements Listener {
                     return;
                 }
             }
-            if(player.getHorizontalFacing() != entity1.blockFace){
-                return;
-            }
+
             if(ei instanceof ItemNameTag){
                 event.setCancelled();
                 if(ei.hasCustomName()){
@@ -124,6 +122,9 @@ public class SalesListener implements Listener {
 
 
                             if(event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
+                                if(player.getHorizontalFacing() != entity1.blockFace){
+                                    return;
+                                }
                                 if(player.isOp() || (entity1.master != null && entity1.master.equalsIgnoreCase(player.getName()))){
                                     if(player.getInventory().getItemInHand().getId() == 0){
                                         return;
