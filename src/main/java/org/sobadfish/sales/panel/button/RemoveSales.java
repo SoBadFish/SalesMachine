@@ -44,7 +44,7 @@ public class RemoveSales extends BasePlayPanelItemInstance{
     public Item getPanelItem(Player info, int index) {
         Item tools = getItem();
         tools.setCustomName(TextFormat.colorize('&',"&r&c&l拆除"));
-        tools.setLore(TextFormat.colorize('&',"&r&7&l\n拆除此售卖机"));
+        tools.setLore(TextFormat.colorize('&',"&r&7&l\n拆除此售货机"));
         tools.setNamedTag(tools.getNamedTag().putInt("index",index));
         return tools;
 

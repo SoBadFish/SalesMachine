@@ -67,9 +67,9 @@ public class PanelSettingItem extends BasePlayPanelItemInstance{
         if(showItem.tag.contains("limitTime") ){
             time = (int) (showItem.tag.getLong("limitTime") / (60 * 60 * 1000));
         }
-        lore.add(format(Utils.getCentontString("&r&e▶&7 库存: &a"+(showItem.stack),length)));
-        lore.add(format(Utils.getCentontString("&r&e▶&7 限购数量: &a"+limit,length)));
-        lore.add(format(Utils.getCentontString("&r&e▶&7 刷新时长(h): &a"+time,length)));
+        lore.add(format(Utils.getCentontString("&r&e▶&7库存: &a"+(showItem.stack),length)));
+        lore.add(format(Utils.getCentontString("&r&e▶&7限购数量: &a"+limit,length)));
+        lore.add(format(Utils.getCentontString("&r&e▶&7刷新时长(h): &a"+time,length)));
 
         lore.add("  ");
         i.setLore(lore.toArray(new String[0]));

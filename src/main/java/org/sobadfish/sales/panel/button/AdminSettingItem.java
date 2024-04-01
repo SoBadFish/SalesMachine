@@ -56,7 +56,7 @@ public class AdminSettingItem extends BasePlayPanelItemInstance{
     public Item getPanelItem(Player info, int index) {
         Item item = getItem();
         item.setCustomName(TextFormat.colorize('&',"&r&l&c管理"));
-        item.setLore(TextFormat.colorize('&',"&r&7&l\n管理此售卖机"));
+        item.setLore(TextFormat.colorize('&',"&r&7&l\n管理此售货机"));
         item.setNamedTag(item.getNamedTag().putInt("index",index));
         return item;
 
