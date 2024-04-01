@@ -565,9 +565,9 @@ public class SalesEntity extends EntityHuman{
             position.getLevel().setBlock(position, (Block) SalesMainClass.INSTANCE.iBarrier,false,false);
             position.getLevel().setBlock(position.add(0,1), (Block) SalesMainClass.INSTANCE.iBarrier,false,false);
             //顺便生成实体
-            BlockEntity.createBlockEntity(SalesBlockEntity.class.getSimpleName(),pos.getChunk(),
+            BlockEntity.createBlockEntity(SalesBlockEntity.ENTITY_TYPE,pos.getChunk(),
                     BlockEntity.getDefaultCompound(position, SalesBlockEntity.class.getSimpleName()),sales);
-            BlockEntity.createBlockEntity(SalesBlockEntity.class.getSimpleName(),pos.getChunk(),
+            BlockEntity.createBlockEntity(SalesBlockEntity.ENTITY_TYPE,pos.getChunk(),
                     BlockEntity.getDefaultCompound(position.add(0,1), SalesBlockEntity.class.getSimpleName()),sales);
 
 
@@ -600,6 +600,8 @@ public class SalesEntity extends EntityHuman{
     public static class SalesBlockEntity extends BlockEntity implements InventoryHolder{
 
         public SaleBlockEntityInventory entityInventory;
+
+        public static final String ENTITY_TYPE = "SalesBlockEntity";
 
         public SalesEntity salesEntity;
 
