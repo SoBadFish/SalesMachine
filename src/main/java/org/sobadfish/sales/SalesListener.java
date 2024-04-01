@@ -117,6 +117,10 @@ public class SalesListener implements Listener {
 
                         if(player.isSneaking()){
                             //看看点击的朝向是不是实体朝向
+                            if(ei.equals(SalesMainClass.CUSTOM_ITEMS.get("ct_sale"))){
+                                SalesMainClass.sendMessageToObject("&c禁止套娃！",player);
+                                return;
+                            }
 
 
                             if(event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){

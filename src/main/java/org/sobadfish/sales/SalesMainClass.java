@@ -166,7 +166,7 @@ public class SalesMainClass extends PluginBase {
             Item.registerCustomItem(CustomSaleMoneyItem.class);
 
             Item.registerCustomItem(CustomCtItem.class);
-            Item.registerCustomItem(CustomCtSaleItem.class);
+            Item.registerCustomItem(CustomCtSaleItem.class,false);
             CUSTOM_ITEMS.put("sale",new CustomSaleItem());
             CUSTOM_ITEMS.put("setting",new CustomSaleSettingItem());
             CUSTOM_ITEMS.put("remove",new CustomSaleRemoveItem());
@@ -174,7 +174,7 @@ public class SalesMainClass extends PluginBase {
             CUSTOM_ITEMS.put("ct",new CustomCtItem());
             CUSTOM_ITEMS.put("ct_sale",new CustomCtSaleItem());
         }
-        Item.removeCreativeItem(CUSTOM_ITEMS.get("ct_sale"));
+//        Item.removeCreativeItem(CUSTOM_ITEMS.get("ct_sale"));
 
 
 
