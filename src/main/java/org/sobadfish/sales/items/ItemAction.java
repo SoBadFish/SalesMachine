@@ -25,9 +25,9 @@ public class ItemAction {
 
     public static boolean onCtActivate(Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
         //编写拿取的逻辑
-//        if(player.isSneaking()){
-//            return false;
-//        }
+        if(player.isSneaking()){
+            return false;
+        }
         SalesEntity salesEntity = SalesListener.getEntityByPos(target);
         if(salesEntity != null){
             if(player.isOp() || salesEntity.master.equalsIgnoreCase(player.getName())){
@@ -57,9 +57,9 @@ public class ItemAction {
 
     public static boolean onSaleActivate(Item item,Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
         //编写放置的逻辑
-//        if(player.isSneaking()){
-//            return false;
-//        }
+        if(player.isSneaking()){
+            return false;
+        }
         if (item.hasCompoundTag()){
             CompoundTag tag = item.getNamedTag();
             //这段代码防止 win10 右键放置多次触发
@@ -68,6 +68,9 @@ public class ItemAction {
                 if(System.currentTimeMillis() - lockTime < 500){
                     return false;
                 }
+            }
+            if(SalesMainClass.getSaleSettingConfig().banWorlds.contains(level.getFolderName())){
+                return false;
             }
             if(tag.contains("sale_data")){
                 level.addSound(block, Sound.MOB_ZOMBIE_WOODBREAK);

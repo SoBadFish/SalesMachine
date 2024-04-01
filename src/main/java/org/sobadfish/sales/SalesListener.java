@@ -219,6 +219,9 @@ public class SalesListener implements Listener {
                         if(position.getLevel().getFolderName().equalsIgnoreCase(event.getLevel().getFolderName())){
                             if(!cacheEntitys.containsKey(data.location)){
                                 SalesEntity entity = SalesEntity.spawnToAll(data.asPosition(), BlockFace.valueOf(data.bf.toUpperCase()),data.master,data, true);
+                                if(entity == null){
+                                    continue;
+                                }
                                 cacheEntitys.put(data.location,entity);
                             }
                         }

@@ -19,6 +19,7 @@ import cn.nukkit.level.Position;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.level.particle.DestroyBlockParticle;
 import cn.nukkit.math.BlockFace;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
@@ -274,38 +275,43 @@ public class SalesEntity extends EntityHuman{
     public boolean onUpdate(int currentTick) {
         boolean b = super.onUpdate(currentTick);
         // 将角度限制在 -180 到 180 之间
-        if(animLoad == 1){
+        if(SalesMainClass.saleSettingConfig.enableAnim) {
+            if (animLoad == 1) {
 
-            if(yaw > right){
-                yaw -= yawSpeed;
-            }else if(yaw < right){
-                yaw += yawSpeed;
-            }else{
-                animLoad = 0;
-                isOpen = true;
+                if (yaw > right) {
+                    yaw -= yawSpeed;
+                } else if (yaw < right) {
+                    yaw += yawSpeed;
+                } else {
+                    animLoad = 0;
+                    isOpen = true;
+                }
             }
-        }
 
-        if(animLoad == 2){
-            if(yaw > 0){
-                yaw -= yawSpeed;
-            }else if(yaw < 0){
-                yaw += yawSpeed;
-            }else{
-                animLoad = 0;
-                isOpen = false;
+            if (animLoad == 2) {
+                if (yaw > 0) {
+                    yaw -= yawSpeed;
+                } else if (yaw < 0) {
+                    yaw += yawSpeed;
+                } else {
+                    animLoad = 0;
+                    isOpen = false;
+                }
             }
         }
         updateMovement();
 
         boolean s = false;
-        for(Player player: getLevel().getPlayers().values()){
-            if(player.distance(this) <= 10){
-                showItems();
-                s = true;
-                break;
+        if(SalesMainClass.saleSettingConfig.enableItem){
+            for(Player player: getLevel().getPlayers().values()){
+                if(player.distance(this) <= 10){
+                    showItems();
+                    s = true;
+                    break;
+                }
             }
         }
+
 
         if(!s){
             removePackets();
@@ -329,7 +335,11 @@ public class SalesEntity extends EntityHuman{
         if(ipacket.size() == 0){
             for(int i = 0; i< Math.min(items.size(),6);i++){
                 long eid = (long) ((int) this.x + new Random().nextDouble() + (int) this.z + new Random().nextDouble()) + new Random().nextLong();
-                ipacket.add(i,getEntityTag(asPosition(i),items.get(i).saleItem,eid));
+                Position ps = asPosition(i);
+                if(ps == null){
+                    continue;
+                }
+                ipacket.add(i,getEntityTag(ps,items.get(i).saleItem,eid));
             }
             for(AddItemEntityPacket dataPacket: ipacket){
                 Server.broadcastPacket(Server.getInstance().getOnlinePlayers().values(),dataPacket);
@@ -338,43 +348,57 @@ public class SalesEntity extends EntityHuman{
     }
 
     public Position asPosition(int index){
-        Position pos;
-        float yy = 1.23f;
-        if(index >= 2 && index < 4){
-            yy-= 0.8f;
-        } else if(index >= 4){
-            yy -= 1.22f;
-        }
-        BlockFace right = blockFace.rotateY();
-        if(right.getXOffset() > 0){
-           if(index % 2 == 0){
-               pos = new Position(this.x + 0.15,this.y + yy,this.z + 0.15);
-           }else{
-               pos = new Position(this.x - 0.34,this.y + yy,this.z + 0.15);
-           }
-        }else if(right.getXOffset() < 0){
-            if(index % 2 == 0){
-                pos = new Position(this.x + 0.15,this.y + yy,this.z + 0.15);
+        if(SalesMainClass.getSaleSettingConfig().floatItemPos.containsKey(blockFace)){
+            List<Vector3> vector3s = SalesMainClass.getSaleSettingConfig().floatItemPos.get(blockFace);
+
+            if(vector3s.size() > index){
+                Vector3 v3 = vector3s.get(index);
+                return new Position(this.x + v3.x,this.y + v3.y,this.z + v3.z);
             }else{
-                //一次修改
-                pos = new Position(this.x - 0.15,this.y + yy,this.z + 0.15);
+                return null;
             }
+
         }else{
-            if(right.getZOffset() > 0){
-                if(index % 2 == 0){
-                    pos = new Position(this.x + 0.15,this.y + yy,this.z - 0.34);
-                }else{
-                    pos = new Position(this.x + 0.15,this.y + yy,this.z + 0.15);
-                }
-            }else {
-                if(index % 2 == 0){
-                    pos = new Position(this.x + 0.15,this.y + yy,this.z + 0.15);
-                }else{
-                    pos = new Position(this.x +0.15,this.y + yy,this.z - 0.15);
-                }
-            }
+            return null;
         }
-        return pos;
+
+//        Position pos;
+//        float yy = 1.23f;
+//        if(index >= 2 && index < 4){
+//            yy-= 0.8f;
+//        } else if(index >= 4){
+//            yy -= 1.22f;
+//        }
+
+//        if(right.getXOffset() > 0){
+//           if(index % 2 == 0){
+//               pos = new Position(this.x + 0.15,this.y + yy,this.z + 0.15);
+//           }else{
+//               pos = new Position(this.x - 0.34,this.y + yy,this.z + 0.15);
+//           }
+//        }else if(right.getXOffset() < 0){
+//            if(index % 2 == 0){
+//                pos = new Position(this.x + 0.15,this.y + yy,this.z + 0.15);
+//            }else{
+//                //一次修改
+//                pos = new Position(this.x - 0.15,this.y + yy,this.z + 0.15);
+//            }
+//        }else{
+//            if(right.getZOffset() > 0){
+//                if(index % 2 == 0){
+//                    pos = new Position(this.x + 0.15,this.y + yy,this.z - 0.34);
+//                }else{
+//                    pos = new Position(this.x + 0.15,this.y + yy,this.z + 0.15);
+//                }
+//            }else {
+//                if(index % 2 == 0){
+//                    pos = new Position(this.x + 0.15,this.y + yy,this.z + 0.15);
+//                }else{
+//                    pos = new Position(this.x +0.15,this.y + yy,this.z - 0.15);
+//                }
+//            }
+//        }
+//        return pos;
 
     }
 
@@ -504,6 +528,10 @@ public class SalesEntity extends EntityHuman{
     public static SalesEntity spawnToAll(Position position,BlockFace bf,String master,SalesData data, boolean ignoreBlocks){
         if(bf == null){
             bf = BlockFace.EAST;
+        }
+        //检测地图
+        if(SalesMainClass.getSaleSettingConfig().banWorlds.contains(position.level.getFolderName())){
+            return null;
         }
 
         Position pos = new Position(

@@ -12,6 +12,7 @@ import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.entity.data.Skin;
 import cn.nukkit.item.Item;
 import cn.nukkit.math.BlockFace;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
@@ -19,6 +20,7 @@ import cn.nukkit.utils.Utils;
 import org.sobadfish.sales.block.BarrierBlock;
 import org.sobadfish.sales.block.BarrierBlock_Nukkit;
 import org.sobadfish.sales.block.IBarrier;
+import org.sobadfish.sales.config.SaleSettingConfig;
 import org.sobadfish.sales.config.SalesData;
 import org.sobadfish.sales.db.SqliteHelper;
 import org.sobadfish.sales.entity.SalesEntity;
@@ -31,9 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.sql.SQLException;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Sobadfish
@@ -58,11 +58,9 @@ public class SalesMainClass extends PluginBase {
 
     public static final String DB_TABLE = "salelocation";
 
-    @Override
-    public void onLoad(){
+    public static SaleSettingConfig saleSettingConfig;
 
 
-    }
 
 
     @Override
@@ -87,6 +85,10 @@ public class SalesMainClass extends PluginBase {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
+
+        saveDefaultConfig();
+        //加载配置
+        loadConfig();
 
         checkServer();
 
@@ -127,6 +129,40 @@ public class SalesMainClass extends PluginBase {
 
 
         sendMessageToConsole("&a加载完成!");
+
+    }
+
+    public static SaleSettingConfig getSaleSettingConfig() {
+        return saleSettingConfig;
+    }
+
+    //加载坐标点
+    private void loadConfig() {
+        saleSettingConfig = new SaleSettingConfig();
+        saleSettingConfig.enableAnim = getConfig().getBoolean("open-door-anim",true);
+        saleSettingConfig.enableItem = getConfig().getBoolean("display-item.enable",true);
+        saleSettingConfig.banWorlds = getConfig().getStringList("ban-world");
+        Map<?,?> map = (Map<?, ?>) getConfig().get("display-item.position");
+        Map<BlockFace, List<Vector3>> linkedListLinkedHashMap = new LinkedHashMap<>();
+        for (BlockFace face: BlockFace.values()){
+            if(map.containsKey(face.getName().toLowerCase())){
+                List<?> sv = (List<?>) map.get(face.getName().toLowerCase());
+                List<Vector3> v3 = new ArrayList<>();
+                for(Object o:sv){
+                    String v3s = o.toString();
+                    String[] sp = v3s.split(";");
+                    for(String spv1: sp){
+                        String[] posv3 = spv1.split(",");
+                        v3.add(new Vector3(Double.parseDouble(posv3[0])
+                                ,Double.parseDouble(posv3[1])
+                                ,Double.parseDouble(posv3[2])));
+                    }
+                }
+                linkedListLinkedHashMap.put(face,v3);
+            }
+        }
+        saleSettingConfig.floatItemPos = linkedListLinkedHashMap;
+
 
     }
 
