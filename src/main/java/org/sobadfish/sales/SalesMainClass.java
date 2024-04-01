@@ -122,7 +122,7 @@ public class SalesMainClass extends PluginBase {
             iBarrier = new BarrierBlock();
         }
         Entity.registerEntity(SalesEntity.ENTITY_TYPE,SalesEntity.class);
-        BlockEntity.registerBlockEntity(SalesEntity.SalesBlockEntity.class.getSimpleName(),SalesEntity.SalesBlockEntity.class);
+        BlockEntity.registerBlockEntity(SalesEntity.SalesBlockEntity.ENTITY_TYPE,SalesEntity.SalesBlockEntity.class);
 
 
         this.getServer().getPluginManager().registerEvents(new SalesListener(this),this);
