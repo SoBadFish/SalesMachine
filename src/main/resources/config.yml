@@ -1,6 +1,8 @@
 #阻止放置售货机的世界
 ban-world: []
 
+# 实体大小
+entity-size: 0.9
 # 是否显示开门动画
 open-door-anim: true
 

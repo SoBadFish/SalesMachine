@@ -88,7 +88,7 @@ public class SalesEntity extends EntityHuman{
         super(chunk, nbt);
         this.blockFace = face;
         this.loadItems = load;
-        setScale(0.9f);
+        setScale((float) SalesMainClass.getSaleSettingConfig().entitySize);
         this.master = master;
         //解包物品
         setImmobile();

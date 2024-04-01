@@ -142,6 +142,7 @@ public class SalesMainClass extends PluginBase {
         saleSettingConfig.enableAnim = getConfig().getBoolean("open-door-anim",true);
         saleSettingConfig.enableItem = getConfig().getBoolean("display-item.enable",true);
         saleSettingConfig.banWorlds = getConfig().getStringList("ban-world");
+        saleSettingConfig.entitySize = getConfig().getDouble("entity-size",0.9d);
         Map<?,?> map = (Map<?, ?>) getConfig().get("display-item.position");
         Map<BlockFace, List<Vector3>> linkedListLinkedHashMap = new LinkedHashMap<>();
         for (BlockFace face: BlockFace.values()){

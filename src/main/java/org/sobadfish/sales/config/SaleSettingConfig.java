@@ -16,6 +16,8 @@ public class SaleSettingConfig {
 
     public boolean enableItem = true;
 
+    public double entitySize = 0.9f;
+
     public List<String> banWorlds = new ArrayList<>();
 
 
