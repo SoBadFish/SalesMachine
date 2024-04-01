@@ -11,6 +11,7 @@ import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
 import cn.nukkit.event.block.BlockUpdateEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
+import cn.nukkit.event.inventory.InventoryMoveItemEvent;
 import cn.nukkit.event.inventory.InventoryTransactionEvent;
 import cn.nukkit.event.level.ChunkLoadEvent;
 import cn.nukkit.event.level.ChunkUnloadEvent;
@@ -21,6 +22,8 @@ import cn.nukkit.inventory.Inventory;
 import cn.nukkit.inventory.transaction.InventoryTransaction;
 import cn.nukkit.inventory.transaction.action.InventoryAction;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemHopper;
+import cn.nukkit.item.ItemMinecartHopper;
 import cn.nukkit.item.ItemNameTag;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.Sound;
@@ -74,12 +77,16 @@ public class SalesListener implements Listener {
             Item ei = event.getItem();
 
             if(!ei.equals(SalesMainClass.CUSTOM_ITEMS.get("ct")) &&
-                    !ei.equals(SalesMainClass.CUSTOM_ITEMS.get("ct_sale"))){
+                    !ei.equals(SalesMainClass.CUSTOM_ITEMS.get("ct_sale"))
+            && !ei.equals(new ItemHopper()) && !ei.equals(new ItemMinecartHopper())){
                 event.setCancelled();
             }else{
                 if(!player.isSneaking()){
                     return;
                 }
+            }
+            if(player.getHorizontalFacing() != entity1.blockFace){
+                return;
             }
             if(ei instanceof ItemNameTag){
                 event.setCancelled();
@@ -109,6 +116,9 @@ public class SalesListener implements Listener {
                         }*/
 
                         if(player.isSneaking()){
+                            //看看点击的朝向是不是实体朝向
+
+
                             if(event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
                                 if(player.isOp() || (entity1.master != null && entity1.master.equalsIgnoreCase(player.getName()))){
                                     if(player.getInventory().getItemInHand().getId() == 0){
@@ -198,6 +208,9 @@ public class SalesListener implements Listener {
             if(!salesData.isEmpty()){
                 Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE, () -> {
                     for(SalesData data : salesData){
+                        if("null".equalsIgnoreCase(data.customname) || "".equalsIgnoreCase(data.customname)){
+                            data.customname = null;
+                        }
                         Position position = data.asPosition();
                         if(position.getLevel().getFolderName().equalsIgnoreCase(event.getLevel().getFolderName())){
                             if(!cacheEntitys.containsKey(data.location)){
@@ -214,6 +227,23 @@ public class SalesListener implements Listener {
         }
 
 
+
+    }
+
+    //黑科技 接收漏斗物品
+    @EventHandler
+    public void onInventoryMoveItem(InventoryMoveItemEvent event){
+        Inventory inventoryHolder = event.getTargetInventory();
+        if(inventoryHolder instanceof SalesEntity.SalesBlockEntity.SaleBlockEntityInventory){
+            SalesEntity salesEntity = ((SalesEntity.SalesBlockEntity.SaleBlockEntityInventory) inventoryHolder).getSalesEntity();
+            if(salesEntity != null){
+                Item item = event.getItem();
+                if(salesEntity.hasItem(item)){
+                    salesEntity.addItem(item);
+                }
+            }
+            inventoryHolder.clearAll();
+        }
 
     }
 
@@ -234,10 +264,13 @@ public class SalesListener implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event){
-
+        Player player = event.getPlayer();
         SalesEntity entity1 = getEntityByPos(event.getBlockAgainst());
         if(entity1 != null){
-            event.setCancelled();
+            if(player.getHorizontalFacing() == entity1.blockFace){
+                event.setCancelled();
+            }
+
             //更新区块
             event.getBlock().level.scheduleUpdate(event.getBlock(),10);
         }

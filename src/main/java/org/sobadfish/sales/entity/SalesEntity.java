@@ -5,11 +5,14 @@ import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockAir;
 import cn.nukkit.block.BlockStone;
+import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.entity.data.EntityMetadata;
 import cn.nukkit.entity.data.Skin;
-import cn.nukkit.entity.item.EntityArmorStand;
+import cn.nukkit.inventory.BaseInventory;
+import cn.nukkit.inventory.Inventory;
+import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.inventory.InventoryType;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Position;
@@ -19,9 +22,7 @@ import cn.nukkit.math.BlockFace;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
-import cn.nukkit.network.protocol.AddEntityPacket;
 import cn.nukkit.network.protocol.AddItemEntityPacket;
-import cn.nukkit.network.protocol.DataPacket;
 import cn.nukkit.network.protocol.RemoveEntityPacket;
 import org.sobadfish.sales.SalesListener;
 import org.sobadfish.sales.SalesMainClass;
@@ -39,7 +40,7 @@ import java.util.Random;
  * @author Sobadfish
  * @date 2023/11/16
  */
-public class SalesEntity extends EntityHuman {
+public class SalesEntity extends EntityHuman{
 
     public static final String ENTITY_TYPE = "SalesEntity";
 
@@ -58,6 +59,7 @@ public class SalesEntity extends EntityHuman {
     public BlockFace blockFace;
 
     public String master;
+
 
 
     @Override
@@ -170,6 +172,19 @@ public class SalesEntity extends EntityHuman {
         }
     }
 
+    public boolean hasItem(Item item){
+        for(SaleItem saleItem: items) {
+            if (saleItem.saleItem.equals(item, true, true)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean addItem(Item item){
+        SaleItem saleItem = new SaleItem(item,item.count,0);
+        return addItem(saleItem);
+    }
 
     public boolean addItem(SaleItem item){
 
@@ -403,7 +418,10 @@ public class SalesEntity extends EntityHuman {
             if(!isPackage){
                 level.addParticle(new DestroyBlockParticle(position,new BlockStone()));
             }
-
+            BlockEntity be = level.getBlockEntity(position);
+            if(be instanceof SalesBlockEntity){
+                level.removeBlockEntity(be);
+            }
         }
 
 //        //重新写入
@@ -513,10 +531,16 @@ public class SalesEntity extends EntityHuman {
             sales.setSkin(skin);
             sales.spawnToAll();
 
+
 //            BlockEntity.createBlockEntity(SalesBlockEntity.BLOCK_ENTITY_TYPE,pos.getChunk(),tg,sales);
 //            BlockEntity.createBlockEntity(SalesBlockEntity.BLOCK_ENTITY_TYPE,p2.getChunk(),BlockEntity.getDefaultCompound(p2, SalesBlockEntity.BLOCK_ENTITY_TYPE),sales);
             position.getLevel().setBlock(position, (Block) SalesMainClass.INSTANCE.iBarrier,false,false);
             position.getLevel().setBlock(position.add(0,1), (Block) SalesMainClass.INSTANCE.iBarrier,false,false);
+            //顺便生成实体
+            BlockEntity.createBlockEntity(SalesBlockEntity.class.getSimpleName(),pos.getChunk(),
+                    BlockEntity.getDefaultCompound(position, SalesBlockEntity.class.getSimpleName()),sales);
+            BlockEntity.createBlockEntity(SalesBlockEntity.class.getSimpleName(),pos.getChunk(),
+                    BlockEntity.getDefaultCompound(position.add(0,1), SalesBlockEntity.class.getSimpleName()),sales);
 
 
             if(data == null){
@@ -528,6 +552,7 @@ public class SalesEntity extends EntityHuman {
                 data.location = ps;
                 data.master = master;
                 data.bf = bf.getName();
+                data.customname = master+" 的售货机";
                 if(SalesMainClass.INSTANCE.sqliteHelper.hasData(SalesMainClass.DB_TABLE,"location",ps)){
                     SalesMainClass.INSTANCE.sqliteHelper.set(SalesMainClass.DB_TABLE,"location",ps,data);
                 }else{
@@ -542,6 +567,46 @@ public class SalesEntity extends EntityHuman {
             return sales;
         }
         return null;
+    }
+
+    public static class SalesBlockEntity extends BlockEntity implements InventoryHolder{
+
+        public SaleBlockEntityInventory entityInventory;
+
+        public SalesEntity salesEntity;
+
+        public SalesBlockEntity(FullChunk chunk, CompoundTag nbt,SalesEntity entity) {
+            super(chunk, nbt);
+            entityInventory = new SaleBlockEntityInventory(entity,this);
+            this.salesEntity = entity;
+        }
+
+        @Override
+        public boolean isBlockEntityValid() {
+            return true;
+        }
+
+        @Override
+        public void saveNBT() {}
+
+        @Override
+        public Inventory getInventory() {
+            return entityInventory;
+        }
+
+        public static class SaleBlockEntityInventory extends BaseInventory{
+
+            public SalesEntity salesEntity;
+
+            public SaleBlockEntityInventory(SalesEntity salesEntity,InventoryHolder holder) {
+                super(holder, InventoryType.CHEST);
+                this.salesEntity = salesEntity;
+            }
+
+            public SalesEntity getSalesEntity() {
+                return salesEntity;
+            }
+        }
     }
 
 

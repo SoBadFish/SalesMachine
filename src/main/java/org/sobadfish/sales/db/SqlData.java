@@ -210,6 +210,9 @@ public class SqlData {
             if("id".equalsIgnoreCase(entry.getKey())){
                 continue;
             }
+            if(entry.getValue() == null){
+                continue;
+            }
             builder.append(entry.getKey()).append(" = '").append(entry.getValue().toString()).append("',");
         }
         String str = builder.toString();

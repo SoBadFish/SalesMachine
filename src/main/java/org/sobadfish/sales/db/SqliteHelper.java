@@ -432,7 +432,8 @@ public class SqliteHelper {
             boolean isId = false;
             // 先找自增id
             for(Field field: fields){
-                if ("id".equalsIgnoreCase(field.getName()) && field.getType() == long.class) {
+                if ("id".equalsIgnoreCase(field.getName()) && (field.getType() == long.class
+                        || field.getType() == int.class)) {
                     //找到了
                     isId = true;
                     break;

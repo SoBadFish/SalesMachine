@@ -15,9 +15,6 @@ import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.config.SalesData;
 import org.sobadfish.sales.entity.SalesEntity;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-
 /**
  * @author Sobadfish
  * 23:01
@@ -28,9 +25,9 @@ public class ItemAction {
 
     public static boolean onCtActivate(Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
         //编写拿取的逻辑
-        if(player.isSneaking()){
-            return false;
-        }
+//        if(player.isSneaking()){
+//            return false;
+//        }
         SalesEntity salesEntity = SalesListener.getEntityByPos(target);
         if(salesEntity != null){
             if(player.isOp() || salesEntity.master.equalsIgnoreCase(player.getName())){
@@ -60,11 +57,12 @@ public class ItemAction {
 
     public static boolean onSaleActivate(Item item,Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
         //编写放置的逻辑
-        if(player.isSneaking()){
-            return false;
-        }
+//        if(player.isSneaking()){
+//            return false;
+//        }
         if (item.hasCompoundTag()){
             CompoundTag tag = item.getNamedTag();
+            //这段代码防止 win10 右键放置多次触发
             if(tag.contains("lock")){
                 long lockTime = tag.getLong("lock");
                 if(System.currentTimeMillis() - lockTime < 500){
