@@ -149,9 +149,9 @@ public class SalesEntity extends EntityHuman{
             index++;
         }
         //重新写入
-        salesData.saveItemSlots(cl);
-
-        saveData();
+//        salesData.saveItemSlots(cl);
+//
+//        saveData();
 
 
 
@@ -205,8 +205,8 @@ public class SalesEntity extends EntityHuman{
                     saleItem.money = item.money;
                 }
                 saleItem.stack += item.stack;
-                salesData.saveItemSlots(cl);
-                saveData();
+//                salesData.saveItemSlots(cl);
+//                saveData();
 
                 return true;
             }
@@ -232,9 +232,9 @@ public class SalesEntity extends EntityHuman{
 
         removePackets();
         //重新写入
-        salesData.saveItemSlots(cl);
-
-        saveData();
+//        salesData.saveItemSlots(cl);
+//
+//        saveData();
         return true;
     }
 
