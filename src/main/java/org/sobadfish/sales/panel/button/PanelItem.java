@@ -167,20 +167,20 @@ public class PanelItem extends BasePlayPanelItemInstance{
         boolean v = false;
         List<String> vl = new ArrayList<>();
         if(showItem.tag.contains("sales_exchange") && showItem.tag.getBoolean("sales_exchange",false)){
-            vl.add(format("&r&7 &r金币 &7* &e"+(showItem.money != 0?showItem.money:"免费")));
+            vl.add(format("&r&7&r金币 &7* &e"+(showItem.money != 0?showItem.money:"免费")));
             v = true;
 //            i = new MoneyItem(showItem.money).getItem();
 //            lore.add(format(Utils.getCentontString("&r&e▶&7 回收价: &e"+(showItem.getItemName()+" &r*&a "+showItem.saleItem.getCount()),length)));
         }else{
-            vl.add(format("&r&7 库存: &a"+(getStockStr())));
-            vl.add(format("&r&7 价格: &e"+(showItem.money != 0?showItem.money:"免费")));
+            vl.add(format("&r&7库存: &a"+(getStockStr())));
+            vl.add(format("&r&7价格: &e"+(showItem.money != 0?showItem.money:"免费")));
         }
 //
         if(showItem.tag.contains("limitCount") ){
             int limit = showItem.tag.getInt("limitCount");
             if(limit > 0){
                 int upsLimit = getUserLimitCount(info);
-                vl.add(format("&r&7 限购: &e"+upsLimit+" &7/&7 "+limit));
+                vl.add(format("&r&7限购: &e"+upsLimit+" &7/&7 "+limit));
                 if(!showItem.tag.contains("limit")){
                     CompoundTag limitList = showItem.tag.getCompound("limit");
 
@@ -190,7 +190,7 @@ public class PanelItem extends BasePlayPanelItemInstance{
                             long lastByTime = user.getLong("buyTime");
                             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH");
                             String date = format.format(lastByTime);//注意这里返回的是string类型
-                            vl.add(format("&r&7 首次购买: &e"+date));
+                            vl.add(format("&r&7首次购买: &e"+date));
                         }
                     }
                 }
