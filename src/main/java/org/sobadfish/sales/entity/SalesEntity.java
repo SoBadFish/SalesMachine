@@ -405,7 +405,7 @@ public class SalesEntity extends EntityHuman{
 
     @Override
     public void close() {
-        List<Position> p3 = positionListByConfig(this,blockFace);
+        List<Position> p3 = positionListByConfig(this,blockFace,salesData.width,salesData.height);
         for(Position position: p3){
             level.setBlock(position,new BlockAir(),true,true);
             if(!isPackage){
@@ -508,8 +508,11 @@ public class SalesEntity extends EntityHuman{
                 position.getFloorY(),
                 position.getFloorZ() + 0.5,
                 position.level);
+        SaleSettingConfig.SaleWeight weight = SalesMainClass.getSaleSettingConfig().weight;
+        int width = weight.width;
+        int height = weight.height;
 
-        List<Position> psconfig = positionListByConfig(position,bf);
+        List<Position> psconfig = positionListByConfig(position,bf,width,height);
 
         boolean hasBlock = false;
         if(!ignoreBlocks){
@@ -565,6 +568,8 @@ public class SalesEntity extends EntityHuman{
                 data.saveItemSlots(tagListTag);
                 data.chunkx = pos.getChunkX();
                 data.chunkz = pos.getChunkZ();
+                data.width = width;
+                data.height = height;
                 data.location = ps;
                 data.master = master;
                 data.bf = bf.getName();
@@ -585,13 +590,12 @@ public class SalesEntity extends EntityHuman{
         return null;
     }
 
-    public static List<Position> positionListByConfig(Position position,BlockFace blockFace){
+    public static List<Position> positionListByConfig(Position position,BlockFace blockFace,int width,int height){
         List<Position> positions = new ArrayList<>();
-
-        SaleSettingConfig.SaleWeight weight = SalesMainClass.getSaleSettingConfig().weight;
-        for(int i = 0; i < weight.width;i++){
+        ;
+        for(int i = 0; i < width;i++){
             Position ry = position.getSide(blockFace.rotateY(),i);
-            for(int y = 0; y < weight.height; y++){
+            for(int y = 0; y < height; y++){
                 positions.add(ry.add(0,y));
             }
 

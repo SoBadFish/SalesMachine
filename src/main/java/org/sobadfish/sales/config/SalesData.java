@@ -33,6 +33,10 @@ public class SalesData {
 
     public String customname;
 
+    public int width = 1;
+
+    public int height = 2;
+
 
     public String itemjson;
 
@@ -41,6 +45,8 @@ public class SalesData {
         CompoundTag tag = new CompoundTag("sale_data");
         tag.putInt("chunkx",chunkx);
         tag.putInt("chunkz",chunkz);
+        tag.putInt("width",width);
+        tag.putInt("height",height);
 
         tag.putString("location",location);
         tag.putString("bf",bf);
@@ -59,6 +65,11 @@ public class SalesData {
         SalesData salesData = new SalesData();
         salesData.chunkx = tag.getInt("chunkx");
         salesData.chunkz = tag.getInt("chunkz");
+        if(tag.contains("width")){
+            salesData.width = tag.getInt("width");
+            salesData.height = tag.getInt("height");
+        }
+
 
         salesData.location = tag.getString("location");
         salesData.bf = tag.getString("bf");
