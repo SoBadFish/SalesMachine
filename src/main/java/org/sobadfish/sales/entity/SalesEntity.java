@@ -23,8 +23,7 @@ import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
-import cn.nukkit.network.protocol.AddItemEntityPacket;
-import cn.nukkit.network.protocol.RemoveEntityPacket;
+import cn.nukkit.network.protocol.*;
 import org.sobadfish.sales.SalesListener;
 import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.config.SalesData;
@@ -362,43 +361,6 @@ public class SalesEntity extends EntityHuman{
             return null;
         }
 
-//        Position pos;
-//        float yy = 1.23f;
-//        if(index >= 2 && index < 4){
-//            yy-= 0.8f;
-//        } else if(index >= 4){
-//            yy -= 1.22f;
-//        }
-
-//        if(right.getXOffset() > 0){
-//           if(index % 2 == 0){
-//               pos = new Position(this.x + 0.15,this.y + yy,this.z + 0.15);
-//           }else{
-//               pos = new Position(this.x - 0.34,this.y + yy,this.z + 0.15);
-//           }
-//        }else if(right.getXOffset() < 0){
-//            if(index % 2 == 0){
-//                pos = new Position(this.x + 0.15,this.y + yy,this.z + 0.15);
-//            }else{
-//                //一次修改
-//                pos = new Position(this.x - 0.15,this.y + yy,this.z + 0.15);
-//            }
-//        }else{
-//            if(right.getZOffset() > 0){
-//                if(index % 2 == 0){
-//                    pos = new Position(this.x + 0.15,this.y + yy,this.z - 0.34);
-//                }else{
-//                    pos = new Position(this.x + 0.15,this.y + yy,this.z + 0.15);
-//                }
-//            }else {
-//                if(index % 2 == 0){
-//                    pos = new Position(this.x + 0.15,this.y + yy,this.z + 0.15);
-//                }else{
-//                    pos = new Position(this.x +0.15,this.y + yy,this.z - 0.15);
-//                }
-//            }
-//        }
-//        return pos;
 
     }
 
@@ -428,6 +390,7 @@ public class SalesEntity extends EntityHuman{
                 .putInt(79,0);
 
         return pk;
+
     }
 
     public boolean finalClose;
