@@ -6,6 +6,12 @@ entity-size: 0.9
 # 是否显示开门动画
 open-door-anim: true
 
+# 体积
+weight:
+  width: 1
+  height: 2
+
+
 # 是否显示浮空物品
 display-item:
   enable: true

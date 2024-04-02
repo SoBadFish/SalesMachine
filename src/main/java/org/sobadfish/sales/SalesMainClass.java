@@ -33,7 +33,10 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Sobadfish
@@ -61,7 +64,12 @@ public class SalesMainClass extends PluginBase {
     public static SaleSettingConfig saleSettingConfig;
 
 
-
+    @Override
+    public void onLoad() {
+        //提前注册好
+        BlockEntity.registerBlockEntity(SalesEntity.SalesBlockEntity.ENTITY_TYPE,SalesEntity.SalesBlockEntity.class);
+        Entity.registerEntity(SalesEntity.ENTITY_TYPE,SalesEntity.class);
+    }
 
     @Override
     public void onEnable() {
@@ -121,8 +129,8 @@ public class SalesMainClass extends PluginBase {
             Block.list[416] = BarrierBlock.class;
             iBarrier = new BarrierBlock();
         }
-        Entity.registerEntity(SalesEntity.ENTITY_TYPE,SalesEntity.class);
-        BlockEntity.registerBlockEntity(SalesEntity.SalesBlockEntity.ENTITY_TYPE,SalesEntity.SalesBlockEntity.class);
+
+
 
 
         this.getServer().getPluginManager().registerEvents(new SalesListener(this),this);
@@ -143,6 +151,11 @@ public class SalesMainClass extends PluginBase {
         saleSettingConfig.enableItem = getConfig().getBoolean("display-item.enable",true);
         saleSettingConfig.banWorlds = getConfig().getStringList("ban-world");
         saleSettingConfig.entitySize = getConfig().getDouble("entity-size",0.9d);
+        SaleSettingConfig.SaleWeight weight = new SaleSettingConfig.SaleWeight();
+        weight.width = getConfig().getInt("weight.width",1);
+        weight.height = getConfig().getInt("weight.height",2);
+        saleSettingConfig.weight = weight;
+
         Map<?,?> map = (Map<?, ?>) getConfig().get("display-item.position");
         Map<BlockFace, List<Vector3>> linkedListLinkedHashMap = new LinkedHashMap<>();
         for (BlockFace face: BlockFace.values()){

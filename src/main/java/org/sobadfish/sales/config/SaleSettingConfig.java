@@ -20,9 +20,16 @@ public class SaleSettingConfig {
 
     public List<String> banWorlds = new ArrayList<>();
 
+    public SaleWeight weight = new SaleWeight();
+
 
     /**
      * 浮空物品
      * */
     public Map<BlockFace, List<Vector3>> floatItemPos = new LinkedHashMap<>();
+
+    public static class SaleWeight{
+
+        public int width = 1,height = 2;
+    }
 }

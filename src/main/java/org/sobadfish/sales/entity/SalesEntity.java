@@ -26,6 +26,7 @@ import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.network.protocol.*;
 import org.sobadfish.sales.SalesListener;
 import org.sobadfish.sales.SalesMainClass;
+import org.sobadfish.sales.config.SaleSettingConfig;
 import org.sobadfish.sales.config.SalesData;
 import org.sobadfish.sales.db.SqlData;
 import org.sobadfish.sales.items.SaleItem;
@@ -404,7 +405,7 @@ public class SalesEntity extends EntityHuman{
 
     @Override
     public void close() {
-        Position[] p3 = new Position[]{this,this.add(0,1)};
+        List<Position> p3 = positionListByConfig(this,blockFace);
         for(Position position: p3){
             level.setBlock(position,new BlockAir(),true,true);
             if(!isPackage){
@@ -507,8 +508,22 @@ public class SalesEntity extends EntityHuman{
                 position.getFloorY(),
                 position.getFloorZ() + 0.5,
                 position.level);
-        if(ignoreBlocks || (position.level.getBlock(position).getId() == 0 && position.level.getBlock(position.add(0,1)).getId() == 0)){
 
+        List<Position> psconfig = positionListByConfig(position,bf);
+
+        boolean hasBlock = false;
+        if(!ignoreBlocks){
+            for(Position ps : psconfig){
+                Block block =  position.level.getBlock(ps);
+                if(block.getId() != 0){
+                    hasBlock = true;
+                    break;
+                }
+
+            }
+        }
+
+        if(!hasBlock){
             Skin skin = SalesMainClass.ENTITY_SKIN.get(bf);
 
             CompoundTag tag = EntityHuman.getDefaultNBT(pos);
@@ -528,15 +543,20 @@ public class SalesEntity extends EntityHuman{
             sales.spawnToAll();
 
 
+            for (Position sp : psconfig){
+                position.getLevel().setBlock(sp, (Block) SalesMainClass.INSTANCE.iBarrier,false,false);
+                BlockEntity.createBlockEntity(SalesBlockEntity.ENTITY_TYPE,pos.getChunk(),
+                        BlockEntity.getDefaultCompound(sp, SalesBlockEntity.ENTITY_TYPE),sales);
+            }
+
 //            BlockEntity.createBlockEntity(SalesBlockEntity.BLOCK_ENTITY_TYPE,pos.getChunk(),tg,sales);
 //            BlockEntity.createBlockEntity(SalesBlockEntity.BLOCK_ENTITY_TYPE,p2.getChunk(),BlockEntity.getDefaultCompound(p2, SalesBlockEntity.BLOCK_ENTITY_TYPE),sales);
-            position.getLevel().setBlock(position, (Block) SalesMainClass.INSTANCE.iBarrier,false,false);
-            position.getLevel().setBlock(position.add(0,1), (Block) SalesMainClass.INSTANCE.iBarrier,false,false);
+//            position.getLevel().setBlock(position, (Block) SalesMainClass.INSTANCE.iBarrier,false,false);
+//            position.getLevel().setBlock(position.add(0,1), (Block) SalesMainClass.INSTANCE.iBarrier,false,false);
             //顺便生成实体
-            BlockEntity.createBlockEntity(SalesBlockEntity.ENTITY_TYPE,pos.getChunk(),
-                    BlockEntity.getDefaultCompound(position, SalesBlockEntity.class.getSimpleName()),sales);
-            BlockEntity.createBlockEntity(SalesBlockEntity.ENTITY_TYPE,pos.getChunk(),
-                    BlockEntity.getDefaultCompound(position.add(0,1), SalesBlockEntity.class.getSimpleName()),sales);
+           ;
+//            BlockEntity.createBlockEntity(SalesBlockEntity.ENTITY_TYPE,pos.getChunk(),
+//                    BlockEntity.getDefaultCompound(position.add(0,1), SalesBlockEntity.class.getSimpleName()),sales);
 
 
             if(data == null){
@@ -565,11 +585,25 @@ public class SalesEntity extends EntityHuman{
         return null;
     }
 
+    public static List<Position> positionListByConfig(Position position,BlockFace blockFace){
+        List<Position> positions = new ArrayList<>();
+
+        SaleSettingConfig.SaleWeight weight = SalesMainClass.getSaleSettingConfig().weight;
+        for(int i = 0; i < weight.width;i++){
+            Position ry = position.getSide(blockFace.rotateY(),i);
+            for(int y = 0; y < weight.height; y++){
+                positions.add(ry.add(0,y));
+            }
+
+        }
+        return positions;
+    }
+
     public static class SalesBlockEntity extends BlockEntity implements InventoryHolder{
 
         public SaleBlockEntityInventory entityInventory;
 
-        public static final String ENTITY_TYPE = "SalesBlockEntity";
+        public static final String ENTITY_TYPE = "Sales";
 
         public SalesEntity salesEntity;
 
