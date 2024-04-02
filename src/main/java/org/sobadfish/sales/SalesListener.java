@@ -70,6 +70,8 @@ public class SalesListener implements Listener {
         }
         Player player = event.getPlayer();
 
+
+
         if(entity1 != null){
             if(entity1.finalClose){
                 return;

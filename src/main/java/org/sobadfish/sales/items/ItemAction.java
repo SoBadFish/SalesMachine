@@ -37,6 +37,7 @@ public class ItemAction {
                 if(salesEntity.salesData.customname != null){
                     nm = salesEntity.salesData.customname;
                 }
+                SalesMainClass.sendMessageToObject("&e售货机朝向: &a"+salesEntity.blockFace.getName(),player);
 
                 sitem.setCustomName(TextFormat.colorize('&',nm));
                 sitem.addEnchantment(Enchantment.getEnchantment(0));
