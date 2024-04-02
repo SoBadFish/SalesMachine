@@ -3,6 +3,7 @@ ban-world: []
 
 # 实体大小
 entity-size: 1
+
 # 是否显示开门动画
 open-door-anim: false
 
