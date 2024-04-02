@@ -23,7 +23,8 @@ import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
-import cn.nukkit.network.protocol.*;
+import cn.nukkit.network.protocol.AddItemEntityPacket;
+import cn.nukkit.network.protocol.RemoveEntityPacket;
 import org.sobadfish.sales.SalesListener;
 import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.config.SaleSettingConfig;
@@ -74,12 +75,6 @@ public class SalesEntity extends EntityHuman{
 
     @Override
     public void saveNBT() {
-//        BlockEntity be = getLevel().getBlockEntity(this);
-//        if(be instanceof SalesBlockEntity){
-//            be.namedTag.putCompound(SalesEntity.ENTITY_TYPE,this.namedTag);
-//            be.namedTag.putByte("face",blockFace.getIndex());
-//        }
-//        this.close();
     }
 
     public SalesEntity(FullChunk chunk, CompoundTag nbt, BlockFace face,String master,ListTag<CompoundTag> load) {
@@ -417,9 +412,6 @@ public class SalesEntity extends EntityHuman{
             }
         }
 
-//        //重新写入
-//        salesData.saveItemSlots(cl);
-      //  saveData();
         if(!finalClose){
             salesData.saveItemSlots(loadItems);
             saveData();
@@ -551,16 +543,6 @@ public class SalesEntity extends EntityHuman{
                 BlockEntity.createBlockEntity(SalesBlockEntity.ENTITY_TYPE,pos.getChunk(),
                         BlockEntity.getDefaultCompound(sp, SalesBlockEntity.ENTITY_TYPE),sales);
             }
-
-//            BlockEntity.createBlockEntity(SalesBlockEntity.BLOCK_ENTITY_TYPE,pos.getChunk(),tg,sales);
-//            BlockEntity.createBlockEntity(SalesBlockEntity.BLOCK_ENTITY_TYPE,p2.getChunk(),BlockEntity.getDefaultCompound(p2, SalesBlockEntity.BLOCK_ENTITY_TYPE),sales);
-//            position.getLevel().setBlock(position, (Block) SalesMainClass.INSTANCE.iBarrier,false,false);
-//            position.getLevel().setBlock(position.add(0,1), (Block) SalesMainClass.INSTANCE.iBarrier,false,false);
-            //顺便生成实体
-           ;
-//            BlockEntity.createBlockEntity(SalesBlockEntity.ENTITY_TYPE,pos.getChunk(),
-//                    BlockEntity.getDefaultCompound(position.add(0,1), SalesBlockEntity.class.getSimpleName()),sales);
-
 
             if(data == null){
                 String ps = asLocation(position);
