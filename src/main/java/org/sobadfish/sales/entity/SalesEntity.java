@@ -332,7 +332,12 @@ public class SalesEntity extends EntityHuman{
 
     private void showItems(){
         if(ipacket.size() == 0){
-            for(int i = 0; i< Math.min(items.size(),6);i++){
+            int size = 6;
+            if(SalesMainClass.getSaleSettingConfig().floatItemPos.containsKey(blockFace)) {
+                size = SalesMainClass.getSaleSettingConfig().floatItemPos.get(blockFace).size();
+            }
+
+            for(int i = 0; i< Math.min(items.size(),size);i++){
                 long eid = (long) ((int) this.x + new Random().nextDouble() + (int) this.z + new Random().nextDouble()) + new Random().nextLong();
                 Position ps = asPosition(i);
                 if(ps == null){
