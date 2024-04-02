@@ -85,9 +85,10 @@ public class SellItemForm {
         Item cl = item.clone();
         cl.setCount(stack);
         SaleItem saleItem = new SaleItem(cl,stack,money);
-        if(responseCustom.getToggleResponse(3)){
+        if(responseCustom.getResponses().size() > 3){
             saleItem.tag.putBoolean("sales_exchange",responseCustom.getToggleResponse(3));
         }
+
 
         if(sales.addItem(saleItem)){
             SalesMainClass.sendMessageToObject("&a添加成功!",player);
