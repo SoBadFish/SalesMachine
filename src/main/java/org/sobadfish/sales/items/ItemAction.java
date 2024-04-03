@@ -73,6 +73,8 @@ public class ItemAction {
                     index = 0;
                 }
                 salesEntity.setModel(sk.get(index));
+            }else{
+                SalesMainClass.sendMessageToObject("&c这不是你的售货机",player);
             }
         }
         return true;

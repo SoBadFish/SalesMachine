@@ -306,7 +306,7 @@ public class SalesMainClass extends PluginBase {
             String name = folder.getName();
             File fc = new File(folder+"/"+name+".yml");
             if(!fc.exists()){
-                sendMessageToConsole("&c模型文件夹 "+name+" 缺失关键 .yml 文件!");
+                sendMessageToConsole("&c模型文件夹 "+name+" 缺失关键 "+name+".yml 文件!");
                 continue;
             }
             Config config = new Config(fc);
@@ -316,6 +316,7 @@ public class SalesMainClass extends PluginBase {
                         folder+"/machine_"+face.getName().toLowerCase()+".json"));
             }
 
+            SalesMainClass.sendMessageToConsole("加载模型 &e"+name);
             ENTITY_SKIN.put(name,new SaleSkinConfig(name,hashMap,loadSettingConfig(config)));
         }
 
