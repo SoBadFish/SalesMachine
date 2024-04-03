@@ -221,11 +221,8 @@ public class SalesListener implements Listener {
                         Position position = data.asPosition();
                         if(position.getLevel().getFolderName().equalsIgnoreCase(event.getLevel().getFolderName())){
                             if(!cacheEntitys.containsKey(data.location)){
-                                SalesEntity entity = SalesEntity.spawnToAll(data.asPosition(), BlockFace.valueOf(data.bf.toUpperCase()),data.master,data, true);
-                                if(entity == null){
-                                    continue;
-                                }
-                                cacheEntitys.put(data.location,entity);
+                                SalesEntity.spawnToAll(data.asPosition(), BlockFace.valueOf(data.bf.toUpperCase()),data.master,data, true);
+
                             }
                         }
 
@@ -266,10 +263,7 @@ public class SalesListener implements Listener {
         for(Entity e: event.getChunk().getEntities().values()){
             if(e instanceof SalesEntity){
                 //顺便移除缓存
-                SalesData salesData = ((SalesEntity) e).salesData;
-                if(salesData != null){
-                    cacheEntitys.remove(salesData.location);
-                }
+
                 e.close();
             }
         }

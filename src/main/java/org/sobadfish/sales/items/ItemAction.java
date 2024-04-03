@@ -84,7 +84,6 @@ public class ItemAction {
                             BlockFace.valueOf(salesData.bf.toUpperCase()), salesData.master, salesData,
                             true);
                     if(entity != null){
-                        SalesListener.cacheEntitys.put(salesData.location, entity);
                         SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE, salesData);
                     }
 

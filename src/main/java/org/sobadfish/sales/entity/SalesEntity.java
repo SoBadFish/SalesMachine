@@ -405,6 +405,9 @@ public class SalesEntity extends EntityHuman{
 
     @Override
     public void close() {
+        //移除
+        SalesListener.cacheEntitys.remove(salesData.location);
+
         List<Position> p3 = positionListByConfig(this,blockFace,salesData.width,salesData.height);
         for(Position position: p3){
             level.setBlock(position,new BlockAir(),true,true);
@@ -562,8 +565,8 @@ public class SalesEntity extends EntityHuman{
                         BlockEntity.getDefaultCompound(sp, SalesBlockEntity.ENTITY_TYPE),sales);
             }
 
+            String ps = asLocation(position);
             if(data == null){
-                String ps = asLocation(position);
                 data = new SalesData();
                 data.saveItemSlots(tagListTag);
                 data.chunkx = pos.getChunkX();
@@ -581,14 +584,34 @@ public class SalesEntity extends EntityHuman{
                     SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE,data);
                 }
 
-                SalesListener.cacheEntitys.put(ps,sales);
+
             }
             sales.salesData = data;
+            SalesListener.cacheEntitys.put(ps,sales);
 
 
             return sales;
         }
         return null;
+    }
+
+    public boolean setModel(String model){
+        //重设
+        if(SalesMainClass.ENTITY_SKIN.containsKey(model)){
+            SalesData oldSd = salesData;
+            oldSd.skinmodel = model;
+            saveData();
+            close();
+            Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE, () -> {
+                SalesEntity.spawnToAll(oldSd.asPosition(),
+                        BlockFace.valueOf(oldSd.bf.toUpperCase()), oldSd.master, oldSd,
+                        true);
+            },1);
+
+
+        }
+
+        return false;
     }
 
     public static List<Position> positionListByConfig(Position position,BlockFace blockFace,int width,int height){
