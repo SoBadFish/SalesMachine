@@ -139,7 +139,9 @@ public class SalesListener implements Listener {
                                 }
                             }
                         }else{
-                            if(event.getAction() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK || event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
+                            if(
+//                                    event.getAction() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK ||
+                                    event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
                                 DisplayPlayerPanel displayPlayerPanel = new DisplayPlayerPanel(entity1);
                                 displayPlayerPanel.open(player);
                                 chestPanelLinkedHashMap.put(player.getName(),displayPlayerPanel);
