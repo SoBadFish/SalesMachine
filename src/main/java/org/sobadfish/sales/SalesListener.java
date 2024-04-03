@@ -357,14 +357,14 @@ public class SalesListener implements Listener {
         if(event.isCancelled()){
             return;
         }
-        if(event.getPlayer().isOp()){
-            if(block.getId() == main.iBarrier.getBid()){
-                SalesEntity entity1 = getEntityByPos(event.getBlock());
-                if(entity1 != null){
-                    event.setCancelled();
-                    entity1.toClose();
 
+        if(block.getId() == main.iBarrier.getBid()){
+            SalesEntity entity1 = getEntityByPos(event.getBlock());
+            if(entity1 != null){
+                if(event.getPlayer().isOp()){
+                    entity1.toClose();
                 }
+                event.setCancelled();
             }
         }
 
