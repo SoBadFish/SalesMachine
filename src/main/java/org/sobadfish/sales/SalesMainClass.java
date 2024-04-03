@@ -76,7 +76,7 @@ public class SalesMainClass extends PluginBase {
     @Override
     public void onEnable() {
         INSTANCE = this;
-        sendMessageToConsole("&a正在加载售卖机插件");
+        sendMessageToConsole("&a正在加载售货机插件");
         //检查是否支持自定义物品
         boolean load = true;
         try{

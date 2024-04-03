@@ -81,7 +81,7 @@ public class BarrierBlock_Nukkit extends BlockSolidMeta implements IBarrier {
     @Override
     public Item getShaleItem(){
         Item item = Item.get(54);
-        item.setCustomName(TextFormat.colorize('&',"&r&l&e售卖机"));
+        item.setCustomName(TextFormat.colorize('&',"&r&l&e售货机"));
 
         item.setLore(TextFormat.colorize('&',"&r&7\n放置即可生成"));
         CompoundTag compoundTag = item.getNamedTag();

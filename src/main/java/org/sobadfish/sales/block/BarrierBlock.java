@@ -77,7 +77,7 @@ public class BarrierBlock extends BlockSolid implements IBarrier {
     @Override
     public Item getShaleItem(){
         Item item = SalesMainClass.CUSTOM_ITEMS.get("sale");
-        item.setCustomName(TextFormat.colorize('&',"&r&l&e售卖机"));
+        item.setCustomName(TextFormat.colorize('&',"&r&l&e售货机"));
 
         item.setLore(TextFormat.colorize('&',"&r&7\n放置即可生成"));
         CompoundTag compoundTag = item.getNamedTag();
