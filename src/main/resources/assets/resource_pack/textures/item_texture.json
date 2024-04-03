@@ -20,6 +20,9 @@
 		},
 		"ct_iron_sale": {
 			"textures":"textures/items/ct_iron_sale.png"
+		},
+		"pipe_wrench": {
+			"textures":"textures/items/pipe_wrench.png"
 		}
 	}
 }

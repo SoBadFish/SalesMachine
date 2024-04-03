@@ -15,6 +15,9 @@ import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.config.SalesData;
 import org.sobadfish.sales.entity.SalesEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Sobadfish
  * 23:01
@@ -53,6 +56,27 @@ public class ItemAction {
         }
 
         return false;
+    }
+
+    public static boolean onSaleModelChange(Item item,Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz){
+        if(player.isSneaking()){
+            return false;
+        }
+        SalesEntity salesEntity = SalesListener.getEntityByPos(target);
+        if(salesEntity != null){
+            if(player.isOp() || salesEntity.master.equalsIgnoreCase(player.getName())){
+                String model = salesEntity.salesData.skinmodel;
+                List<String> sk = new ArrayList<>(SalesMainClass.ENTITY_SKIN.keySet());
+                int index = sk.indexOf(model);
+                index++;
+                if(index >= sk.size()){
+                    index = 0;
+                }
+                salesEntity.setModel(sk.get(index));
+            }
+        }
+        return true;
+
     }
 
 

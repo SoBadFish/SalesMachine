@@ -78,8 +78,10 @@ public class SalesListener implements Listener {
             }
             Item ei = event.getItem();
 
+
             if(!ei.equals(SalesMainClass.CUSTOM_ITEMS.get("ct")) &&
-                    !ei.equals(SalesMainClass.CUSTOM_ITEMS.get("ct_sale"))
+                    !ei.equals(SalesMainClass.CUSTOM_ITEMS.get("ct_sale")) &&
+                    !ei.equals(SalesMainClass.CUSTOM_ITEMS.get("pipe_wrench"))
             && !ei.equals(new ItemHopper()) && !ei.equals(new ItemMinecartHopper())){
                 event.setCancelled();
             }else{
@@ -263,7 +265,6 @@ public class SalesListener implements Listener {
         for(Entity e: event.getChunk().getEntities().values()){
             if(e instanceof SalesEntity){
                 //顺便移除缓存
-
                 e.close();
             }
         }

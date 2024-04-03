@@ -184,6 +184,9 @@ public class SalesMainClass extends PluginBase {
 
             CustomItemAPI.getInstance().registerCustomItem(1996, org.sobadfish.sales.items.custom.CustomCtItem.class);
             CustomItemAPI.getInstance().registerCustomItem(1997, org.sobadfish.sales.items.custom.CustomCtSaleItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(1998, org.sobadfish.sales.items.custom.CustomWrench.class);
+
+
 
             CUSTOM_ITEMS.put("sale",new org.sobadfish.sales.items.custom.CustomSaleItem());
             CUSTOM_ITEMS.put("setting",new org.sobadfish.sales.items.custom.CustomSaleSettingItem());
@@ -191,6 +194,7 @@ public class SalesMainClass extends PluginBase {
             CUSTOM_ITEMS.put("money",new org.sobadfish.sales.items.custom.CustomSaleMoneyItem());
             CUSTOM_ITEMS.put("ct",new org.sobadfish.sales.items.custom.CustomCtItem());
             CUSTOM_ITEMS.put("ct_sale",new org.sobadfish.sales.items.custom.CustomCtSaleItem());
+            CUSTOM_ITEMS.put("pipe_wrench",new org.sobadfish.sales.items.custom.CustomWrench());
 
         }else{
             Item.registerCustomItem(CustomSaleItem.class);
@@ -200,12 +204,14 @@ public class SalesMainClass extends PluginBase {
 
             Item.registerCustomItem(CustomCtItem.class);
             Item.registerCustomItem(CustomCtSaleItem.class,false);
+            Item.registerCustomItem(CustomWrench.class);
             CUSTOM_ITEMS.put("sale",new CustomSaleItem());
             CUSTOM_ITEMS.put("setting",new CustomSaleSettingItem());
             CUSTOM_ITEMS.put("remove",new CustomSaleRemoveItem());
             CUSTOM_ITEMS.put("money",new CustomSaleMoneyItem());
             CUSTOM_ITEMS.put("ct",new CustomCtItem());
             CUSTOM_ITEMS.put("ct_sale",new CustomCtSaleItem());
+            CUSTOM_ITEMS.put("pipe_wrench",new CustomWrench());
         }
 //        Item.removeCreativeItem(CUSTOM_ITEMS.get("ct_sale"));
 

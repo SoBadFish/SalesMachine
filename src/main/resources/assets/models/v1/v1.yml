@@ -1,6 +1,6 @@
 
 # 实体大小
-entity-size: 1
+entity-size: 0.9
 
 # 是否显示开门动画
 open-door-anim: true
