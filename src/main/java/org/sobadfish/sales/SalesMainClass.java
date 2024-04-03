@@ -288,7 +288,7 @@ public class SalesMainClass extends PluginBase {
         //初始化文件夹
         if(noExists){
 
-            String[] lists = new String[]{"v1", "v2"};
+            String[] lists = new String[]{"v1", "v2","v3"};
             for(String verName: lists){
                 saveResource("assets/models/" +verName+"/machine.png", "/assets/" +verName+"/machine.png",false);
                 saveResource("assets/models/" +verName+"/"+verName+".yml", "/assets/" +verName+"/"+verName+".yml",false);
