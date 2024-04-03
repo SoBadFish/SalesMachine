@@ -37,8 +37,10 @@ public class SalesData {
 
     public int height = 2;
 
-
     public String itemjson;
+
+    //皮肤模型名称
+    public String skinmodel = "";
 
     //整体打包
     public CompoundTag toPackage(){
@@ -52,6 +54,9 @@ public class SalesData {
         tag.putString("bf",bf);
         if(customname != null){
             tag.putString("customname",customname);
+        }
+        if(skinmodel != null && !"".equalsIgnoreCase(skinmodel)){
+            tag.putString("skinmodel",skinmodel);
         }
 
 
@@ -75,6 +80,9 @@ public class SalesData {
         salesData.bf = tag.getString("bf");
         if(tag.contains("customname")){
             salesData.customname = tag.getString("customname");
+        }
+        if(tag.contains("skinmodel")){
+            salesData.skinmodel = tag.getString("skinmodel");
         }
 
 

@@ -28,6 +28,7 @@ import cn.nukkit.network.protocol.RemoveEntityPacket;
 import org.sobadfish.sales.SalesListener;
 import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.config.SaleSettingConfig;
+import org.sobadfish.sales.config.SaleSkinConfig;
 import org.sobadfish.sales.config.SalesData;
 import org.sobadfish.sales.db.SqlData;
 import org.sobadfish.sales.items.SaleItem;
@@ -60,6 +61,9 @@ public class SalesEntity extends EntityHuman{
 
     public String master;
 
+    public SaleSettingConfig saleSettingConfig;
+
+
 
 
     @Override
@@ -77,11 +81,12 @@ public class SalesEntity extends EntityHuman{
     public void saveNBT() {
     }
 
-    public SalesEntity(FullChunk chunk, CompoundTag nbt, BlockFace face,String master,ListTag<CompoundTag> load) {
+    public SalesEntity(FullChunk chunk, CompoundTag nbt, BlockFace face,String master,SaleSettingConfig config,ListTag<CompoundTag> load) {
         super(chunk, nbt);
         this.blockFace = face;
         this.loadItems = load;
-        setScale((float) SalesMainClass.getSaleSettingConfig().entitySize);
+        this.saleSettingConfig = config;
+        setScale((float) saleSettingConfig.entitySize);
         this.master = master;
         //解包物品
         setImmobile();
@@ -270,7 +275,7 @@ public class SalesEntity extends EntityHuman{
     public boolean onUpdate(int currentTick) {
         boolean b = super.onUpdate(currentTick);
         // 将角度限制在 -180 到 180 之间
-        if(SalesMainClass.saleSettingConfig.enableAnim) {
+        if(saleSettingConfig.enableAnim) {
             if (animLoad == 1) {
 
                 if (yaw > right) {
@@ -297,7 +302,7 @@ public class SalesEntity extends EntityHuman{
         updateMovement();
 
         boolean s = false;
-        if(SalesMainClass.saleSettingConfig.enableItem){
+        if(saleSettingConfig.enableItem){
             for(Player player: getLevel().getPlayers().values()){
                 if(player.distance(this) <= 10){
                     showItems();
@@ -329,8 +334,8 @@ public class SalesEntity extends EntityHuman{
     private void showItems(){
         if(ipacket.size() == 0){
             int size = 6;
-            if(SalesMainClass.getSaleSettingConfig().floatItemPos.containsKey(blockFace)) {
-                size = SalesMainClass.getSaleSettingConfig().floatItemPos.get(blockFace).size();
+            if(saleSettingConfig.floatItemPos.containsKey(blockFace)) {
+                size = saleSettingConfig.floatItemPos.get(blockFace).size();
             }
 
             for(int i = 0; i< Math.min(items.size(),size);i++){
@@ -348,8 +353,8 @@ public class SalesEntity extends EntityHuman{
     }
 
     public Position asPosition(int index){
-        if(SalesMainClass.getSaleSettingConfig().floatItemPos.containsKey(blockFace)){
-            List<Vector3> vector3s = SalesMainClass.getSaleSettingConfig().floatItemPos.get(blockFace);
+        if(saleSettingConfig.floatItemPos.containsKey(blockFace)){
+            List<Vector3> vector3s = saleSettingConfig.floatItemPos.get(blockFace);
 
             if(vector3s.size() > index){
                 Vector3 v3 = vector3s.get(index);
@@ -491,16 +496,29 @@ public class SalesEntity extends EntityHuman{
             bf = BlockFace.EAST;
         }
         //检测地图
-        if(SalesMainClass.getSaleSettingConfig().banWorlds.contains(position.level.getFolderName())){
+        if(SalesMainClass.banWorlds.contains(position.level.getFolderName())){
             return null;
         }
+        if(SalesMainClass.ENTITY_SKIN.size() == 0){
+            return null;
+        }
+        String modelName = new ArrayList<>(SalesMainClass.ENTITY_SKIN.keySet()).get(0);
+        if(data != null && data.skinmodel != null){
+            String smd = data.skinmodel;
+            if(SalesMainClass.ENTITY_SKIN.containsKey(smd)){
+                modelName = smd;
+            }
+        }
+        SaleSkinConfig saleSkinConfig = SalesMainClass.ENTITY_SKIN.get(modelName);
+
+
 
         Position pos = new Position(
                 position.getFloorX() + 0.5,
                 position.getFloorY(),
                 position.getFloorZ() + 0.5,
                 position.level);
-        SaleSettingConfig.SaleWeight weight = SalesMainClass.getSaleSettingConfig().weight;
+        SaleSettingConfig.SaleWeight weight = saleSkinConfig.config.weight;
         int width = weight.width;
         int height = weight.height;
 
@@ -519,7 +537,7 @@ public class SalesEntity extends EntityHuman{
         }
 
         if(!hasBlock){
-            Skin skin = SalesMainClass.ENTITY_SKIN.get(bf);
+            Skin skin = saleSkinConfig.skinLinkedHashMap.get(bf);
 
             CompoundTag tag = EntityHuman.getDefaultNBT(pos);
             tag.putString(SALE_MASTER_TAG,master);
@@ -532,7 +550,7 @@ public class SalesEntity extends EntityHuman{
                 tagListTag = data.asItemSlots();
 
             }
-            SalesEntity sales = new SalesEntity(position.getChunk(),tag,bf,master,tagListTag);
+            SalesEntity sales = new SalesEntity(position.getChunk(),tag,bf,master,saleSkinConfig.config,tagListTag);
 
             sales.setSkin(skin);
             sales.spawnToAll();
@@ -555,6 +573,7 @@ public class SalesEntity extends EntityHuman{
                 data.location = ps;
                 data.master = master;
                 data.bf = bf.getName();
+                data.skinmodel = modelName;
                 data.customname = master+" 的售货机";
                 if(SalesMainClass.INSTANCE.sqliteHelper.hasData(SalesMainClass.DB_TABLE,"location",ps)){
                     SalesMainClass.INSTANCE.sqliteHelper.set(SalesMainClass.DB_TABLE,"location",ps,data);

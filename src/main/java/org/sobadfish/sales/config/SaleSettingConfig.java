@@ -18,7 +18,6 @@ public class SaleSettingConfig {
 
     public double entitySize = 0.9f;
 
-    public List<String> banWorlds = new ArrayList<>();
 
     public SaleWeight weight = new SaleWeight();
 

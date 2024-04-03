@@ -21,6 +21,7 @@ import org.sobadfish.sales.block.BarrierBlock;
 import org.sobadfish.sales.block.BarrierBlock_Nukkit;
 import org.sobadfish.sales.block.IBarrier;
 import org.sobadfish.sales.config.SaleSettingConfig;
+import org.sobadfish.sales.config.SaleSkinConfig;
 import org.sobadfish.sales.config.SalesData;
 import org.sobadfish.sales.db.SqliteHelper;
 import org.sobadfish.sales.entity.SalesEntity;
@@ -44,7 +45,7 @@ import java.util.Map;
  */
 public class SalesMainClass extends PluginBase {
 
-    public static LinkedHashMap<BlockFace,Skin> ENTITY_SKIN = new LinkedHashMap<>();
+    public static LinkedHashMap<String, SaleSkinConfig> ENTITY_SKIN = new LinkedHashMap<>();
 
     public static final String PLUGIN_NAME = "&7[&e售货机&7]&r";
 
@@ -56,12 +57,13 @@ public class SalesMainClass extends PluginBase {
 
     public static boolean LOAD_CUSTOM = false;
 
+    public static List<String> banWorlds = new ArrayList<>();
+
 
     public SqliteHelper sqliteHelper;
 
     public static final String DB_TABLE = "salelocation";
 
-    public static SaleSettingConfig saleSettingConfig;
 
 
     @Override
@@ -118,6 +120,7 @@ public class SalesMainClass extends PluginBase {
         initSkin();
         initItem();
 
+
         if(Block.list.length <= 256){
             iBarrier = new BarrierBlock_Nukkit();
             //TODO 放弃了 使用Nkx后好多都没法用 比如实体点击不到
@@ -140,45 +143,15 @@ public class SalesMainClass extends PluginBase {
 
     }
 
-    public static SaleSettingConfig getSaleSettingConfig() {
-        return saleSettingConfig;
-    }
 
     //加载坐标点
     private void loadConfig() {
-        saleSettingConfig = new SaleSettingConfig();
-        saleSettingConfig.enableAnim = getConfig().getBoolean("open-door-anim",true);
-        saleSettingConfig.enableItem = getConfig().getBoolean("display-item.enable",true);
-        saleSettingConfig.banWorlds = getConfig().getStringList("ban-world");
-        saleSettingConfig.entitySize = getConfig().getDouble("entity-size",0.9d);
-        SaleSettingConfig.SaleWeight weight = new SaleSettingConfig.SaleWeight();
-        weight.width = getConfig().getInt("weight.width",1);
-        weight.height = getConfig().getInt("weight.height",2);
-        saleSettingConfig.weight = weight;
-
-        Map<?,?> map = (Map<?, ?>) getConfig().get("display-item.position");
-        Map<BlockFace, List<Vector3>> linkedListLinkedHashMap = new LinkedHashMap<>();
-        for (BlockFace face: BlockFace.values()){
-            if(map.containsKey(face.getName().toLowerCase())){
-                List<?> sv = (List<?>) map.get(face.getName().toLowerCase());
-                List<Vector3> v3 = new ArrayList<>();
-                for(Object o:sv){
-                    String v3s = o.toString();
-                    String[] sp = v3s.split(";");
-                    for(String spv1: sp){
-                        String[] posv3 = spv1.split(",");
-                        v3.add(new Vector3(Double.parseDouble(posv3[0])
-                                ,Double.parseDouble(posv3[1])
-                                ,Double.parseDouble(posv3[2])));
-                    }
-                }
-                linkedListLinkedHashMap.put(face,v3);
-            }
-        }
-        saleSettingConfig.floatItemPos = linkedListLinkedHashMap;
-
+        banWorlds = getConfig().getStringList("ban-world");
 
     }
+
+
+
 
     private void chunkDb(){
         //检查DB
@@ -292,20 +265,99 @@ public class SalesMainClass extends PluginBase {
     }
 
     private void initSkin() {
-        saveResource("assets/machine.png","/assets/machine.png",false);
+        //先检查文件夹
         BlockFace[] blockFaces = new BlockFace[]{BlockFace.EAST,BlockFace.NORTH,BlockFace.SOUTH,BlockFace.WEST};
-        for(BlockFace face: blockFaces){
-            saveResource("assets/machine_"+face.getName().toLowerCase()+".json","/assets/machine_"+face.getName().toLowerCase()+".json",false);
-            ENTITY_SKIN.put(face,loadSkin("machine_"+face.getName().toLowerCase()));
+        File modelFile = new File(this.getDataFolder()+"/assets");
+        File[] nFolders = modelFile.listFiles();
+        boolean noExists = true;
+        List<File> folders = new ArrayList<>();
+        if(nFolders != null && nFolders.length > 0){
+            for(File aFile: nFolders){
+                if(aFile.isDirectory()){
+                    noExists = false;
+                    folders.add(aFile);
+                }
+            }
         }
+        //初始化文件夹
+        if(noExists){
+
+            String[] lists = new String[]{"v1", "v2"};
+            for(String verName: lists){
+                saveResource("assets/models/" +verName+"/machine.png", "/assets/" +verName+"/machine.png",false);
+                saveResource("assets/models/" +verName+"/"+verName+".yml", "/assets/" +verName+"/"+verName+".yml",false);
+                for(BlockFace face: blockFaces){
+                    saveResource("assets/models/"+verName+"/machine_" +face.getName().toLowerCase()+".json",
+                            "/assets/"+verName+"/machine_"+face.getName().toLowerCase()+".json",false);
+
+                }
+                //添加到文件列表
+                folders.add(new File(this.getDataFolder()+"/assets/"+verName));
+            }
+        }
+
+        for (File folder : folders) {
+            String name = folder.getName();
+            File fc = new File(folder+"/"+name+".yml");
+            if(!fc.exists()){
+                sendMessageToConsole("&c模型文件夹 "+name+" 缺失关键 .yml 文件!");
+                continue;
+            }
+            Config config = new Config(fc);
+            LinkedHashMap<BlockFace,Skin> hashMap = new LinkedHashMap<>();
+            for(BlockFace face: blockFaces){
+                hashMap.put(face,loadSkin("machine_"+face.getName().toLowerCase(),folder+"/machine.png",
+                        folder+"/machine_"+face.getName().toLowerCase()+".json"));
+            }
+
+            ENTITY_SKIN.put(name,new SaleSkinConfig(name,hashMap,loadSettingConfig(config)));
+        }
+
+
+
 
     }
 
-    private Skin loadSkin(String skinName){
+    private SaleSettingConfig loadSettingConfig(Config config){
+        SaleSettingConfig saleSettingConfig = new SaleSettingConfig();
+        saleSettingConfig.enableAnim = config.getBoolean("open-door-anim",true);
+        saleSettingConfig.enableItem = config.getBoolean("display-item.enable",true);
+
+        saleSettingConfig.entitySize = config.getDouble("entity-size",0.9d);
+        SaleSettingConfig.SaleWeight weight = new SaleSettingConfig.SaleWeight();
+        weight.width = config.getInt("weight.width",1);
+        weight.height = config.getInt("weight.height",2);
+        saleSettingConfig.weight = weight;
+
+        Map<?,?> map = (Map<?, ?>) config.get("display-item.position");
+        Map<BlockFace, List<Vector3>> linkedListLinkedHashMap = new LinkedHashMap<>();
+        for (BlockFace face: BlockFace.values()){
+            if(map.containsKey(face.getName().toLowerCase())){
+                List<?> sv = (List<?>) map.get(face.getName().toLowerCase());
+                List<Vector3> v3 = new ArrayList<>();
+                for(Object o:sv){
+                    String v3s = o.toString();
+                    String[] sp = v3s.split(";");
+                    for(String spv1: sp){
+                        String[] posv3 = spv1.split(",");
+                        v3.add(new Vector3(Double.parseDouble(posv3[0])
+                                ,Double.parseDouble(posv3[1])
+                                ,Double.parseDouble(posv3[2])));
+                    }
+                }
+                linkedListLinkedHashMap.put(face,v3);
+            }
+        }
+        saleSettingConfig.floatItemPos = linkedListLinkedHashMap;
+
+        return saleSettingConfig;
+    }
+
+    private Skin loadSkin(String skinName,String imgPath,String jsonPath){
         Skin skin = new Skin();
-        BufferedImage skindata = null;
+        BufferedImage skindata;
         try {
-            skindata = ImageIO.read(new File(this.getDataFolder()+"/assets/machine.png"));
+            skindata = ImageIO.read(new File(imgPath));
         } catch (IOException var19) {
             this.getPluginLoader().disablePlugin(this);
             return null;
@@ -314,8 +366,8 @@ public class SalesMainClass extends PluginBase {
             skin.setSkinData(skindata);
             skin.setSkinId(skinName);
         }
-        File skinJsonFile = new File(this.getDataFolder() + "/assets/" + skinName + ".json");
-        Map<String, Object> skinJson = (new Config(this.getDataFolder()+"/assets/"+skinName+".json", Config.JSON)).getAll();
+        File skinJsonFile = new File(jsonPath);
+        Map<String, Object> skinJson = (new Config(jsonPath, Config.JSON)).getAll();
         String geometryName;
         String formatVersion = (String) skinJson.getOrDefault("format_version", "1.10.0");
         skin.setGeometryDataEngineVersion(formatVersion); //设置皮肤版本，主流格式有1.16.0,1.12.0(Blockbench新模型),1.10.0(Blockbench Legacy模型),1.8.0

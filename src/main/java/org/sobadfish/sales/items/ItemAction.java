@@ -70,7 +70,7 @@ public class ItemAction {
                     return false;
                 }
             }
-            if(SalesMainClass.getSaleSettingConfig().banWorlds.contains(level.getFolderName())){
+            if(SalesMainClass.banWorlds.contains(level.getFolderName())){
                 return false;
             }
             if(tag.contains("sale_data")){
@@ -83,8 +83,11 @@ public class ItemAction {
                     SalesEntity entity = SalesEntity.spawnToAll(salesData.asPosition(),
                             BlockFace.valueOf(salesData.bf.toUpperCase()), salesData.master, salesData,
                             true);
-                    SalesListener.cacheEntitys.put(salesData.location, entity);
-                    SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE, salesData);
+                    if(entity != null){
+                        SalesListener.cacheEntitys.put(salesData.location, entity);
+                        SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE, salesData);
+                    }
+
                 },1);
                 player.getInventory().setItemInHand(SalesMainClass.CUSTOM_ITEMS.get("ct"));
 
