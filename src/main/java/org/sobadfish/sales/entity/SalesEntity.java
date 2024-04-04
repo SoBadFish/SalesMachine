@@ -409,10 +409,13 @@ public class SalesEntity extends EntityHuman{
         List<Position> p3 = positionListByConfig(this,blockFace,salesData.width,salesData.height);
         for(Position position: p3){
             String lo = asLocation(position);
-            SalesEntity salesEntity = SalesListener.cacheEntitys.get(lo);
-            if(salesEntity.equals(this)){
-                SalesListener.cacheEntitys.remove(lo);
+            if(SalesListener.cacheEntitys.containsKey(lo)){
+                SalesEntity salesEntity = SalesListener.cacheEntitys.get(lo);
+                if(salesEntity.equals(this)){
+                    SalesListener.cacheEntitys.remove(lo);
+                }
             }
+
 
             level.setBlock(position,new BlockAir(),true,true);
             if(!isPackage){
