@@ -406,18 +406,10 @@ public class SalesEntity extends EntityHuman{
     @Override
     public void close() {
         //移除
-
-
         List<Position> p3 = positionListByConfig(this,blockFace,salesData.width,salesData.height);
         for(Position position: p3){
             String lo = asLocation(position);
-            if(SalesListener.cacheEntitys.containsKey(lo)){
-                SalesEntity se = SalesListener.cacheEntitys.get(lo);
-                if(se.equals(this)){
-                    SalesListener.cacheEntitys.remove(lo);
-                }
-            }
-
+            SalesListener.cacheEntitys.remove(lo);
 //            SalesListener.cacheEntitys.remove(lo);
             level.setBlock(position,new BlockAir(),true,true);
             if(!isPackage){
