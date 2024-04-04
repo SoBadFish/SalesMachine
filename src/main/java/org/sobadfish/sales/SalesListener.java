@@ -319,15 +319,16 @@ public class SalesListener implements Listener {
     }
 
     public static SalesEntity getEntityByPos(Position position){
-        String[] vl = new String[]{
-                SalesEntity.asLocation(position),
-                SalesEntity.asLocation(position.add(0,-1))
-        };
-        for(String v : vl){
+//        String[] vl = new String[]{
+//                SalesEntity.asLocation(position),
+//                SalesEntity.asLocation(position.add(0,-1))
+//        };
+        String v = SalesEntity.asLocation(position);
+//        for(String v : vl){
             if(cacheEntitys.containsKey(v)){
                 return cacheEntitys.get(v);
             }
-        }
+//        }
         return null;
 
     }

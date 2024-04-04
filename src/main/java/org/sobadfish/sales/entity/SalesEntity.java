@@ -406,10 +406,19 @@ public class SalesEntity extends EntityHuman{
     @Override
     public void close() {
         //移除
-        SalesListener.cacheEntitys.remove(salesData.location);
+
 
         List<Position> p3 = positionListByConfig(this,blockFace,salesData.width,salesData.height);
         for(Position position: p3){
+            String lo = asLocation(position);
+            if(SalesListener.cacheEntitys.containsKey(lo)){
+                SalesEntity se = SalesListener.cacheEntitys.get(lo);
+                if(se.equals(this)){
+                    SalesListener.cacheEntitys.remove(lo);
+                }
+            }
+
+//            SalesListener.cacheEntitys.remove(lo);
             level.setBlock(position,new BlockAir(),true,true);
             if(!isPackage){
                 level.addParticle(new DestroyBlockParticle(position,new BlockStone()));
@@ -455,7 +464,7 @@ public class SalesEntity extends EntityHuman{
             }
         });
 
-        SalesListener.cacheEntitys.remove(as);
+//        SalesListener.cacheEntitys.remove(as);
         return tag;
 
     }
@@ -485,7 +494,7 @@ public class SalesEntity extends EntityHuman{
         close();
         String as = asLocation(this);
         SalesMainClass.INSTANCE.sqliteHelper.remove(SalesMainClass.DB_TABLE,"location",as);
-        SalesListener.cacheEntitys.remove(as);
+//        SalesListener.cacheEntitys.remove(as);
 
 //        level.save(true);
     }
@@ -560,9 +569,14 @@ public class SalesEntity extends EntityHuman{
 
 
             for (Position sp : psconfig){
+                String pps = asLocation(sp);
                 position.getLevel().setBlock(sp, (Block) SalesMainClass.INSTANCE.iBarrier,false,false);
                 BlockEntity.createBlockEntity(SalesBlockEntity.ENTITY_TYPE,pos.getChunk(),
                         BlockEntity.getDefaultCompound(sp, SalesBlockEntity.ENTITY_TYPE),sales);
+                if(!SalesListener.cacheEntitys.containsKey(pps)){
+                    SalesListener.cacheEntitys.put(pps,sales);
+                }
+
             }
 
             String ps = asLocation(position);
@@ -587,7 +601,7 @@ public class SalesEntity extends EntityHuman{
 
             }
             sales.salesData = data;
-            SalesListener.cacheEntitys.put(ps,sales);
+
 
 
             return sales;
@@ -598,10 +612,10 @@ public class SalesEntity extends EntityHuman{
     public boolean setModel(String model){
         //重设
         if(SalesMainClass.ENTITY_SKIN.containsKey(model)){
-            SalesData oldSd = salesData;
-            oldSd.skinmodel = model;
             saveData();
             close();
+            SalesData oldSd = salesData;
+            oldSd.skinmodel = model;
             Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE, () -> {
                 SalesEntity.spawnToAll(oldSd.asPosition(),
                         BlockFace.valueOf(oldSd.bf.toUpperCase()), oldSd.master, oldSd,
