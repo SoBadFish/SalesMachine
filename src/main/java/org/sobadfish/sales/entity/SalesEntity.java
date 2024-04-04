@@ -413,6 +413,8 @@ public class SalesEntity extends EntityHuman{
                 SalesEntity salesEntity = SalesListener.cacheEntitys.get(lo);
                 if(salesEntity.equals(this)){
                     SalesListener.cacheEntitys.remove(lo);
+                }else{
+                    continue;
                 }
             }
 
@@ -688,5 +690,13 @@ public class SalesEntity extends EntityHuman{
         }
     }
 
-
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof SalesEntity){
+            return asLocation(this).equalsIgnoreCase(
+                    asLocation((SalesEntity) obj)
+            ) && blockFace == ((SalesEntity) obj).blockFace;
+        }
+        return false;
+    }
 }
