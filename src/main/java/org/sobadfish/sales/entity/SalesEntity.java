@@ -499,7 +499,11 @@ public class SalesEntity extends EntityHuman{
             bf = BlockFace.EAST;
         }
         //检测地图
-        if(SalesMainClass.banWorlds.contains(position.level.getFolderName())){
+        Player player = Server.getInstance().getPlayer(master);
+        if(player == null){
+            return null;
+        }
+        if(SalesMainClass.banWorlds.contains(position.level.getFolderName()) && !player.isOp()){
             return null;
         }
         if(SalesMainClass.ENTITY_SKIN.size() == 0){

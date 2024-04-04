@@ -96,7 +96,7 @@ public class ItemAction {
                     return false;
                 }
             }
-            if(SalesMainClass.banWorlds.contains(level.getFolderName())){
+            if(SalesMainClass.banWorlds.contains(level.getFolderName()) && !player.isOp()){
                 return false;
             }
             if(tag.contains("sale_data")){
