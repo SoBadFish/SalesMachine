@@ -406,10 +406,13 @@ public class SalesEntity extends EntityHuman{
     @Override
     public void close() {
         //移除
+        System.out.println("width: "+salesData.width+" height: "+salesData.height);
         List<Position> p3 = positionListByConfig(this,blockFace,salesData.width,salesData.height);
         for(Position position: p3){
             String lo = asLocation(position);
+            System.out.println("移除: "+lo);
             SalesListener.cacheEntitys.remove(lo);
+            System.out.println("现存: "+new ArrayList<>(SalesListener.cacheEntitys.keySet()));
 //            SalesListener.cacheEntitys.remove(lo);
             level.setBlock(position,new BlockAir(),true,true);
             if(!isPackage){
@@ -604,15 +607,18 @@ public class SalesEntity extends EntityHuman{
     public boolean setModel(String model){
         //重设
         if(SalesMainClass.ENTITY_SKIN.containsKey(model)){
-            saveData();
             close();
             SalesData oldSd = salesData;
             oldSd.skinmodel = model;
-            Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE, () -> {
-                SalesEntity.spawnToAll(oldSd.asPosition(),
-                        BlockFace.valueOf(oldSd.bf.toUpperCase()), oldSd.master, oldSd,
-                        true);
-            },1);
+            SaleSkinConfig saleSkinConfig = SalesMainClass.ENTITY_SKIN.get(model);
+            oldSd.width = saleSkinConfig.config.weight.width;
+            oldSd.height = saleSkinConfig.config.weight.height;
+            saveData();
+
+            SalesEntity.spawnToAll(oldSd.asPosition(),
+                    BlockFace.valueOf(oldSd.bf.toUpperCase()), oldSd.master, oldSd,
+                    true);
+
 
 
         }
@@ -622,9 +628,9 @@ public class SalesEntity extends EntityHuman{
 
     public static List<Position> positionListByConfig(Position position,BlockFace blockFace,int width,int height){
         List<Position> positions = new ArrayList<>();
-        ;
+        BlockFace rf = blockFace.rotateY();
         for(int i = 0; i < width;i++){
-            Position ry = position.getSide(blockFace.rotateY(),i);
+            Position ry = position.getSide(rf,i);
             for(int y = 0; y < height; y++){
                 positions.add(ry.add(0,y));
             }

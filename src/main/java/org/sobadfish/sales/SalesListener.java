@@ -326,6 +326,11 @@ public class SalesListener implements Listener {
         String v = SalesEntity.asLocation(position);
 //        for(String v : vl){
             if(cacheEntitys.containsKey(v)){
+                SalesEntity salesEntity = cacheEntitys.get(v);
+                if(salesEntity.finalClose){
+                    cacheEntitys.remove(v);
+                    return null;
+                }
                 return cacheEntitys.get(v);
             }
 //        }

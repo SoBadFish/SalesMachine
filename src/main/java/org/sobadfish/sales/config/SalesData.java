@@ -142,4 +142,13 @@ public class SalesData {
                 ", itemjson='" + itemjson + '\'' +
                 '}';
     }
+
+    @Override
+    public SalesData clone()  {
+        try{
+            return (SalesData) super.clone();
+        }catch (Exception e){
+            return new SalesData();
+        }
+    }
 }
