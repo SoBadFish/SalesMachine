@@ -93,6 +93,9 @@ public class AdminForm {
             float money = 0;
             try{
                 money = Float.parseFloat(responseCustom.getInputResponse(3));
+                if(money < 0){
+                    money = 0;
+                }
             }catch (Exception ignore){}
             sales.money = money;
             sales.tag.putDouble("money",money);
