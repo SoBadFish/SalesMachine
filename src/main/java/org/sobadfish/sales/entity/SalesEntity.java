@@ -112,17 +112,16 @@ public class SalesEntity extends EntityHuman{
      * @param item 需要移除的物品
      * @return 实际移除的数量
      * */
-    public int removeItem(String playerName,SaleItem item,int count,boolean updateInv){
+    public void removeItem(String playerName,SaleItem item,int count,boolean updateInv){
 //        ListTag<CompoundTag> cl = namedTag.getList("sale_items",CompoundTag.class);
         ListTag<CompoundTag> cl = loadItems;
         int index = 0;
-        int cc = 0;
         for(SaleItem saleItem: new ArrayList<>(items)) {
             if (saleItem.saleItem.equals(item.saleItem, true, true)) {
                 //相同物品
                 if(cl.size() <= index){
                     //理论不会出现这个问题... 以防万一
-                    return 0;
+                    return;
                 }
                 CompoundTag tg = cl.get(index);
                 //如果传入的是 0 直接移除就行
@@ -135,14 +134,13 @@ public class SalesEntity extends EntityHuman{
                     if(tg.getInt("stack") >= count){
                         tg.putInt("stack",tg.getInt("stack") - count);
                         saleItem.stack -= count;
-                        cc = count;
+
                         break;
                     }else{
                         int count2 = tg.getInt("stack");
                         saleItem.stack = 0;
                         cl.remove(tg);
                         items.remove(saleItem);
-                        cc = count2;
                         break;
                     }
                 }
@@ -156,11 +154,11 @@ public class SalesEntity extends EntityHuman{
 //
 //        saveData();
 
-        return cc;
     }
 
     public List<Item> getItemInventoryByItem(Item item) {
         List<Item> itemMap = new ArrayList<>();
+
         for(SaleItem saleItem: items) {
             if (saleItem.saleItem.equals(item, true, true)) {
                 int s = (int)Math.floor(saleItem.stack / (float)item.getMaxStackSize());
@@ -171,7 +169,7 @@ public class SalesEntity extends EntityHuman{
                         ic2.setCount(ic2.getMaxStackSize());
                         itemMap.add(ic2);
                     }
-                    int ss = saleItem.stack - s * ic.getMaxStackSize();
+                    int ss = saleItem.stack - (s * ic.getMaxStackSize());
                     if(ss > 0){
                         Item ic2 = ic.clone();
                         ic2.setCount(ss);
@@ -186,6 +184,7 @@ public class SalesEntity extends EntityHuman{
 
             }
         }
+
         return itemMap;
     }
 

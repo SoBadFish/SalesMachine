@@ -406,7 +406,6 @@ public class SqliteHelper {
         }
 
         public DBTable(Map<String,String> m){
-            System.out.println(m);
             tables.putAll(m);
         }
 

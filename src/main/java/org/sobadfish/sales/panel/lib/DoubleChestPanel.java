@@ -88,14 +88,15 @@ public class DoubleChestPanel extends DoubleChestFakeInventory implements Invent
                 map.put(i,nx.getPanelItem(getPlayerInfo(),i));
 
             }else{
-                if(items.size() > (InventoryType.DOUBLE_CHEST.getDefaultSize() - 1) * page){
+                int ip = (items.size() - ((InventoryType.DOUBLE_CHEST.getDefaultSize() - 1) * (page - 1)));
+                if(ip > (InventoryType.DOUBLE_CHEST.getDefaultSize() - 1)){
                     //还能往下翻
                     int i = 0;
                     int ps = 0;
                     LastPageItem lx = new LastPageItem();
                     map.put(i,lx.getPanelItem(getPlayerInfo(),i));
                     panel.put(i++,lx);
-                    for(; i < InventoryType.DOUBLE_CHEST.getDefaultSize() - 2; i++){
+                    for(; i < InventoryType.DOUBLE_CHEST.getDefaultSize() - 1; i++){
                         map.put(i,items.get(i));
                         ps += items.get(i).getCount();
                     }
@@ -111,10 +112,13 @@ public class DoubleChestPanel extends DoubleChestFakeInventory implements Invent
                     LastPageItem lx = new LastPageItem();
                     map.put(i,lx.getPanelItem(getPlayerInfo(),i));
                     panel.put(i++,lx);
-                    for(; i < InventoryType.DOUBLE_CHEST.getDefaultSize() - 2; i++){
+                    for(; i < ip - 1; i++){
                         map.put(i,items.get(i));
                         ps += items.get(i).getCount();
                     }
+                    map.put(i,items.get(items.size() - 1));
+                    ps += items.get(items.size() - 1).getCount();
+
                     pageSize = ps;
                 }
             }
@@ -157,6 +161,7 @@ public class DoubleChestPanel extends DoubleChestFakeInventory implements Invent
                 count += item.getCount();
             }
         }
+
         //获取当前页数
         sales.setItem(choseItem,count,pageSize);
 
