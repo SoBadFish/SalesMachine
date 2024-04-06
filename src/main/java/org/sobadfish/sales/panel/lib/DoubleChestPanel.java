@@ -159,6 +159,7 @@ public class DoubleChestPanel extends DoubleChestFakeInventory implements Invent
         }
         //获取当前页数
         sales.setItem(choseItem,count,pageSize);
+
     }
 
     public void update(boolean reset){
@@ -203,5 +204,9 @@ public class DoubleChestPanel extends DoubleChestFakeInventory implements Invent
     @Override
     public Inventory getInventory() {
         return this;
+    }
+
+    public void updateItem() {
+        this.items = sales.getItemInventoryByItem(choseItem);
     }
 }
