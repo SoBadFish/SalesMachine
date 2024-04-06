@@ -74,7 +74,9 @@ public class ItemAction {
                 if(index >= sk.size()){
                     index = 0;
                 }
-                salesEntity.setModel(sk.get(index));
+                if(!salesEntity.setModel(sk.get(index))){
+                    SalesMainClass.sendMessageToObject("&c切换模型失败",player);
+                }
             }else{
                 SalesMainClass.sendMessageToObject("&c这不是你的售货机",player);
             }
