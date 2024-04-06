@@ -42,7 +42,6 @@ public class AdminForm {
         FormWindowCustom custom = new FormWindowCustom("售货机 ————— 管理");
 
         boolean b = sales.tag.contains("noreduce") && sales.tag.getBoolean("noreduce");
-        custom.addElement(new ElementToggle("是否不消耗库存",b));
 
         String dbuy = sales.tag.contains("limitCount")?sales.tag.getInt("limitCount")+"":"-1";
         String dre = sales.tag.contains("limitTime")?sales.tag.getInt("limitTime")+"":"-1";
@@ -52,7 +51,13 @@ public class AdminForm {
         custom.addElement(new ElementInput("刷新时间(h)","若设置-1则不刷新",dre));
         custom.addElement(new ElementToggle("是否为收购", sales.tag.contains("sales_exchange") && sales.tag.getBoolean("sales_exchange")));
         custom.addElement(new ElementInput("商品价格","商品的价格 出售/回收",dm));
-        custom.addElement(new ElementToggle("移除"));
+
+
+        if(player.isOp()){
+            custom.addElement(new ElementToggle("是否不消耗库存",b));
+            custom.addElement(new ElementToggle("移除"));
+        }
+
 
 
         player.showFormWindow(custom,getId());
@@ -60,29 +65,34 @@ public class AdminForm {
 
     }
     public void onListener(Player player, FormResponseCustom responseCustom){
-        boolean b = responseCustom.getToggleResponse(0);
+        boolean b = false;
+        boolean remove = false;
         int limit = -1;
         int hour = -1;
         try {
-            limit = Integer.parseInt(responseCustom.getInputResponse(1));
+            limit = Integer.parseInt(responseCustom.getInputResponse(0));
         }catch (Exception ignore){}
         try {
-            hour = Integer.parseInt(responseCustom.getInputResponse(2));
+            hour = Integer.parseInt(responseCustom.getInputResponse(1));
 
         }catch (Exception ignore){}
         if(hour < -1){
             hour = -1;
         }
-        if(responseCustom.getToggleResponse(5)){
+        if(player.isOp()){
+            b = responseCustom.getToggleResponse(4);
+            remove = responseCustom.getToggleResponse(5);
+        }
+        if(remove){
             sales.isRemove = true;
         }else{
-            sales.tag.putBoolean("sales_exchange",responseCustom.getToggleResponse(3));
+            sales.tag.putBoolean("sales_exchange",responseCustom.getToggleResponse(2));
             sales.tag.putBoolean("noreduce",b);
             sales.tag.putInt("limitCount",limit);
-            sales.tag.putInt("limitTime",hour * 60 * 60 * 1000);
+            sales.tag.putInt("limitTime",hour);
             float money = 0;
             try{
-                money = Float.parseFloat(responseCustom.getInputResponse(4));
+                money = Float.parseFloat(responseCustom.getInputResponse(3));
             }catch (Exception ignore){}
             sales.money = money;
             sales.tag.putDouble("money",money);

@@ -60,17 +60,41 @@ public class PanelItem extends BasePlayPanelItemInstance{
             }
             if(size > 0){
                 if(showItem.tag.contains("sales_exchange") && showItem.tag.getBoolean("sales_exchange",false)){
-                    int count = getInventoryItemCount(player.getInventory(),showItem.saleItem);
-                    if(count >= showItem.saleItem.getCount()){
-                        if(chunkLimit(player)){
-                            player.getInventory().removeItem(showItem.saleItem);
-                            player.getInventory().addItem(new MoneyItem(showItem.money).getItem());
+
+                    if(((ChestPanel)inventory).sales.master.equalsIgnoreCase(player.getName())){
+                        //店主不花钱
+                        player.getInventory().addItem(showItem.saleItem);
+                        if(!showItem.tag.contains("noreduce") || !showItem.tag.getBoolean("noreduce")){
+                            ((ChestPanel)inventory).sales.removeItem(player.getName(),showItem,showItem.saleItem.getCount(),true);
                         }
 
                     }else{
-                        SalesMainClass.sendMessageToObject("&c购买失败! 物品不足!",player);
-                        return;
+                        if(!showItem.tag.contains("noreduce") || !showItem.tag.getBoolean("noreduce")){
+                            if(EconomyAPI.getInstance().myMoney(((ChestPanel)inventory).sales.master) < showItem.money){
+                                SalesMainClass.sendMessageToObject("&c店主没有足够的金钱!",player);
+                                return;
+                            }else{
+                                EconomyAPI.getInstance().reduceMoney(((ChestPanel)inventory).sales.master,showItem.money);
+                            }
+                        }
+
+                        int count = getInventoryItemCount(player.getInventory(),showItem.saleItem);
+                        if(count >= showItem.saleItem.getCount()){
+                            if(chunkLimit(player)){
+
+                                showItem.stack += showItem.saleItem.getCount();
+                                player.getInventory().removeItem(showItem.saleItem);
+                                player.getInventory().addItem(new MoneyItem(showItem.money).getItem());
+                            }
+
+                        }else{
+                            SalesMainClass.sendMessageToObject("&c购买失败! 物品不足!",player);
+                            return;
+                        }
+
+
                     }
+
                 }else{
                     if(((ChestPanel)inventory).sales.master.equalsIgnoreCase(player.getName())){
                         //店主不花钱
@@ -168,6 +192,7 @@ public class PanelItem extends BasePlayPanelItemInstance{
         boolean v = false;
         List<String> vl = new ArrayList<>();
         if(showItem.tag.contains("sales_exchange") && showItem.tag.getBoolean("sales_exchange",false)){
+            vl.add(format("&r&7库存: &a"+(getStockStr())));
             vl.add(format("&r&7&r金币 &7* &e"+(showItem.money != 0?showItem.money:"免费")));
             v = true;
 //            i = new MoneyItem(showItem.money).getItem();
@@ -230,7 +255,7 @@ public class PanelItem extends BasePlayPanelItemInstance{
                 }
                 if(user.contains("buyTime")){
                     if(showItem.tag.contains("limitTime")){
-                        long iniTime = showItem.tag.getLong("limitTime");
+                        long iniTime = showItem.tag.getLong("limitTime") * 1000 * 60 * 60;
                         if(iniTime > 0){
                             if(System.currentTimeMillis() >= user.getLong("buyTime") + iniTime){
                                 upsLimit = 0;

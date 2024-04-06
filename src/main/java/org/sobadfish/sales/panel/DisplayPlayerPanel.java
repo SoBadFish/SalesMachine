@@ -56,11 +56,7 @@ public class DisplayPlayerPanel implements InventoryHolder, IDisplayPanel {
             items.put(i,new PanelInventoryButtonItem(sales));
 
         }
-
-        if(player.isOp()){
-            items.put(i - 1,new AdminSettingItem(sales));
-        }
-
+        items.put(i - 1,new AdminSettingItem(sales));
 
         String nm = sales.master+"的 售货机";
         if(sales.salesData.customname != null){
