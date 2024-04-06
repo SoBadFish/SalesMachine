@@ -485,17 +485,19 @@ public class SalesEntity extends EntityHuman{
 
     }
 
-    public void setItem(Item item,int count){
+    public void setItem(Item item,int count,int pageSize){
         SaleItem saleItem = getSaleItemByItem(item);
 
         if(saleItem != null){
             boolean add = false;
-            int cz = Math.abs(saleItem.stack - count);
-            if(saleItem.stack < count){
+            int cz = Math.abs(count - pageSize);
+            if(count > pageSize){
                 add = true;
-            }else if(saleItem.stack == count){
+            }else if(pageSize == count){
                 return;
             }
+
+
             SaleItem s1 = new SaleItem(item,cz,0);
             if(add){
                 addItem(s1,false);
