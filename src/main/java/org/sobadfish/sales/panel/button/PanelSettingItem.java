@@ -97,6 +97,7 @@ public class PanelSettingItem extends BasePlayPanelItemInstance{
 
             lore.add("  ");
         }
+        lore.add(format(Utils.getCentontString("&r&e▶&7双击编辑 &e◀",length)));
 
         i.setLore(lore.toArray(new String[0]));
 
