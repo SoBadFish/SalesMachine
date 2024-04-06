@@ -225,6 +225,7 @@ public class SalesListener implements Listener {
                             (event.getChunk().getZ())+""
                     }, SalesData.class);
             if(!salesData.isEmpty()){
+                SalesMainClass.sendMessageToConsole("加载 区块: ("+event.getChunk().getX()+":"+ (event.getChunk().getZ())+") "+salesData.size()+" 个售货机");
                 Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE, () -> {
                     for(SalesData data : salesData){
                         if("null".equalsIgnoreCase(data.customname) || "".equalsIgnoreCase(data.customname)){
