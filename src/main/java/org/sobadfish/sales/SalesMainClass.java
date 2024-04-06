@@ -186,6 +186,7 @@ public class SalesMainClass extends PluginBase {
             CustomItemAPI.getInstance().registerCustomItem(1999, org.sobadfish.sales.items.custom.CustomSalePanelLeftItem.class);
             CustomItemAPI.getInstance().registerCustomItem(2000, org.sobadfish.sales.items.custom.CustomSalePanelRightItem.class);
             CustomItemAPI.getInstance().registerCustomItem(2001, org.sobadfish.sales.items.custom.CustomSalePanelResetItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(2002, org.sobadfish.sales.items.custom.CustomSalePanelWallItem.class);
 
 
 
@@ -201,6 +202,8 @@ public class SalesMainClass extends PluginBase {
             CUSTOM_ITEMS.put("right",new org.sobadfish.sales.items.custom.CustomSalePanelRightItem());
             CUSTOM_ITEMS.put("reset",new org.sobadfish.sales.items.custom.CustomSalePanelResetItem());
 
+            CUSTOM_ITEMS.put("wall",new org.sobadfish.sales.items.custom.CustomSalePanelWallItem());
+
         }else{
             Item.registerCustomItem(CustomSaleItem.class);
             Item.registerCustomItem(CustomSaleSettingItem.class);
@@ -215,6 +218,8 @@ public class SalesMainClass extends PluginBase {
             Item.registerCustomItem(CustomSalePanelRightItem.class,false);
             Item.registerCustomItem(CustomSalePanelResetItem.class,false);
 
+            Item.registerCustomItem(CustomSalePanelWallItem.class,false);
+
             CUSTOM_ITEMS.put("sale",new CustomSaleItem());
             CUSTOM_ITEMS.put("setting",new CustomSaleSettingItem());
             CUSTOM_ITEMS.put("remove",new CustomSaleRemoveItem());
@@ -226,6 +231,7 @@ public class SalesMainClass extends PluginBase {
             CUSTOM_ITEMS.put("left",new CustomSalePanelLeftItem());
             CUSTOM_ITEMS.put("right",new CustomSalePanelRightItem());
             CUSTOM_ITEMS.put("reset",new CustomSalePanelResetItem());
+            CUSTOM_ITEMS.put("wall",new CustomSalePanelWallItem());
         }
 //        Item.removeCreativeItem(CUSTOM_ITEMS.get("ct_sale"));
 
