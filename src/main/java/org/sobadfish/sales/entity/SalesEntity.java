@@ -163,15 +163,15 @@ public class SalesEntity extends EntityHuman{
         List<Item> itemMap = new ArrayList<>();
         for(SaleItem saleItem: items) {
             if (saleItem.saleItem.equals(item, true, true)) {
-                int s = (int)Math.floor(saleItem.stack / 64f);
+                int s = (int)Math.floor(saleItem.stack / (float)item.getMaxStackSize());
                 Item ic = saleItem.saleItem.clone();
                 if(s > 0){
                     for (int i = 0; i < s ;i++){
                         Item ic2 = ic.clone();
-                        ic2.setCount(64);
+                        ic2.setCount(ic2.getMaxStackSize());
                         itemMap.add(ic2);
                     }
-                    int ss = saleItem.stack - s * 64;
+                    int ss = saleItem.stack - s * ic.getMaxStackSize();
                     if(ss > 0){
                         Item ic2 = ic.clone();
                         ic2.setCount(ss);
