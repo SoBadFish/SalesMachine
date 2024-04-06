@@ -2,7 +2,7 @@
 	"format_version":2,
 	"header":
 	{
-		"uuid":"e5d04b7e-14bf-467c-9d6c-ffea0f68f0d2",
+		"uuid":"a1f065d5-2f1c-4b2e-9fb9-aa8a10f9a56a",
 		"name":"Sales Item v2.0",
 		"version":[0,0,8],
 		"min_engine_version":[1,18,0],
@@ -13,7 +13,7 @@
 	{
 		"description":"",
 		"version":[0,0,8],
-		"uuid":"dfb1f824-8757-49bb-8499-9b45b431d3c7",
+		"uuid":"4c4e005b-42cb-49aa-99fd-7c616b5f5ae1",
 		"type":"resources"
 	}]
 }

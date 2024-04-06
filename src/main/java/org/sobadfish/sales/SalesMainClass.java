@@ -183,6 +183,10 @@ public class SalesMainClass extends PluginBase {
             CustomItemAPI.getInstance().registerCustomItem(1997, org.sobadfish.sales.items.custom.CustomCtSaleItem.class);
             CustomItemAPI.getInstance().registerCustomItem(1998, org.sobadfish.sales.items.custom.CustomWrench.class);
 
+            CustomItemAPI.getInstance().registerCustomItem(1999, org.sobadfish.sales.items.custom.CustomSalePanelLeftItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(2000, org.sobadfish.sales.items.custom.CustomSalePanelRightItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(2001, org.sobadfish.sales.items.custom.CustomSalePanelResetItem.class);
+
 
 
             CUSTOM_ITEMS.put("sale",new org.sobadfish.sales.items.custom.CustomSaleItem());
@@ -193,6 +197,10 @@ public class SalesMainClass extends PluginBase {
             CUSTOM_ITEMS.put("ct_sale",new org.sobadfish.sales.items.custom.CustomCtSaleItem());
             CUSTOM_ITEMS.put("pipe_wrench",new org.sobadfish.sales.items.custom.CustomWrench());
 
+            CUSTOM_ITEMS.put("left",new org.sobadfish.sales.items.custom.CustomSalePanelLeftItem());
+            CUSTOM_ITEMS.put("right",new org.sobadfish.sales.items.custom.CustomSalePanelRightItem());
+            CUSTOM_ITEMS.put("reset",new org.sobadfish.sales.items.custom.CustomSalePanelResetItem());
+
         }else{
             Item.registerCustomItem(CustomSaleItem.class);
             Item.registerCustomItem(CustomSaleSettingItem.class);
@@ -202,6 +210,11 @@ public class SalesMainClass extends PluginBase {
             Item.registerCustomItem(CustomCtItem.class);
             Item.registerCustomItem(CustomCtSaleItem.class,false);
             Item.registerCustomItem(CustomWrench.class);
+
+            Item.registerCustomItem(CustomSalePanelLeftItem.class,false);
+            Item.registerCustomItem(CustomSalePanelRightItem.class,false);
+            Item.registerCustomItem(CustomSalePanelResetItem.class,false);
+
             CUSTOM_ITEMS.put("sale",new CustomSaleItem());
             CUSTOM_ITEMS.put("setting",new CustomSaleSettingItem());
             CUSTOM_ITEMS.put("remove",new CustomSaleRemoveItem());
@@ -209,6 +222,10 @@ public class SalesMainClass extends PluginBase {
             CUSTOM_ITEMS.put("ct",new CustomCtItem());
             CUSTOM_ITEMS.put("ct_sale",new CustomCtSaleItem());
             CUSTOM_ITEMS.put("pipe_wrench",new CustomWrench());
+
+            CUSTOM_ITEMS.put("left",new CustomSalePanelLeftItem());
+            CUSTOM_ITEMS.put("right",new CustomSalePanelRightItem());
+            CUSTOM_ITEMS.put("reset",new CustomSalePanelResetItem());
         }
 //        Item.removeCreativeItem(CUSTOM_ITEMS.get("ct_sale"));
 

@@ -23,6 +23,15 @@
 		},
 		"pipe_wrench": {
 			"textures":"textures/items/pipe_wrench.png"
+		},
+		"sale_panel_left": {
+			"textures":"textures/items/left.png"
+		},
+		"sale_panel_right": {
+			"textures":"textures/items/right.png"
+		},
+		"sale_panel_wall": {
+			"textures":"textures/items/wall.png"
 		}
 	}
 }
