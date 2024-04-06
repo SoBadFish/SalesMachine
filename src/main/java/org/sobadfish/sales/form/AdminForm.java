@@ -56,6 +56,7 @@ public class AdminForm {
         if(player.isOp()){
             custom.addElement(new ElementToggle("是否不消耗库存",b));
             custom.addElement(new ElementToggle("移除"));
+            custom.addElement(new ElementInput("更改数量",sales.stack+""));
         }
 
 
@@ -79,9 +80,22 @@ public class AdminForm {
         if(hour < -1){
             hour = -1;
         }
+        int count = sales.stack;
         if(player.isOp()){
             b = responseCustom.getToggleResponse(4);
             remove = responseCustom.getToggleResponse(5);
+            String tx =  responseCustom.getInputResponse(6);
+            int reset = count;
+            try {
+                reset = Integer.parseInt(tx);
+            }catch (Exception ignore){
+            }
+            if(reset > 0){
+                count = reset;
+            }
+
+
+
         }
         if(remove){
             sales.isRemove = true;
@@ -97,8 +111,13 @@ public class AdminForm {
                     money = 0;
                 }
             }catch (Exception ignore){}
+
+            sales.stack = count;
+            sales.tag.putInt("stack",count);
+
             sales.money = money;
             sales.tag.putDouble("money",money);
+
         }
 
         SalesMainClass.sendMessageToObject("&a设置成功",player);
