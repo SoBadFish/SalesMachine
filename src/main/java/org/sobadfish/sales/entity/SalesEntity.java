@@ -571,20 +571,25 @@ public class SalesEntity extends EntityHuman{
     }
 
     public static SalesEntity spawnToAll(Position position,BlockFace bf,String master,SalesData data){
-        return spawnToAll(position,bf,master,data,false);
+        return spawnToAll(position,bf,master,data,false,true);
     }
 
-    public static SalesEntity spawnToAll(Position position,BlockFace bf,String master,SalesData data, boolean ignoreBlocks){
+    public static SalesEntity spawnToAll(Position position,BlockFace bf,String master,SalesData data, boolean ignoreBlocks,boolean init){
         if(bf == null){
             bf = BlockFace.EAST;
         }
-        //检测地图
-        Player player = Server.getInstance().getPlayer(master);
-        if(player == null){
-            return null;
-        }
-        if(SalesMainClass.banWorlds.contains(position.level.getFolderName()) && !player.isOp()){
-            return null;
+
+
+        if(SalesMainClass.banWorlds.contains(position.level.getFolderName()) ){
+            if(init){
+                Player player = Server.getInstance().getPlayer(master);
+                //检测地图
+                if(player == null || !player.isOp()){
+                    return null;
+                }
+
+            }
+
         }
         if(SalesMainClass.ENTITY_SKIN.size() == 0){
             return null;
@@ -697,7 +702,7 @@ public class SalesEntity extends EntityHuman{
 
             SalesEntity.spawnToAll(oldSd.asPosition(),
                     BlockFace.valueOf(oldSd.bf.toUpperCase()), oldSd.master, oldSd,
-                    true);
+                    true,true);
 
 
 

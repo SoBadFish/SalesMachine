@@ -234,7 +234,7 @@ public class SalesListener implements Listener {
                         Position position = data.asPosition();
                         if(position.getLevel().getFolderName().equalsIgnoreCase(event.getLevel().getFolderName())){
                             if(!cacheEntitys.containsKey(data.location)){
-                                if(SalesEntity.spawnToAll(data.asPosition(), BlockFace.valueOf(data.bf.toUpperCase()),data.master,data, true) == null){
+                                if(SalesEntity.spawnToAll(data.asPosition(), BlockFace.valueOf(data.bf.toUpperCase()),data.master,data, true,false) == null){
                                     SalesMainClass.sendMessageToConsole("&c加载 位置: ("+data.location+") "+" 售货机失败!");
                                 }
 
