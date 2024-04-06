@@ -42,7 +42,7 @@ import java.util.*;
  * @author Sobadfish
  * @date 2023/11/16
  */
-public class SalesEntity extends EntityHuman{
+public class SalesEntity extends EntityHuman {
 
     public static final String ENTITY_TYPE = "SalesEntity";
 
@@ -53,7 +53,7 @@ public class SalesEntity extends EntityHuman{
     public List<SaleItem> items = new ArrayList<>();
 
     public ListTag<CompoundTag> loadItems;
-    
+
     public Map<String, ChestPanel> clickPlayers = new LinkedHashMap<>();
 
     public SalesData salesData;
@@ -65,8 +65,6 @@ public class SalesEntity extends EntityHuman{
     public SaleSettingConfig saleSettingConfig;
 
     public Map<String, DoubleChestPanel> clickInvPlayers = new LinkedHashMap<>();
-
-
 
 
     @Override
@@ -84,7 +82,7 @@ public class SalesEntity extends EntityHuman{
     public void saveNBT() {
     }
 
-    public SalesEntity(FullChunk chunk, CompoundTag nbt, BlockFace face,String master,SaleSettingConfig config,ListTag<CompoundTag> load) {
+    public SalesEntity(FullChunk chunk, CompoundTag nbt, BlockFace face, String master, SaleSettingConfig config, ListTag<CompoundTag> load) {
         super(chunk, nbt);
         this.blockFace = face;
         this.loadItems = load;
@@ -93,13 +91,13 @@ public class SalesEntity extends EntityHuman{
         this.master = master;
         //解包物品
         setImmobile();
-        if(loadItems != null){
+        if (loadItems != null) {
             ListTag<CompoundTag> cl = loadItems;
-            for(CompoundTag compoundTag: cl.getAll()){
+            for (CompoundTag compoundTag : cl.getAll()) {
                 Item item = NBTIO.getItemHelper(compoundTag.getCompound("item"));
                 int stack = compoundTag.getInt("stack");
                 double money = compoundTag.getDouble("money");
-                items.add(new SaleItem(compoundTag,item,stack,money));
+                items.add(new SaleItem(compoundTag, item, stack, money));
 
             }
         }
@@ -111,32 +109,32 @@ public class SalesEntity extends EntityHuman{
      *
      * @param item 需要移除的物品
      * @return 实际移除的数量
-     * */
-    public void removeItem(String playerName,SaleItem item,int count,boolean updateInv){
+     */
+    public void removeItem(String playerName, SaleItem item, int count, boolean updateInv) {
 //        ListTag<CompoundTag> cl = namedTag.getList("sale_items",CompoundTag.class);
         ListTag<CompoundTag> cl = loadItems;
         int index = 0;
-        for(SaleItem saleItem: new ArrayList<>(items)) {
+        for (SaleItem saleItem : new ArrayList<>(items)) {
             if (saleItem.saleItem.equals(item.saleItem, true, true)) {
                 //相同物品
-                if(cl.size() <= index){
+                if (cl.size() <= index) {
                     //理论不会出现这个问题... 以防万一
                     return;
                 }
                 CompoundTag tg = cl.get(index);
                 //如果传入的是 0 直接移除就行
-                if(count == 0 && master.equalsIgnoreCase(playerName)){
+                if (count == 0 && master.equalsIgnoreCase(playerName)) {
                     cl.remove(tg);
                     items.remove(saleItem);
                     break;
-                }else{
+                } else {
 
-                    if(tg.getInt("stack") >= count){
-                        tg.putInt("stack",tg.getInt("stack") - count);
+                    if (tg.getInt("stack") >= count) {
+                        tg.putInt("stack", tg.getInt("stack") - count);
                         saleItem.stack -= count;
 
                         break;
-                    }else{
+                    } else {
                         int count2 = tg.getInt("stack");
                         saleItem.stack = 0;
                         cl.remove(tg);
@@ -156,53 +154,47 @@ public class SalesEntity extends EntityHuman{
 
     }
 
-    public List<Item> getItemInventoryByItem(Item item) {
-        List<Item> itemMap = new ArrayList<>();
-
-        for(SaleItem saleItem: items) {
+    public ItemStack getItemInventoryByItem(Item item) {
+//        List<Item> itemMap = new ArrayList<>();
+        ItemStack stack = null;
+        for (SaleItem saleItem : items) {
             if (saleItem.saleItem.equals(item, true, true)) {
-                int s = (int)Math.floor(saleItem.stack / (float)item.getMaxStackSize());
-                Item ic = saleItem.saleItem.clone();
-                if(s > 0){
-                    for (int i = 0; i < s ;i++){
-                        Item ic2 = ic.clone();
-                        ic2.setCount(ic2.getMaxStackSize());
-                        itemMap.add(ic2);
-                    }
-                    int ss = saleItem.stack - (s * ic.getMaxStackSize());
-                    if(ss > 0){
-                        Item ic2 = ic.clone();
-                        ic2.setCount(ss);
-                        itemMap.add(ic2);
-                    }
+                Item cl = saleItem.saleItem.clone();
+                cl.setCount(cl.getMaxStackSize());
+                stack = new ItemStack();
+                stack.item = cl;
+                stack.stack = saleItem.stack;
+                stack.pageSize = (int) Math.ceil(saleItem.stack / (float) item.getMaxStackSize());
+                int mm = saleItem.stack - ((stack.pageSize - 1) * item.getMaxStackSize());
+                if(mm > cl.getMaxStackSize()){
+                    stack.endCount = mm - cl.getMaxStackSize();
                 }else{
-                    Item ic2 = ic.clone();
-                    ic2.setCount(saleItem.stack);
-                    itemMap.add(ic2);
+                    stack.endCount = mm;
                 }
                 break;
 
             }
         }
+        return stack;
 
-        return itemMap;
+//        return itemMap;
     }
 
-    public static String asLocation(Position position){
-        return position.getFloorX()+":"+position.getFloorY()+":"+position.getFloorZ()+":"+position.level.getFolderName();
+    public static String asLocation(Position position) {
+        return position.getFloorX() + ":" + position.getFloorY() + ":" + position.getFloorZ() + ":" + position.level.getFolderName();
     }
 
-    public void saveData(){
+    public void saveData() {
         String location = asLocation(this);
-        if(SalesMainClass.INSTANCE.sqliteHelper.hasData(SalesMainClass.DB_TABLE,"location",location)){
+        if (SalesMainClass.INSTANCE.sqliteHelper.hasData(SalesMainClass.DB_TABLE, "location", location)) {
             SqlData data = new SqlData();
-            data.put("location",location);
-            SalesMainClass.INSTANCE.sqliteHelper.set(SalesMainClass.DB_TABLE,data,salesData);
+            data.put("location", location);
+            SalesMainClass.INSTANCE.sqliteHelper.set(SalesMainClass.DB_TABLE, data, salesData);
         }
     }
 
-    public boolean hasItem(Item item){
-        for(SaleItem saleItem: items) {
+    public boolean hasItem(Item item) {
+        for (SaleItem saleItem : items) {
             if (saleItem.saleItem.equals(item, true, true)) {
                 return true;
             }
@@ -210,27 +202,27 @@ public class SalesEntity extends EntityHuman{
         return false;
     }
 
-    public boolean addItem(Item item){
-        SaleItem saleItem = new SaleItem(item,item.count,0);
-        return addItem(saleItem,true);
+    public boolean addItem(Item item) {
+        SaleItem saleItem = new SaleItem(item, item.count, 0);
+        return addItem(saleItem, true);
     }
 
-    public boolean addItem(SaleItem item,boolean updateInv){
+    public boolean addItem(SaleItem item, boolean updateInv) {
 
         ListTag<CompoundTag> cl = loadItems;
 //        ListTag<CompoundTag> cl = namedTag.getList("sale_items",CompoundTag.class);
         int index = 0;
-        for(SaleItem saleItem: items){
-            if(saleItem.saleItem.equals(item.saleItem,true,true)){
+        for (SaleItem saleItem : items) {
+            if (saleItem.saleItem.equals(item.saleItem, true, true)) {
                 //相同物品
-                if(cl.size() <= index){
+                if (cl.size() <= index) {
                     //理论不会出现这个问题... 以防万一
                     return false;
                 }
                 CompoundTag tg = cl.get(index);
-                tg.putInt("stack",tg.getInt("stack") + item.stack);
-                if(item.money > 0){
-                    tg.putDouble("money",item.money);
+                tg.putInt("stack", tg.getInt("stack") + item.stack);
+                if (item.money > 0) {
+                    tg.putDouble("money", item.money);
                     saleItem.money = item.money;
                 }
                 saleItem.stack += item.stack;
@@ -245,17 +237,17 @@ public class SalesEntity extends EntityHuman{
         }
 
 
-        if(items.size() >= InventoryType.CHEST.getDefaultSize() - 3){
+        if (items.size() >= InventoryType.CHEST.getDefaultSize() - 3) {
             return false;
         }
-        if(item.saleItem.getId() == 0){
+        if (item.saleItem.getId() == 0) {
             return false;
         }
 
         CompoundTag ct = item.tag;
-        ct.putCompound("item",NBTIO.putItemHelper(item.saleItem));
-        ct.putInt("stack",item.stack);
-        ct.putDouble("money",item.money);
+        ct.putCompound("item", NBTIO.putItemHelper(item.saleItem));
+        ct.putInt("stack", item.stack);
+        ct.putDouble("money", item.money);
 
         cl.add(ct);
         item.tag = ct;
@@ -270,8 +262,8 @@ public class SalesEntity extends EntityHuman{
         return true;
     }
 
-    public SaleItem getSaleItemByItem(Item item){
-        for(SaleItem saleItem: items) {
+    public SaleItem getSaleItemByItem(Item item) {
+        for (SaleItem saleItem : items) {
             if (saleItem.saleItem.equals(item, true, true)) {
                 return saleItem;
             }
@@ -279,12 +271,12 @@ public class SalesEntity extends EntityHuman{
         return null;
     }
 
-    public void updateInventory(boolean updateInv){
-        for (ChestPanel chestPanel: clickPlayers.values()){
+    public void updateInventory(boolean updateInv) {
+        for (ChestPanel chestPanel : clickPlayers.values()) {
             chestPanel.update();
         }
-        if(updateInv){
-            for (DoubleChestPanel chestPanel: clickInvPlayers.values()){
+        if (updateInv) {
+            for (DoubleChestPanel chestPanel : clickInvPlayers.values()) {
                 chestPanel.update(true);
             }
         }
@@ -297,15 +289,15 @@ public class SalesEntity extends EntityHuman{
      * 2: 正在关闭
      * 1: 正在打开
      * 0： 无
-     * */
+     */
     public int animLoad = 0;
-    
-    public void openIt(Player who){
+
+    public void openIt(Player who) {
         animLoad = 1;
 
     }
 
-    public void closeIt(Player who){
+    public void closeIt(Player who) {
         animLoad = 2;
 
     }
@@ -319,7 +311,7 @@ public class SalesEntity extends EntityHuman{
     public boolean onUpdate(int currentTick) {
         boolean b = super.onUpdate(currentTick);
         // 将角度限制在 -180 到 180 之间
-        if(saleSettingConfig.enableAnim) {
+        if (saleSettingConfig.enableAnim) {
             if (animLoad == 1) {
 
                 if (yaw > right) {
@@ -346,9 +338,9 @@ public class SalesEntity extends EntityHuman{
         updateMovement();
 
         boolean s = false;
-        if(saleSettingConfig.enableItem){
-            for(Player player: getLevel().getPlayers().values()){
-                if(player.distance(this) <= 10){
+        if (saleSettingConfig.enableItem) {
+            for (Player player : getLevel().getPlayers().values()) {
+                if (player.distance(this) <= 10) {
                     showItems();
                     s = true;
                     break;
@@ -357,7 +349,7 @@ public class SalesEntity extends EntityHuman{
         }
 
 
-        if(!s){
+        if (!s) {
             removePackets();
         }
 
@@ -366,8 +358,8 @@ public class SalesEntity extends EntityHuman{
     }
 
 
-    private void removePackets(){
-        for(AddItemEntityPacket dataPacket: new ArrayList<>(ipacket)){
+    private void removePackets() {
+        for (AddItemEntityPacket dataPacket : new ArrayList<>(ipacket)) {
             RemoveEntityPacket pk1 = new RemoveEntityPacket();
             pk1.eid = dataPacket.entityUniqueId;
             Server.broadcastPacket(Server.getInstance().getOnlinePlayers().values(), pk1);
@@ -375,39 +367,39 @@ public class SalesEntity extends EntityHuman{
         ipacket.clear();
     }
 
-    private void showItems(){
-        if(ipacket.size() == 0){
+    private void showItems() {
+        if (ipacket.size() == 0) {
             int size = 6;
-            if(saleSettingConfig.floatItemPos.containsKey(blockFace)) {
+            if (saleSettingConfig.floatItemPos.containsKey(blockFace)) {
                 size = saleSettingConfig.floatItemPos.get(blockFace).size();
             }
 
-            for(int i = 0; i< Math.min(items.size(),size);i++){
+            for (int i = 0; i < Math.min(items.size(), size); i++) {
                 long eid = (long) ((int) this.x + new Random().nextDouble() + (int) this.z + new Random().nextDouble()) + new Random().nextLong();
                 Position ps = asPosition(i);
-                if(ps == null){
+                if (ps == null) {
                     continue;
                 }
-                ipacket.add(i,getEntityTag(ps,items.get(i).saleItem,eid));
+                ipacket.add(i, getEntityTag(ps, items.get(i).saleItem, eid));
             }
-            for(AddItemEntityPacket dataPacket: ipacket){
-                Server.broadcastPacket(Server.getInstance().getOnlinePlayers().values(),dataPacket);
+            for (AddItemEntityPacket dataPacket : ipacket) {
+                Server.broadcastPacket(Server.getInstance().getOnlinePlayers().values(), dataPacket);
             }
         }
     }
 
-    public Position asPosition(int index){
-        if(saleSettingConfig.floatItemPos.containsKey(blockFace)){
+    public Position asPosition(int index) {
+        if (saleSettingConfig.floatItemPos.containsKey(blockFace)) {
             List<Vector3> vector3s = saleSettingConfig.floatItemPos.get(blockFace);
 
-            if(vector3s.size() > index){
+            if (vector3s.size() > index) {
                 Vector3 v3 = vector3s.get(index);
-                return new Position(this.x + v3.x,this.y + v3.y,this.z + v3.z);
-            }else{
+                return new Position(this.x + v3.x, this.y + v3.y, this.z + v3.z);
+            } else {
                 return null;
             }
 
-        }else{
+        } else {
             return null;
         }
 
@@ -415,8 +407,7 @@ public class SalesEntity extends EntityHuman{
     }
 
 
-
-    private AddItemEntityPacket getEntityTag(Position position, Item item, long eid){
+    private AddItemEntityPacket getEntityTag(Position position, Item item, long eid) {
 
         Item ic = item.clone();
         ic.setCount(1);
@@ -424,20 +415,20 @@ public class SalesEntity extends EntityHuman{
         pk.item = ic;
         pk.entityRuntimeId = eid;
         pk.entityUniqueId = eid;
-        pk.x = (float)(position.x);
-        pk.y = (float)(position.y);
-        pk.z = (float)(position.z);
+        pk.x = (float) (position.x);
+        pk.y = (float) (position.y);
+        pk.z = (float) (position.z);
         pk.speedX = 0.0F;
         pk.speedY = 0.0F;
         pk.speedZ = 0.0F;
         pk.metadata = new EntityMetadata()
-                .putBoolean(80,true)
+                .putBoolean(80, true)
 
-                .putBoolean(Entity.DATA_FLAG_IMMOBILE,true)
+                .putBoolean(Entity.DATA_FLAG_IMMOBILE, true)
                 .putLong(Entity.DATA_LEAD_HOLDER_EID, -1)
                 .putFloat(Entity.DATA_SCALE, 0.5f)
-                .putBoolean(Entity.DATA_FLAG_GRAVITY,false)
-                .putInt(79,0);
+                .putBoolean(Entity.DATA_FLAG_GRAVITY, false)
+                .putInt(79, 0);
 
         return pk;
 
@@ -450,30 +441,30 @@ public class SalesEntity extends EntityHuman{
     @Override
     public void close() {
         //移除
-        List<Position> p3 = positionListByConfig(this,blockFace,salesData.width,salesData.height);
-        for(Position position: p3){
+        List<Position> p3 = positionListByConfig(this, blockFace, salesData.width, salesData.height);
+        for (Position position : p3) {
             String lo = asLocation(position);
-            if(SalesListener.cacheEntitys.containsKey(lo)){
+            if (SalesListener.cacheEntitys.containsKey(lo)) {
                 SalesEntity salesEntity = SalesListener.cacheEntitys.get(lo);
-                if(salesEntity.equals(this)){
+                if (salesEntity.equals(this)) {
                     SalesListener.cacheEntitys.remove(lo);
-                }else{
+                } else {
                     continue;
                 }
             }
 
 
-            level.setBlock(position,new BlockAir(),true,true);
-            if(!isPackage){
-                level.addParticle(new DestroyBlockParticle(position,new BlockStone()));
+            level.setBlock(position, new BlockAir(), true, true);
+            if (!isPackage) {
+                level.addParticle(new DestroyBlockParticle(position, new BlockStone()));
             }
             BlockEntity be = level.getBlockEntity(position);
-            if(be instanceof SalesBlockEntity){
+            if (be instanceof SalesBlockEntity) {
                 level.removeBlockEntity(be);
             }
         }
 
-        if(!finalClose){
+        if (!finalClose) {
             salesData.saveItemSlots(loadItems);
             saveData();
         }
@@ -484,37 +475,37 @@ public class SalesEntity extends EntityHuman{
 
     }
 
-    public void setItem(Item item,int count,int pageSize){
+    public void setItem(Item item, int count, int pageSize) {
         SaleItem saleItem = getSaleItemByItem(item);
 
-        if(saleItem != null){
+        if (saleItem != null) {
             boolean add = false;
             int cz = Math.abs(count - pageSize);
-            if(count > pageSize){
+            if (count > pageSize) {
                 add = true;
-            }else if(pageSize == count){
+            } else if (pageSize == count) {
                 return;
             }
 
 
-            SaleItem s1 = new SaleItem(item,cz,0);
-            if(add){
-                addItem(s1,false);
-            }else{
-                removeItem(master,s1,cz,false);
+            SaleItem s1 = new SaleItem(item, cz, 0);
+            if (add) {
+                addItem(s1, false);
+            } else {
+                removeItem(master, s1, cz, false);
             }
         }
     }
 
     //打包带走
-    public CompoundTag toPackage(){
+    public CompoundTag toPackage() {
         //直接打包成tag 然后移除
         salesData.saveItemSlots(loadItems);
         CompoundTag tag = salesData.toPackage();
         finalClose = true;
         isPackage = true;
-        for(Map.Entry<String, IDisplayPanel> dis: SalesListener.chestPanelLinkedHashMap.entrySet()){
-            if(dis.getValue().getSales().equals(this)){
+        for (Map.Entry<String, IDisplayPanel> dis : SalesListener.chestPanelLinkedHashMap.entrySet()) {
+            if (dis.getValue().getSales().equals(this)) {
                 dis.getValue().close();
                 SalesListener.chestPanelLinkedHashMap.remove(dis.getKey());
             }
@@ -526,7 +517,7 @@ public class SalesEntity extends EntityHuman{
         Server.getInstance().getScheduler().scheduleTask(SalesMainClass.INSTANCE, new Runnable() {
             @Override
             public void run() {
-                SalesMainClass.INSTANCE.sqliteHelper.remove(SalesMainClass.DB_TABLE,"location",as);
+                SalesMainClass.INSTANCE.sqliteHelper.remove(SalesMainClass.DB_TABLE, "location", as);
             }
         });
 
@@ -535,15 +526,15 @@ public class SalesEntity extends EntityHuman{
 
     }
 
-    public void setCustomName(String name){
+    public void setCustomName(String name) {
         salesData.customname = name;
         saveData();
 
     }
 
-    public void closePanel(){
-        for(Map.Entry<String,IDisplayPanel> dis: SalesListener.chestPanelLinkedHashMap.entrySet()){
-            if(dis.getValue().getSales().equals(this)){
+    public void closePanel() {
+        for (Map.Entry<String, IDisplayPanel> dis : SalesListener.chestPanelLinkedHashMap.entrySet()) {
+            if (dis.getValue().getSales().equals(this)) {
                 dis.getValue().close();
                 SalesListener.chestPanelLinkedHashMap.remove(dis.getKey());
             }
@@ -552,58 +543,57 @@ public class SalesEntity extends EntityHuman{
     }
 
 
-    public void toClose(){
+    public void toClose() {
         finalClose = true;
         //生成一地掉落物
 
         closePanel();
 
-        for(SaleItem saleItem: items){
+        for (SaleItem saleItem : items) {
             Item cl = saleItem.saleItem.clone();
             cl.setCount(saleItem.stack);
-            level.dropItem(this,cl);
+            level.dropItem(this, cl);
         }
         close();
         String as = asLocation(this);
-        SalesMainClass.INSTANCE.sqliteHelper.remove(SalesMainClass.DB_TABLE,"location",as);
+        SalesMainClass.INSTANCE.sqliteHelper.remove(SalesMainClass.DB_TABLE, "location", as);
 //        SalesListener.cacheEntitys.remove(as);
 
 //        level.save(true);
     }
 
-    public static SalesEntity spawnToAll(Position position,BlockFace bf,String master,SalesData data){
-        return spawnToAll(position,bf,master,data,false,true);
+    public static SalesEntity spawnToAll(Position position, BlockFace bf, String master, SalesData data) {
+        return spawnToAll(position, bf, master, data, false, true);
     }
 
-    public static SalesEntity spawnToAll(Position position,BlockFace bf,String master,SalesData data, boolean ignoreBlocks,boolean init){
-        if(bf == null){
+    public static SalesEntity spawnToAll(Position position, BlockFace bf, String master, SalesData data, boolean ignoreBlocks, boolean init) {
+        if (bf == null) {
             bf = BlockFace.EAST;
         }
 
 
-        if(SalesMainClass.banWorlds.contains(position.level.getFolderName()) ){
-            if(init){
+        if (SalesMainClass.banWorlds.contains(position.level.getFolderName())) {
+            if (init) {
                 Player player = Server.getInstance().getPlayer(master);
                 //检测地图
-                if(player == null || !player.isOp()){
+                if (player == null || !player.isOp()) {
                     return null;
                 }
 
             }
 
         }
-        if(SalesMainClass.ENTITY_SKIN.size() == 0){
+        if (SalesMainClass.ENTITY_SKIN.size() == 0) {
             return null;
         }
         String modelName = new ArrayList<>(SalesMainClass.ENTITY_SKIN.keySet()).get(0);
-        if(data != null && data.skinmodel != null){
+        if (data != null && data.skinmodel != null) {
             String smd = data.skinmodel;
-            if(SalesMainClass.ENTITY_SKIN.containsKey(smd)){
+            if (SalesMainClass.ENTITY_SKIN.containsKey(smd)) {
                 modelName = smd;
             }
         }
         SaleSkinConfig saleSkinConfig = SalesMainClass.ENTITY_SKIN.get(modelName);
-
 
 
         Position pos = new Position(
@@ -615,13 +605,13 @@ public class SalesEntity extends EntityHuman{
         int width = weight.width;
         int height = weight.height;
 
-        List<Position> psconfig = positionListByConfig(position,bf,width,height);
+        List<Position> psconfig = positionListByConfig(position, bf, width, height);
 
         boolean hasBlock = false;
-        if(!ignoreBlocks){
-            for(Position ps : psconfig){
-                Block block =  position.level.getBlock(ps);
-                if(block.getId() != 0 && block.getId() != SalesMainClass.INSTANCE.iBarrier.getBid()){
+        if (!ignoreBlocks) {
+            for (Position ps : psconfig) {
+                Block block = position.level.getBlock(ps);
+                if (block.getId() != 0 && block.getId() != SalesMainClass.INSTANCE.iBarrier.getBid()) {
                     hasBlock = true;
                     break;
                 }
@@ -629,39 +619,39 @@ public class SalesEntity extends EntityHuman{
             }
         }
 
-        if(!hasBlock){
+        if (!hasBlock) {
             Skin skin = saleSkinConfig.skinLinkedHashMap.get(bf);
 
             CompoundTag tag = EntityHuman.getDefaultNBT(pos);
-            tag.putString(SALE_MASTER_TAG,master);
-            tag.putCompound("Skin",new CompoundTag()
+            tag.putString(SALE_MASTER_TAG, master);
+            tag.putCompound("Skin", new CompoundTag()
                     .putByteArray("Data", skin.getSkinData().data)
-                    .putString("ModelId",skin.getSkinId())
+                    .putString("ModelId", skin.getSkinId())
             );
             ListTag<CompoundTag> tagListTag = new ListTag<>();
-            if(data != null){
+            if (data != null) {
                 tagListTag = data.asItemSlots();
 
             }
-            SalesEntity sales = new SalesEntity(position.getChunk(),tag,bf,master,saleSkinConfig.config,tagListTag);
+            SalesEntity sales = new SalesEntity(position.getChunk(), tag, bf, master, saleSkinConfig.config, tagListTag);
 
             sales.setSkin(skin);
             sales.spawnToAll();
 
 
-            for (Position sp : psconfig){
+            for (Position sp : psconfig) {
                 String pps = asLocation(sp);
-                position.getLevel().setBlock(sp, (Block) SalesMainClass.INSTANCE.iBarrier,false,false);
-                BlockEntity.createBlockEntity(SalesBlockEntity.ENTITY_TYPE,pos.getChunk(),
-                        BlockEntity.getDefaultCompound(sp, SalesBlockEntity.ENTITY_TYPE),sales);
-                if(!SalesListener.cacheEntitys.containsKey(pps)){
-                    SalesListener.cacheEntitys.put(pps,sales);
+                position.getLevel().setBlock(sp, (Block) SalesMainClass.INSTANCE.iBarrier, false, false);
+                BlockEntity.createBlockEntity(SalesBlockEntity.ENTITY_TYPE, pos.getChunk(),
+                        BlockEntity.getDefaultCompound(sp, SalesBlockEntity.ENTITY_TYPE), sales);
+                if (!SalesListener.cacheEntitys.containsKey(pps)) {
+                    SalesListener.cacheEntitys.put(pps, sales);
                 }
 
             }
 
             String ps = asLocation(position);
-            if(data == null){
+            if (data == null) {
                 data = new SalesData();
                 data.saveItemSlots(tagListTag);
                 data.chunkx = pos.getChunkX();
@@ -672,11 +662,11 @@ public class SalesEntity extends EntityHuman{
                 data.master = master;
                 data.bf = bf.getName();
                 data.skinmodel = modelName;
-                data.customname = master+" 的售货机";
-                if(SalesMainClass.INSTANCE.sqliteHelper.hasData(SalesMainClass.DB_TABLE,"location",ps)){
-                    SalesMainClass.INSTANCE.sqliteHelper.set(SalesMainClass.DB_TABLE,"location",ps,data);
-                }else{
-                    SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE,data);
+                data.customname = master + " 的售货机";
+                if (SalesMainClass.INSTANCE.sqliteHelper.hasData(SalesMainClass.DB_TABLE, "location", ps)) {
+                    SalesMainClass.INSTANCE.sqliteHelper.set(SalesMainClass.DB_TABLE, "location", ps, data);
+                } else {
+                    SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE, data);
                 }
 
 
@@ -684,15 +674,14 @@ public class SalesEntity extends EntityHuman{
             sales.salesData = data;
 
 
-
             return sales;
         }
         return null;
     }
 
-    public boolean setModel(String model){
+    public boolean setModel(String model) {
         //重设
-        if(SalesMainClass.ENTITY_SKIN.containsKey(model)){
+        if (SalesMainClass.ENTITY_SKIN.containsKey(model)) {
             close();
             SalesData oldSd = salesData;
             oldSd.skinmodel = model;
@@ -703,8 +692,7 @@ public class SalesEntity extends EntityHuman{
 
             SalesEntity.spawnToAll(oldSd.asPosition(),
                     BlockFace.valueOf(oldSd.bf.toUpperCase()), oldSd.master, oldSd,
-                    true,true);
-
+                    true, true);
 
 
         }
@@ -712,20 +700,20 @@ public class SalesEntity extends EntityHuman{
         return false;
     }
 
-    public static List<Position> positionListByConfig(Position position,BlockFace blockFace,int width,int height){
+    public static List<Position> positionListByConfig(Position position, BlockFace blockFace, int width, int height) {
         List<Position> positions = new ArrayList<>();
         BlockFace rf = blockFace.rotateY();
-        for(int i = 0; i < width;i++){
-            Position ry = position.getSide(rf,i);
-            for(int y = 0; y < height; y++){
-                positions.add(ry.add(0,y));
+        for (int i = 0; i < width; i++) {
+            Position ry = position.getSide(rf, i);
+            for (int y = 0; y < height; y++) {
+                positions.add(ry.add(0, y));
             }
 
         }
         return positions;
     }
 
-    public static class SalesBlockEntity extends BlockEntity implements InventoryHolder{
+    public static class SalesBlockEntity extends BlockEntity implements InventoryHolder {
 
         public SaleBlockEntityInventory entityInventory;
 
@@ -733,9 +721,9 @@ public class SalesEntity extends EntityHuman{
 
         public SalesEntity salesEntity;
 
-        public SalesBlockEntity(FullChunk chunk, CompoundTag nbt,SalesEntity entity) {
+        public SalesBlockEntity(FullChunk chunk, CompoundTag nbt, SalesEntity entity) {
             super(chunk, nbt);
-            entityInventory = new SaleBlockEntityInventory(entity,this);
+            entityInventory = new SaleBlockEntityInventory(entity, this);
             this.salesEntity = entity;
         }
 
@@ -745,18 +733,19 @@ public class SalesEntity extends EntityHuman{
         }
 
         @Override
-        public void saveNBT() {}
+        public void saveNBT() {
+        }
 
         @Override
         public Inventory getInventory() {
             return entityInventory;
         }
 
-        public static class SaleBlockEntityInventory extends BaseInventory{
+        public static class SaleBlockEntityInventory extends BaseInventory {
 
             public SalesEntity salesEntity;
 
-            public SaleBlockEntityInventory(SalesEntity salesEntity,InventoryHolder holder) {
+            public SaleBlockEntityInventory(SalesEntity salesEntity, InventoryHolder holder) {
                 super(holder, InventoryType.CHEST);
                 this.salesEntity = salesEntity;
             }
@@ -769,11 +758,24 @@ public class SalesEntity extends EntityHuman{
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof SalesEntity){
+        if (obj instanceof SalesEntity) {
             return asLocation(this).equalsIgnoreCase(
                     asLocation((SalesEntity) obj)
             ) && blockFace == ((SalesEntity) obj).blockFace;
         }
         return false;
+    }
+
+    public static class ItemStack {
+
+        public Item item;
+
+
+        public int stack;
+
+        public int pageSize;
+
+        public int endCount;
+
     }
 }

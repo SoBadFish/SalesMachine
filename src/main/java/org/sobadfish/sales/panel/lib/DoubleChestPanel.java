@@ -13,9 +13,7 @@ import org.sobadfish.sales.panel.button.BasePlayPanelItemInstance;
 import org.sobadfish.sales.panel.button.LastPageItem;
 import org.sobadfish.sales.panel.button.NextPageItem;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,7 +35,7 @@ public class DoubleChestPanel extends DoubleChestFakeInventory implements Invent
 
 
 
-    private List<Item> items = new ArrayList<>();
+    private SalesEntity.ItemStack items;
 
     public Item choseItem;
 
@@ -71,16 +69,16 @@ public class DoubleChestPanel extends DoubleChestFakeInventory implements Invent
 
 
     //
-    public void setPanel(List<Item> items){
+    public void setPanel(SalesEntity.ItemStack items){
         Map<Integer,Item> map = new LinkedHashMap<>();
-        if(items.size() > (InventoryType.DOUBLE_CHEST.getDefaultSize() - 1)){
+        if(items.pageSize > (InventoryType.DOUBLE_CHEST.getDefaultSize() - 1)){
             //首页不用显示墙
             if(page == 1){
                 int ps = 0;
                 int i = 0;
                 for(; i < InventoryType.DOUBLE_CHEST.getDefaultSize() - 1; i++){
-                    map.put(i,items.get(i));
-                    ps += items.get(i).getCount();
+                    map.put(i,items.item);
+                    ps += items.item.getCount();
                 }
                 pageSize = ps;
                 NextPageItem nx = new NextPageItem();
@@ -88,7 +86,7 @@ public class DoubleChestPanel extends DoubleChestFakeInventory implements Invent
                 map.put(i,nx.getPanelItem(getPlayerInfo(),i));
 
             }else{
-                int ip = (items.size() - ((InventoryType.DOUBLE_CHEST.getDefaultSize() - 1) * (page - 1)));
+                int ip = (items.pageSize - ((InventoryType.DOUBLE_CHEST.getDefaultSize() - 1) * (page - 1)));
                 if(ip > (InventoryType.DOUBLE_CHEST.getDefaultSize() - 1)){
                     //还能往下翻
                     int i = 0;
@@ -97,8 +95,8 @@ public class DoubleChestPanel extends DoubleChestFakeInventory implements Invent
                     map.put(i,lx.getPanelItem(getPlayerInfo(),i));
                     panel.put(i++,lx);
                     for(; i < InventoryType.DOUBLE_CHEST.getDefaultSize() - 1; i++){
-                        map.put(i,items.get(i));
-                        ps += items.get(i).getCount();
+                        map.put(i,items.item);
+                        ps += items.item.getCount();
                     }
                     pageSize = ps;
                     NextPageItem nx = new NextPageItem();
@@ -113,11 +111,13 @@ public class DoubleChestPanel extends DoubleChestFakeInventory implements Invent
                     map.put(i,lx.getPanelItem(getPlayerInfo(),i));
                     panel.put(i++,lx);
                     for(; i < ip - 1; i++){
-                        map.put(i,items.get(i));
-                        ps += items.get(i).getCount();
+                        map.put(i,items.item);
+                        ps += items.item.getCount();
                     }
-                    map.put(i,items.get(items.size() - 1));
-                    ps += items.get(items.size() - 1).getCount();
+                    Item cl2 = items.item.clone();
+                    cl2.setCount(items.endCount);
+                    map.put(i,cl2);
+                    ps += cl2.getCount();
 
                     pageSize = ps;
                 }
@@ -126,28 +126,22 @@ public class DoubleChestPanel extends DoubleChestFakeInventory implements Invent
         }else{
             int i = 0;
             int ps = 0;
-            for(; i <items.size(); i++){
-                map.put(i,items.get(i));
-                ps += items.get(i).getCount();
+            for(; i < items.pageSize - 1; i++){
+                map.put(i,items.item);
+                ps += items.item.getCount();
             }
+            Item cl2 = items.item.clone();
+            cl2.setCount(items.endCount);
+            map.put(i,cl2);
+            ps += items.endCount;
+
             pageSize = ps;
         }
         setContents(map);
         this.items = items;
 
     }
-//    public void setPanel(Map<Integer, Item> items){
-//        Map<Integer, BasePlayPanelItemInstance> m = new LinkedHashMap<>();
-//        LinkedHashMap<Integer, Item> map = new LinkedHashMap<>();
-//        for(Map.Entry<Integer,BasePlayPanelItemInstance> entry : panel.entrySet()){
-//            Item value = entry.getValue().getPanelItem(getPlayerInfo(),entry.getKey()).clone();
-//            map.put(entry.getKey(),value);
-//            m.put(entry.getKey(),entry.getValue());
-//        }
-//        setContents(map);
-//        this.panel = m;
 
-//    }
 
 
     public Map<Integer, BasePlayPanelItemInstance> getPanel() {
@@ -174,10 +168,7 @@ public class DoubleChestPanel extends DoubleChestFakeInventory implements Invent
         setPanel(items);
     }
 
-    //手机版 42
-//    private int getPageCount(){
-//
-//    }
+
 
     public Player getPlayerInfo(){
         return player;
@@ -187,9 +178,8 @@ public class DoubleChestPanel extends DoubleChestFakeInventory implements Invent
         return (Player) player.getPlayer();
     }
 
-    public List<Item> getItems() {
-        return items;
-    }
+
+
 
     @Override
     public void onClose(Player who) {
