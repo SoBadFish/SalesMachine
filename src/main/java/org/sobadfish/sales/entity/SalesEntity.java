@@ -160,12 +160,20 @@ public class SalesEntity extends EntityHuman {
         for (SaleItem saleItem : items) {
             if (saleItem.saleItem.equals(item, true, true)) {
                 Item cl = saleItem.saleItem.clone();
-                cl.setCount(cl.getMaxStackSize());
+
+                if(saleItem.stack > cl.getMaxStackSize()){
+                    cl.setCount(cl.getMaxStackSize());
+                }
+
                 stack = new ItemStack();
                 stack.item = cl;
                 stack.stack = saleItem.stack;
                 stack.pageSize = (int) Math.ceil(saleItem.stack / (float) item.getMaxStackSize());
-                int mm = saleItem.stack - ((stack.pageSize - 1) * item.getMaxStackSize());
+                int cc =  ((stack.pageSize - 1) * item.getMaxStackSize());
+                if(cc < 0){
+                    cc = 0;
+                }
+                int mm = saleItem.stack - cc;
                 if(mm > cl.getMaxStackSize()){
                     stack.endCount = mm - cl.getMaxStackSize();
                 }else{
