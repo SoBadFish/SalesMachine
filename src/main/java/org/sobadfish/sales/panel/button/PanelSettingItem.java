@@ -96,8 +96,11 @@ public class PanelSettingItem extends BasePlayPanelItemInstance{
             lore.add(format(Utils.getCentontString("&r&e▶&7刷新时长(h): &a"+time,length)));
 
             lore.add("  ");
+            lore.add(format(Utils.getCentontString("&r&e▶&7双击编辑&e◀",length)));
+        }else{
+            lore.add(format(Utils.getCentontString("&r&e▶&7双击查看&e◀",length)));
         }
-        lore.add(format(Utils.getCentontString("&r&e▶&7双击编辑 &e◀",length)));
+
 
         i.setLore(lore.toArray(new String[0]));
 
