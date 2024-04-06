@@ -261,7 +261,9 @@ public class SalesListener implements Listener {
             if(salesEntity != null){
                 Item item = event.getItem();
                 if(salesEntity.hasItem(item)){
-                    salesEntity.addItem(item);
+                    if(!salesEntity.addItem(item)){
+                        event.setCancelled();
+                    }
                 }else{
                     event.setCancelled();
                 }
