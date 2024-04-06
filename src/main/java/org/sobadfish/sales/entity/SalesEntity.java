@@ -615,7 +615,7 @@ public class SalesEntity extends EntityHuman{
         if(!ignoreBlocks){
             for(Position ps : psconfig){
                 Block block =  position.level.getBlock(ps);
-                if(block.getId() != 0){
+                if(block.getId() != 0 && block.getId() != SalesMainClass.INSTANCE.iBarrier.getBid()){
                     hasBlock = true;
                     break;
                 }
