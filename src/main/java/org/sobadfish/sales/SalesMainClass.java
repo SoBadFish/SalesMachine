@@ -249,6 +249,7 @@ public class SalesMainClass extends PluginBase {
                 case "help":
                     sendMessageToObject("&a/sa help &7查看帮助",sender);
                     sendMessageToObject("&a/sa give [数量] [玩家(可不填)]  &7给予玩家售货机物品 （放置即可）",sender);
+                    sendMessageToObject("&a/sa q [玩家]  &7查询玩家售货机坐标",sender);
                     break;
                 case "give":
                     int count = 1;
@@ -278,6 +279,27 @@ public class SalesMainClass extends PluginBase {
                     }else{
                         sendMessageToObject("&c目标玩家为控制台!",sender);
                     }
+                    break;
+                case "q":
+                    if(args.length > 1){
+                        String master = args[1];
+                        List<SalesData> salesData = SalesMainClass.INSTANCE.sqliteHelper.getDataByString(SalesMainClass.DB_TABLE,
+                                "master = ?",new String[]{
+                                        master
+                                }, SalesData.class);
+                        if(salesData.size() > 0){
+                            sendMessageToObject("&e找到 &7"+salesData.size()+" &e台 属于 &2"+master+" &e的售货机",sender);
+                            for(SalesData salesData1: salesData){
+                                sendMessageToObject("&a查询到坐标 &r"+salesData1.location,sender);
+                            }
+                        }else{
+                            sendMessageToObject("&c未找到 "+master+" 相关的售货机",sender);
+                        }
+                    }else{
+                        sendMessageToObject("&c未知指令 请执行/sa help 查看帮助",sender);
+                    }
+
+
                     break;
                 default:
                     sendMessageToObject("&c未知指令 请执行/sa help 查看帮助",sender);
