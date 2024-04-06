@@ -32,8 +32,9 @@ import org.sobadfish.sales.config.SaleSkinConfig;
 import org.sobadfish.sales.config.SalesData;
 import org.sobadfish.sales.db.SqlData;
 import org.sobadfish.sales.items.SaleItem;
-import org.sobadfish.sales.panel.DisplayPlayerPanel;
 import org.sobadfish.sales.panel.lib.ChestPanel;
+import org.sobadfish.sales.panel.lib.DoubleChestPanel;
+import org.sobadfish.sales.panel.lib.IDisplayPanel;
 
 import java.util.*;
 
@@ -62,6 +63,8 @@ public class SalesEntity extends EntityHuman{
     public String master;
 
     public SaleSettingConfig saleSettingConfig;
+
+    public Map<String, DoubleChestPanel> clickInvPlayers = new LinkedHashMap<>();
 
 
 
@@ -109,7 +112,7 @@ public class SalesEntity extends EntityHuman{
      * @param item 需要移除的物品
      * @return 实际移除的数量
      * */
-    public int removeItem(String playerName,SaleItem item,int count){
+    public int removeItem(String playerName,SaleItem item,int count,boolean updateInv){
 //        ListTag<CompoundTag> cl = namedTag.getList("sale_items",CompoundTag.class);
         ListTag<CompoundTag> cl = loadItems;
         int index = 0;
@@ -147,15 +150,43 @@ public class SalesEntity extends EntityHuman{
             }
             index++;
         }
+        updateInventory(updateInv);
         //重新写入
 //        salesData.saveItemSlots(cl);
 //
 //        saveData();
 
-
-
-
         return cc;
+    }
+
+    public List<Item> getItemInventoryByItem(Item item) {
+        List<Item> itemMap = new ArrayList<>();
+        for(SaleItem saleItem: items) {
+            if (saleItem.saleItem.equals(item, true, true)) {
+                int s = (int)Math.floor(saleItem.stack / 64f);
+                Item ic = saleItem.saleItem.clone();
+                if(s > 0){
+                    for (int i = 0; i < s ;i++){
+                        Item ic2 = ic.clone();
+                        ic2.setCount(64);
+                        itemMap.add(ic2);
+                    }
+                    int ss = saleItem.stack - s * 64;
+                    if(ss > 0){
+                        Item ic2 = ic.clone();
+                        ic2.setCount(ss);
+                        itemMap.add(ic2);
+                    }
+                }else{
+                    Item ic2 = ic.clone();
+                    ic2.setCount(saleItem.stack);
+                    itemMap.add(ic2);
+                }
+                break;
+
+            }
+        }
+        return itemMap;
     }
 
     public static String asLocation(Position position){
@@ -182,10 +213,10 @@ public class SalesEntity extends EntityHuman{
 
     public boolean addItem(Item item){
         SaleItem saleItem = new SaleItem(item,item.count,0);
-        return addItem(saleItem);
+        return addItem(saleItem,true);
     }
 
-    public boolean addItem(SaleItem item){
+    public boolean addItem(SaleItem item,boolean updateInv){
 
         ListTag<CompoundTag> cl = loadItems;
 //        ListTag<CompoundTag> cl = namedTag.getList("sale_items",CompoundTag.class);
@@ -206,7 +237,7 @@ public class SalesEntity extends EntityHuman{
                 saleItem.stack += item.stack;
 //                salesData.saveItemSlots(cl);
 //                saveData();
-                updateInventory();
+                updateInventory(updateInv);
 
 
                 return true;
@@ -215,7 +246,7 @@ public class SalesEntity extends EntityHuman{
         }
 
 
-        if(items.size() >= InventoryType.CHEST.getDefaultSize() - 2){
+        if(items.size() >= InventoryType.CHEST.getDefaultSize() - 3){
             return false;
         }
         if(item.saleItem.getId() == 0){
@@ -232,7 +263,7 @@ public class SalesEntity extends EntityHuman{
         items.add(item);
 
         removePackets();
-        updateInventory();
+        updateInventory(updateInv);
         //重新写入
 //        salesData.saveItemSlots(cl);
 //
@@ -240,9 +271,23 @@ public class SalesEntity extends EntityHuman{
         return true;
     }
 
-    public void updateInventory(){
+    public SaleItem getSaleItemByItem(Item item){
+        for(SaleItem saleItem: items) {
+            if (saleItem.saleItem.equals(item, true, true)) {
+                return saleItem;
+            }
+        }
+        return null;
+    }
+
+    public void updateInventory(boolean updateInv){
         for (ChestPanel chestPanel: clickPlayers.values()){
             chestPanel.update();
+        }
+        if(updateInv){
+            for (DoubleChestPanel chestPanel: clickInvPlayers.values()){
+                chestPanel.update(true);
+            }
         }
     }
 
@@ -440,6 +485,26 @@ public class SalesEntity extends EntityHuman{
 
     }
 
+    public void setItem(Item item,int count){
+        SaleItem saleItem = getSaleItemByItem(item);
+
+        if(saleItem != null){
+            boolean add = false;
+            int cz = Math.abs(saleItem.stack - count);
+            if(saleItem.stack < count){
+                add = true;
+            }else if(saleItem.stack == count){
+                return;
+            }
+            SaleItem s1 = new SaleItem(item,cz,0);
+            if(add){
+                addItem(s1,false);
+            }else{
+                removeItem(master,s1,cz,false);
+            }
+        }
+    }
+
     //打包带走
     public CompoundTag toPackage(){
         //直接打包成tag 然后移除
@@ -447,8 +512,8 @@ public class SalesEntity extends EntityHuman{
         CompoundTag tag = salesData.toPackage();
         finalClose = true;
         isPackage = true;
-        for(Map.Entry<String,DisplayPlayerPanel> dis: SalesListener.chestPanelLinkedHashMap.entrySet()){
-            if(dis.getValue().sales.equals(this)){
+        for(Map.Entry<String, IDisplayPanel> dis: SalesListener.chestPanelLinkedHashMap.entrySet()){
+            if(dis.getValue().getSales().equals(this)){
                 dis.getValue().close();
                 SalesListener.chestPanelLinkedHashMap.remove(dis.getKey());
             }
@@ -475,21 +540,27 @@ public class SalesEntity extends EntityHuman{
 
     }
 
-
-    public void toClose(){
-        finalClose = true;
-        //生成一地掉落物
-        for(SaleItem saleItem: items){
-            Item cl = saleItem.saleItem.clone();
-            cl.setCount(saleItem.stack);
-            level.dropItem(this,cl);
-        }
-        for(Map.Entry<String,DisplayPlayerPanel> dis: SalesListener.chestPanelLinkedHashMap.entrySet()){
-            if(dis.getValue().sales.equals(this)){
+    public void closePanel(){
+        for(Map.Entry<String,IDisplayPanel> dis: SalesListener.chestPanelLinkedHashMap.entrySet()){
+            if(dis.getValue().getSales().equals(this)){
                 dis.getValue().close();
                 SalesListener.chestPanelLinkedHashMap.remove(dis.getKey());
             }
 
+        }
+    }
+
+
+    public void toClose(){
+        finalClose = true;
+        //生成一地掉落物
+
+        closePanel();
+
+        for(SaleItem saleItem: items){
+            Item cl = saleItem.saleItem.clone();
+            cl.setCount(saleItem.stack);
+            level.dropItem(this,cl);
         }
         close();
         String as = asLocation(this);

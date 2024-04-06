@@ -90,7 +90,7 @@ public class SellItemForm {
         }
 
 
-        if(sales.addItem(saleItem)){
+        if(sales.addItem(saleItem,true)){
             SalesMainClass.sendMessageToObject("&a添加成功!",player);
             player.getInventory().removeItem(cl);
         }else{

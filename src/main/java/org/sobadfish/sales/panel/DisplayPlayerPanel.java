@@ -7,12 +7,10 @@ import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.inventory.InventoryType;
 import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.items.SaleItem;
-import org.sobadfish.sales.panel.button.AdminSettingItem;
-import org.sobadfish.sales.panel.button.BasePlayPanelItemInstance;
-import org.sobadfish.sales.panel.button.PanelItem;
-import org.sobadfish.sales.panel.button.RemoveSales;
+import org.sobadfish.sales.panel.button.*;
 import org.sobadfish.sales.panel.lib.AbstractFakeInventory;
 import org.sobadfish.sales.panel.lib.ChestPanel;
+import org.sobadfish.sales.panel.lib.IDisplayPanel;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -22,7 +20,7 @@ import java.util.Map;
  * @author Sobadfish
  * @date 2023/11/20
  */
-public class DisplayPlayerPanel implements InventoryHolder {
+public class DisplayPlayerPanel implements InventoryHolder, IDisplayPanel {
 
     public AbstractFakeInventory inventory;
 
@@ -37,6 +35,7 @@ public class DisplayPlayerPanel implements InventoryHolder {
         return inventory;
     }
 
+    @Override
     public void open(Player player){
 
         LinkedHashMap<Integer,BasePlayPanelItemInstance> items = new LinkedHashMap<>();
@@ -51,13 +50,17 @@ public class DisplayPlayerPanel implements InventoryHolder {
         }
         if(player.isOp() || (sales.master != null && sales.master.equalsIgnoreCase(player.getName()))){
             i = InventoryType.CHEST.getDefaultSize() - 1;
-
             items.put(i,new RemoveSales());
+            i = InventoryType.CHEST.getDefaultSize() - 2;
+
+            items.put(i,new PanelInventoryButtonItem(sales));
 
         }
+
         if(player.isOp()){
             items.put(i - 1,new AdminSettingItem(sales));
         }
+
 
         String nm = sales.master+"的 售货机";
         if(sales.salesData.customname != null){
@@ -67,6 +70,7 @@ public class DisplayPlayerPanel implements InventoryHolder {
         displayPlayer(player,items,nm);
     }
 
+    @Override
     public void close(){
         if(inventory != null){
             ChestPanel chestPanel = (ChestPanel) inventory;
@@ -86,5 +90,10 @@ public class DisplayPlayerPanel implements InventoryHolder {
         panel.getPlayer().addWindow(panel);
 
 
+    }
+
+    @Override
+    public SalesEntity getSales() {
+        return sales;
     }
 }

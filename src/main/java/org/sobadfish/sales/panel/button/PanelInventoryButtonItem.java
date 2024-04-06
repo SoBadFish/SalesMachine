@@ -2,9 +2,9 @@ package org.sobadfish.sales.panel.button;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.block.BlockChest;
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.TextFormat;
-import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.items.SaleItem;
 import org.sobadfish.sales.panel.lib.ChestPanel;
@@ -14,15 +14,14 @@ import java.util.LinkedHashMap;
 
 /**
  * @author Sobadfish
- * @date 2023/11/22
+ * @date 2024/4/6
  */
-public class AdminSettingItem extends BasePlayPanelItemInstance{
-
+public class PanelInventoryButtonItem extends BasePlayPanelItemInstance{
     public int click = 0;
 
     public SalesEntity sales;
 
-    public AdminSettingItem(SalesEntity sales){
+    public PanelInventoryButtonItem(SalesEntity sales){
         this.sales = sales;
     }
 
@@ -33,7 +32,7 @@ public class AdminSettingItem extends BasePlayPanelItemInstance{
 
     @Override
     public Item getItem() {
-        return SalesMainClass.CUSTOM_ITEMS.get("setting");
+        return new BlockChest().toItem();
     }
 
     @Override
@@ -45,7 +44,7 @@ public class AdminSettingItem extends BasePlayPanelItemInstance{
             LinkedHashMap<Integer,BasePlayPanelItemInstance> items = new LinkedHashMap<>();
             int i = 0;
             for(SaleItem item: sales.items){
-                items.put(i++, new PanelSettingItem(item));
+                items.put(i++, new PanelSettingItem(item,true));
 
             }
             ((ChestPanel)inventory).setPanel(items);
@@ -56,10 +55,11 @@ public class AdminSettingItem extends BasePlayPanelItemInstance{
     @Override
     public Item getPanelItem(Player info, int index) {
         Item item = getItem();
-        item.setCustomName(TextFormat.colorize('&',"&r&l&c管理"));
-        item.setLore(TextFormat.colorize('&',"&r&7&l\n管理此售货机"));
+        item.setCustomName(TextFormat.colorize('&',"&r&l&e库存"));
+        item.setLore(TextFormat.colorize('&',"&r&7&l\n查看库存"));
         item.setNamedTag(item.getNamedTag().putInt("index",index));
         return item;
 
     }
+
 }

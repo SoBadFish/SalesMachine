@@ -6,6 +6,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.utils.TextFormat;
 import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.panel.lib.ChestPanel;
+import org.sobadfish.sales.panel.lib.ISalePanel;
 
 
 /**
@@ -27,14 +28,14 @@ public class RemoveSales extends BasePlayPanelItemInstance{
     }
 
     @Override
-    public void onClick(ChestPanel inventory, Player player) {
+    public void onClick(ISalePanel inventory, Player player) {
         if(click == 0){
             click++;
             Server.getInstance().getScheduler().scheduleDelayedTask(() -> click = 0,40);
         }else{
-            inventory.onClose(player);
-            inventory.sales.level.dropItem(inventory.sales, SalesMainClass.INSTANCE.iBarrier.getShaleItem());
-            inventory.sales.toClose();
+            ((ChestPanel)inventory).onClose(player);
+            ((ChestPanel)inventory).sales.level.dropItem(((ChestPanel)inventory).sales, SalesMainClass.INSTANCE.iBarrier.getShaleItem());
+            ((ChestPanel)inventory).sales.toClose();
 
         }
 

@@ -13,6 +13,7 @@ import org.sobadfish.sales.Utils;
 import org.sobadfish.sales.items.MoneyItem;
 import org.sobadfish.sales.items.SaleItem;
 import org.sobadfish.sales.panel.lib.ChestPanel;
+import org.sobadfish.sales.panel.lib.ISalePanel;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class PanelItem extends BasePlayPanelItemInstance{
     }
 
     @Override
-    public void onClick(ChestPanel inventory, Player player) {
+    public void onClick(ISalePanel inventory, Player player) {
         if(click == 0){
             click++;
             Server.getInstance().getScheduler().scheduleDelayedTask(() -> click = 0,40);
@@ -71,7 +72,7 @@ public class PanelItem extends BasePlayPanelItemInstance{
                         return;
                     }
                 }else{
-                    if(inventory.sales.master.equalsIgnoreCase(player.getName())){
+                    if(((ChestPanel)inventory).sales.master.equalsIgnoreCase(player.getName())){
                         //店主不花钱
                         player.getInventory().addItem(showItem.saleItem);
 
@@ -81,7 +82,7 @@ public class PanelItem extends BasePlayPanelItemInstance{
 
                             if(chunkLimit(player)){
                                 EconomyAPI.getInstance().reduceMoney(player,showItem.money);
-                                EconomyAPI.getInstance().addMoney(inventory.sales.master,showItem.money);
+                                EconomyAPI.getInstance().addMoney(((ChestPanel)inventory).sales.master,showItem.money);
                                 player.getInventory().addItem(showItem.saleItem);
                             }
 
@@ -91,7 +92,7 @@ public class PanelItem extends BasePlayPanelItemInstance{
                         }
                     }
                     if(!showItem.tag.contains("noreduce") || !showItem.tag.getBoolean("noreduce")){
-                        inventory.sales.removeItem(player.getName(),showItem,showItem.saleItem.getCount());
+                        ((ChestPanel)inventory).sales.removeItem(player.getName(),showItem,showItem.saleItem.getCount(),true);
                     }
                 }
                 player.getLevel().addSound(player.getPosition(),Sound.RANDOM_ORB);
@@ -100,13 +101,13 @@ public class PanelItem extends BasePlayPanelItemInstance{
 
 
             }else{
-                if(inventory.sales.master.equalsIgnoreCase(player.getName())){
+                if(((ChestPanel)inventory).sales.master.equalsIgnoreCase(player.getName())){
                     int cc = showItem.stack;
                     Item cl = showItem.saleItem.clone();
                     cl.setCount(cc);
                     player.getInventory().addItem(cl);
                     showItem.stack = 0;
-                    inventory.sales.removeItem(player.getName(),showItem,showItem.saleItem.getCount());
+                    ((ChestPanel)inventory).sales.removeItem(player.getName(),showItem,showItem.saleItem.getCount(),true);
                 }else{
                     SalesMainClass.sendMessageToObject("&c库存不足!",player);
                 }

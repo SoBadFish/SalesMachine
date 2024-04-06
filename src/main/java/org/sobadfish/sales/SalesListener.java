@@ -38,6 +38,8 @@ import org.sobadfish.sales.items.MoneyItem;
 import org.sobadfish.sales.panel.DisplayPlayerPanel;
 import org.sobadfish.sales.panel.button.BasePlayPanelItemInstance;
 import org.sobadfish.sales.panel.lib.ChestPanel;
+import org.sobadfish.sales.panel.lib.DoubleChestPanel;
+import org.sobadfish.sales.panel.lib.IDisplayPanel;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -50,7 +52,7 @@ public class SalesListener implements Listener {
 
     public SalesMainClass main;
 
-    public static LinkedHashMap<String,DisplayPlayerPanel> chestPanelLinkedHashMap = new LinkedHashMap<>();
+    public static LinkedHashMap<String, IDisplayPanel> chestPanelLinkedHashMap = new LinkedHashMap<>();
 
 
     public SalesListener(SalesMainClass salesMainClass){
@@ -142,6 +144,12 @@ public class SalesListener implements Listener {
                             if(
 //                                    event.getAction() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK ||
                                     event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
+
+                                if(entity1.clickInvPlayers.size() > 0){
+                                    SalesMainClass.sendMessageToObject("&c售货机正在被编辑",player);
+                                    return;
+                                }
+
                                 DisplayPlayerPanel displayPlayerPanel = new DisplayPlayerPanel(entity1);
                                 displayPlayerPanel.open(player);
                                 chestPanelLinkedHashMap.put(player.getName(),displayPlayerPanel);
@@ -384,6 +392,7 @@ public class SalesListener implements Listener {
                     Player player = ((ChestPanel) inventory).getPlayer();
                     event.setCancelled();
                     Item i = action.getSourceItem();
+
                     if (i.hasCompoundTag() && i.getNamedTag().contains("index")) {
                         int index = i.getNamedTag().getInt("index");
                         BasePlayPanelItemInstance item = ((ChestPanel) inventory).getPanel().getOrDefault(index, null);
@@ -396,6 +405,29 @@ public class SalesListener implements Listener {
                     }
 
                 }
+                if(inventory instanceof DoubleChestPanel){
+                    Player player = ((DoubleChestPanel) inventory).getPlayer();
+                    Item i = action.getSourceItem();
+                    Item i2 = action.getTargetItem();
+                    if (i.hasCompoundTag() && i.getNamedTag().contains("index")) {
+                        event.setCancelled();
+                        int index = i.getNamedTag().getInt("index");
+                        BasePlayPanelItemInstance item = ((DoubleChestPanel) inventory).getPanel().getOrDefault(index, null);
+                        if (item != null) {
+                            item.onClick((DoubleChestPanel) inventory, player);
+                        }
+                    }
+                    boolean condition1 = i2.equals(((DoubleChestPanel) inventory).choseItem, true, true) && (
+                            i.getId() == 0 || i.equals(((DoubleChestPanel) inventory).choseItem, true, true));
+
+                    boolean condition2 = i.equals(((DoubleChestPanel) inventory).choseItem, true, true) &&
+                            (i2.getId() == 0 || i2.equals(((DoubleChestPanel) inventory).choseItem, true, true));
+
+                    if (!(condition1 || condition2)) {
+                        event.setCancelled();
+                    }
+                }
+                //如果是库存
             }
         }
     }

@@ -12,14 +12,13 @@ import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.panel.button.BasePlayPanelItemInstance;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
  * @author Sobadfish
  * @date 2023/11/18
  */
-public class ChestPanel extends ChestFakeInventory implements InventoryHolder {
+public class ChestPanel extends ChestFakeInventory implements InventoryHolder,ISalePanel {
 
     public long id;
 
@@ -53,6 +52,11 @@ public class ChestPanel extends ChestFakeInventory implements InventoryHolder {
 
     public void update(){
         setPanel(panel);
+    }
+
+    @Override
+    public SalesEntity getSales() {
+        return sales;
     }
 
     public Player getPlayerInfo(){
@@ -115,4 +119,6 @@ public class ChestPanel extends ChestFakeInventory implements InventoryHolder {
     public Inventory getInventory() {
         return this;
     }
+
+
 }

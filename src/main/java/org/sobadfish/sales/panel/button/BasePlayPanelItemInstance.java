@@ -2,7 +2,7 @@ package org.sobadfish.sales.panel.button;
 
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
-import org.sobadfish.sales.panel.lib.ChestPanel;
+import org.sobadfish.sales.panel.lib.ISalePanel;
 
 
 /**
@@ -29,7 +29,7 @@ public abstract class BasePlayPanelItemInstance {
      * @param player 玩家
      *
      * */
-    public abstract void onClick(ChestPanel inventory, Player player);
+    public abstract void onClick(ISalePanel inventory, Player player);
 
 
     /**

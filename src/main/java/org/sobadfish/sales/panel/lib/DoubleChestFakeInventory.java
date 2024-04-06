@@ -27,7 +27,7 @@ public class DoubleChestFakeInventory extends ChestFakeInventory{
         this(holder, null);
     }
 
-    private DoubleChestFakeInventory(InventoryHolder holder, String title) {
+    DoubleChestFakeInventory(InventoryHolder holder, String title) {
         super(InventoryType.DOUBLE_CHEST, holder, title);
     }
 
