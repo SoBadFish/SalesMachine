@@ -1,6 +1,7 @@
 package org.sobadfish.sales.panel.button;
 
 import cn.nukkit.Player;
+import cn.nukkit.inventory.Inventory;
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.TextFormat;
 import org.sobadfish.sales.SalesMainClass;
@@ -24,7 +25,9 @@ public class LastPageItem extends BasePlayPanelItemInstance{
 
     @Override
     public void onClick(ISalePanel inventory, Player player) {
+        ((DoubleChestPanel)inventory).update((Inventory) inventory);
         ((DoubleChestPanel)inventory).page--;
+
         ((DoubleChestPanel)inventory).update(false);
     }
 

@@ -158,10 +158,6 @@ public class DoubleChestPanel extends DoubleChestFakeInventory implements Invent
             }
         }
         //获取当前页数
-
-
-
-
         sales.setItem(choseItem,count,pageSize);
     }
 
