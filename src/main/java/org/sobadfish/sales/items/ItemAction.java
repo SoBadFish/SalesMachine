@@ -26,7 +26,7 @@ public class ItemAction {
 
 
 
-    public static boolean onCtActivate(Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
+    public static boolean onCtActivate(Item i,Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
         //编写拿取的逻辑
         if(player.isSneaking()){
             return false;
@@ -49,7 +49,9 @@ public class ItemAction {
                 //防止过快使用锁
                 compoundTag.putLong("lock",System.currentTimeMillis());
                 sitem.setCompoundTag(compoundTag);
-                player.getInventory().setItemInHand(sitem);
+                i.setCount(i.getCount() - 1);
+                player.getInventory().setItemInHand(i);
+                player.getInventory().addItem(sitem);
             }
 
 
@@ -114,6 +116,7 @@ public class ItemAction {
                     }
 
                 },1);
+
                 player.getInventory().setItemInHand(SalesMainClass.CUSTOM_ITEMS.get("ct"));
 
             }
