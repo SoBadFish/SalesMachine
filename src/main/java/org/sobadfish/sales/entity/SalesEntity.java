@@ -253,7 +253,7 @@ public class SalesEntity extends EntityHuman {
 
         removePackets();
         updateInventory(updateInv);
-        //重新写入
+
         return true;
     }
 
