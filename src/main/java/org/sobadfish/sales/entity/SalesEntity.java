@@ -108,10 +108,8 @@ public class SalesEntity extends EntityHuman {
      * 减少物品
      *
      * @param item 需要移除的物品
-     * @return 实际移除的数量
      */
     public void removeItem(String playerName, SaleItem item, int count, boolean updateInv) {
-//        ListTag<CompoundTag> cl = namedTag.getList("sale_items",CompoundTag.class);
         ListTag<CompoundTag> cl = loadItems;
         int index = 0;
         for (SaleItem saleItem : new ArrayList<>(items)) {
@@ -148,10 +146,6 @@ public class SalesEntity extends EntityHuman {
         }
         updateInventory(updateInv);
         //重新写入
-//        salesData.saveItemSlots(cl);
-//
-//        saveData();
-
     }
 
     public ItemStack getItemInventoryByItem(Item item) {
@@ -185,7 +179,6 @@ public class SalesEntity extends EntityHuman {
         }
         return stack;
 
-//        return itemMap;
     }
 
     public static String asLocation(Position position) {
@@ -218,7 +211,6 @@ public class SalesEntity extends EntityHuman {
     public boolean addItem(SaleItem item, boolean updateInv) {
 
         ListTag<CompoundTag> cl = loadItems;
-//        ListTag<CompoundTag> cl = namedTag.getList("sale_items",CompoundTag.class);
         int index = 0;
         for (SaleItem saleItem : items) {
             if (saleItem.saleItem.equals(item.saleItem, true, true)) {
@@ -234,8 +226,6 @@ public class SalesEntity extends EntityHuman {
                     saleItem.money = item.money;
                 }
                 saleItem.stack += item.stack;
-//                salesData.saveItemSlots(cl);
-//                saveData();
                 updateInventory(updateInv);
 
 
@@ -264,9 +254,6 @@ public class SalesEntity extends EntityHuman {
         removePackets();
         updateInventory(updateInv);
         //重新写入
-//        salesData.saveItemSlots(cl);
-//
-//        saveData();
         return true;
     }
 
