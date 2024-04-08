@@ -11,6 +11,7 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.entity.data.Skin;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.plugin.PluginBase;
@@ -249,7 +250,7 @@ public class SalesMainClass extends PluginBase {
                 case "help":
                     sendMessageToObject("&a/sa help &7查看帮助",sender);
                     sendMessageToObject("&a/sa give [数量] [玩家(可不填)]  &7给予玩家售货机物品 （放置即可）",sender);
-                    sendMessageToObject("&a/sa q [玩家]  &7查询玩家售货机坐标",sender);
+                    sendMessageToObject("&a/sa q [玩家（可不填）]  &7查询玩家售货机坐标信息",sender);
                     break;
                 case "give":
                     int count = 1;
@@ -296,7 +297,25 @@ public class SalesMainClass extends PluginBase {
                             sendMessageToObject("&c未找到 "+master+" 相关的售货机",sender);
                         }
                     }else{
-                        sendMessageToObject("&c未知指令 请执行/sa help 查看帮助",sender);
+                        int allCount = SalesMainClass.INSTANCE.sqliteHelper.countAllData(SalesMainClass.DB_TABLE);
+                        sendMessageToObject("&e当前服务器共计 &a"+allCount+" &e台售货机",sender);
+                        sendMessageToObject("&7每张地图最多显示 &c5 &7条售货机最多的区块信息",sender);
+                        for(Level level: Server.getInstance().getLevels().values()){
+                            List<SqliteHelper.DataCount<SalesData>> dataCounts = SalesMainClass.INSTANCE.sqliteHelper.sortDataCount(
+                                    SalesMainClass.DB_TABLE,"chunkX,chunkZ","world = '"+level.getFolderName()+"'",5,SalesData.class
+                            );
+                            if(dataCounts.size() > 0){
+                                int mapCount = SalesMainClass.INSTANCE.sqliteHelper.countData(SalesMainClass.DB_TABLE,"world",level.getFolderName());
+                                sendMessageToObject("&2地图 &7"+level.getFolderName()+" &2共计 &e"+mapCount+" &2台售货机",sender);
+                                for(SqliteHelper.DataCount<SalesData> dataCount: dataCounts){
+                                    sendMessageToObject("  &2区块&e("+dataCount.data.chunkx+":"
+                                            +dataCount.data.chunkz+") &2存在 &b"+dataCount.count+" &2台售货机 &7坐标: "+dataCount.data.location,sender);
+                                }
+                            }
+
+
+                        }
+//                        sendMessageToObject("&c未知指令 请执行/sa help 查看帮助",sender);
                     }
 
 
@@ -493,6 +512,13 @@ public class SalesMainClass extends PluginBase {
             Server.getInstance().forceResources = true;
         }else{
             sendMessageToConsole("&e当前核心为 Nukkit");
+        }
+    }
+
+    @Override
+    public void onDisable() {
+        if(sqliteHelper != null){
+            sqliteHelper.destroyed();
         }
     }
 }

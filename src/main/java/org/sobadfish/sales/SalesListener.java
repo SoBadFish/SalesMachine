@@ -231,8 +231,13 @@ public class SalesListener implements Listener {
                         if("null".equalsIgnoreCase(data.customname) || "".equalsIgnoreCase(data.customname)){
                             data.customname = null;
                         }
+
                         Position position = data.asPosition();
                         if(position.getLevel().getFolderName().equalsIgnoreCase(event.getLevel().getFolderName())){
+                            if("null".equalsIgnoreCase(data.world) || "".equalsIgnoreCase(data.world)){
+                                data.world = event.getLevel().getFolderName();
+                                SalesMainClass.INSTANCE.sqliteHelper.set(SalesMainClass.DB_TABLE,"location",data.location,data);
+                            }
                             if(!cacheEntitys.containsKey(data.location)){
                                 if(SalesEntity.spawnToAll(data.asPosition(), BlockFace.valueOf(data.bf.toUpperCase()),data.master,data, true,false) == null){
                                     SalesMainClass.sendMessageToConsole("&c加载 位置: ("+data.location+") "+" 售货机失败!");

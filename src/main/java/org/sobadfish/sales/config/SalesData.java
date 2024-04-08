@@ -27,6 +27,8 @@ public class SalesData {
 
     public String location;
 
+    public String world = "";
+
     public String bf;
 
     public String master;
@@ -50,8 +52,15 @@ public class SalesData {
         tag.putInt("width",width);
         tag.putInt("height",height);
 
+
         tag.putString("location",location);
+        tag.putString("world",world);
         tag.putString("bf",bf);
+
+        if(world == null || "".equalsIgnoreCase(world)){
+            world = location.split(":")[3];
+        }
+
         if(customname != null){
             tag.putString("customname",customname);
         }
@@ -81,8 +90,13 @@ public class SalesData {
         if(tag.contains("customname")){
             salesData.customname = tag.getString("customname");
         }
+        if(tag.contains("world")){
+            salesData.world = tag.getString("world");
+        }else{
+            salesData.world = tag.getString("world");
+        }
         if(tag.contains("skinmodel")){
-            salesData.skinmodel = tag.getString("skinmodel");
+            salesData.skinmodel = salesData.location.split(":")[3];
         }
 
 

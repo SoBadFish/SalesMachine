@@ -653,6 +653,7 @@ public class SalesEntity extends EntityHuman {
                 data.chunkz = pos.getChunkZ();
                 data.width = width;
                 data.height = height;
+                data.world = position.level.getFolderName();
                 data.location = ps;
                 data.master = master;
                 data.bf = bf.getName();
@@ -665,6 +666,10 @@ public class SalesEntity extends EntityHuman {
                 }
 
 
+            }else{
+                if(data.world == null || "".equalsIgnoreCase(data.world)){
+                    data.world = position.level.getFolderName();
+                }
             }
             sales.salesData = data;
 

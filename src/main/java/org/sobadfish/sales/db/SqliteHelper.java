@@ -165,6 +165,7 @@ public class SqliteHelper {
         return this;
     }
 
+
     public void addColumns(String table,String columns,Field type){
         try {
             if (statement != null) {
@@ -264,6 +265,69 @@ public class SqliteHelper {
         String str = builder.toString();
         return str.substring(0, str.length() - 3);
     }
+
+    /**
+     * 查找条数
+     * */
+    public int countAllData(String tableName){
+        if (statement != null) {
+            try{
+                ResultSet resultSet = statement.executeQuery("SELECT count(*) FROM " + tableName);
+                return resultSet.getInt(1);
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return 0;
+
+    }
+    /**
+     * 查找条数
+     * */
+    public int countData(String tableName,String key,String value){
+        if (statement != null) {
+            try{
+                ResultSet resultSet = statement.executeQuery("SELECT count(*) FROM " + tableName+" WHERE " + key+" = '"+value+"'");
+                return resultSet.getInt(1);
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return 0;
+
+    }
+
+    /**
+     * 根据数量排行
+     * */
+    public <T> List<DataCount<T>> sortDataCount(String tableName,String groupBy,String where,int count,Class<T> tClass){
+        if (statement != null) {
+            try{
+                LinkedList<DataCount<T>> datas = new LinkedList<>();
+                String sql = "SELECT "+tableName+".*, COUNT(*) AS group_count FROM " + tableName +" WHERE "+where+" "+
+                        "GROUP BY "+groupBy+" ORDER BY group_count DESC LIMIT "+count;
+                ResultSet resultSet = statement.executeQuery(sql);
+
+                while (resultSet.next()) {
+                    T t = tClass.newInstance();
+                    int ct = resultSet.getInt("group_count");
+                    explainClass(resultSet,tClass,t);
+                    DataCount<T> dc = new DataCount<>();
+                    dc.data = t;
+                    dc.count = ct;
+                    datas.add(dc);
+                }
+                resultSet.close();
+                return datas;
+
+            }catch (SQLException | InstantiationException | IllegalAccessException e){
+                e.printStackTrace();
+            }
+        }
+        return new ArrayList<>();
+    }
+
+
 
     public <T> T get(String tableName,int id, Class<T> clazz){
         T instance = null;
@@ -370,7 +434,14 @@ public class SqliteHelper {
             ResultSetMetaData rsmd = cursor.getMetaData();
             for(int i = 0;i < rsmd.getColumnCount();i++){
                 String name = rsmd.getColumnName(i + 1);
-                Field field = tc.getField(name);
+                Field field = null;
+                try {
+                    field = tc.getField(name);
+                }catch (Exception ignore){
+                }
+                if(field == null){
+                    continue;
+                }
                 if(field.getType() == int.class){
                     field.set(t, cursor.getInt(name));
                 }else
@@ -385,7 +456,11 @@ public class SqliteHelper {
                     field.set(t, cursor.getLong(name));
 
                 }else{
-                    field.set(t, cursor.getString(name));
+                    String v = cursor.getString(name);
+                    if("null".equalsIgnoreCase(v)){
+                        v = null;
+                    }
+                    field.set(t,v);
                 }
 
             }
@@ -494,6 +569,13 @@ public class SqliteHelper {
         } catch (SQLException e) {
             System.out.println("Sqlite数据库关闭时异常 "+ e);
         }
+    }
+
+    public static class DataCount<T>{
+
+        public T data;
+
+        public int count;
     }
 
 
