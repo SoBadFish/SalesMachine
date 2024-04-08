@@ -295,16 +295,18 @@ public class SalesMainClass extends PluginBase {
 
     }
 
-    public static boolean registerMoneyCore(String moneyName,Class<? extends IMoney> money){
+    public static void registerMoneyCore(String moneyName,Class<? extends IMoney> money){
         if(!LOAD_MONEY.containsKey(moneyName)){
             try{
                 IMoney my = money.getDeclaredConstructor().newInstance();
                 LOAD_MONEY.put(moneyName, my);
+                return;
             }catch (Exception e){
                 e.printStackTrace();
             }
         }
-        return false;
+        throw new IllegalStateException("当前经济核心已存在！");
+
     }
 
 
