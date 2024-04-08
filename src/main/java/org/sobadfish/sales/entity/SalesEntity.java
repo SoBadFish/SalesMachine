@@ -694,6 +694,8 @@ public class SalesEntity extends EntityHuman {
                     BlockFace.valueOf(oldSd.bf.toUpperCase()), oldSd.master, oldSd,
                     true, true);
 
+            return true;
+
 
         }
 

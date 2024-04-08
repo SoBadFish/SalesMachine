@@ -93,10 +93,10 @@ public class SalesData {
         if(tag.contains("world")){
             salesData.world = tag.getString("world");
         }else{
-            salesData.world = tag.getString("world");
+            salesData.world = salesData.location.split(":")[3];
         }
         if(tag.contains("skinmodel")){
-            salesData.skinmodel = salesData.location.split(":")[3];
+            salesData.skinmodel = tag.getString("skinmodel");
         }
 
 
