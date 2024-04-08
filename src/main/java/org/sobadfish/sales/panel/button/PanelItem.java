@@ -76,7 +76,7 @@ public class PanelItem extends BasePlayPanelItemInstance{
                     }else{
                         if(!showItem.tag.contains("noreduce") || !showItem.tag.getBoolean("noreduce")){
                             if(iMoney.myMoney(((ChestPanel)inventory).sales.master) < showItem.money){
-                                SalesMainClass.sendMessageToObject("&c店主没有足够的金钱!",player);
+                                SalesMainClass.sendMessageToObject("&c店主没有足够的!"+iMoney.displayName(),player);
                                 return;
                             }else{
                                 iMoney.reduceMoney(((ChestPanel)inventory).sales.master,showItem.money);
@@ -191,13 +191,15 @@ public class PanelItem extends BasePlayPanelItemInstance{
     public Item getPanelItem(Player info, int index) {
 
         Item i =  showItem.saleItem.clone();
+        IMoney im = SalesMainClass.getMoneyCoreByName(showItem.loadMoney);
+
         List<String> lore = new ArrayList<>(Arrays.asList(showItem.saleItem.getLore()));
         int length = 0;
         boolean v = false;
         List<String> vl = new ArrayList<>();
         if(showItem.tag.contains("sales_exchange") && showItem.tag.getBoolean("sales_exchange",false)){
             vl.add(format("&r&7库存: &a"+(getStockStr())));
-            vl.add(format("&r&7&r金币 &7* &e"+(showItem.money != 0?showItem.money:"免费")));
+            vl.add(format("&r&7"+im.displayName()+" &7* &e"+(showItem.money != 0?showItem.money:"免费")));
             v = true;
 //            i = new MoneyItem(showItem.money).getItem();
 //            lore.add(format(Utils.getCentontString("&r&e▶&7 回收价: &e"+(showItem.getItemName()+" &r*&a "+showItem.saleItem.getCount()),length)));

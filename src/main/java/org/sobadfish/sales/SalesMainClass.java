@@ -157,7 +157,7 @@ public class SalesMainClass extends PluginBase {
         if(LOAD_MONEY.containsKey(name)){
             return LOAD_MONEY.get(name);
         }
-        return null;
+        return new ArrayList<>(LOAD_MONEY.values()).get(0);
     }
 
     public static LinkedHashMap<String, IMoney> getLoadMoney() {
@@ -300,6 +300,7 @@ public class SalesMainClass extends PluginBase {
             try{
                 IMoney my = money.getDeclaredConstructor().newInstance();
                 LOAD_MONEY.put(moneyName, my);
+                sendMessageToConsole("&a装载经济核心: &r"+moneyName);
                 return;
             }catch (Exception e){
                 e.printStackTrace();
