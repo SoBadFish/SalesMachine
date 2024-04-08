@@ -303,41 +303,32 @@ public class SalesListener implements Listener {
     @EventHandler
     public void onFormListener(PlayerFormRespondedEvent event) {
         if (event.wasClosed()) {
-           // SellItemForm.DISPLAY_FROM.remove(event.getPlayer().getName());
-           // SellItemForm.DISPLAY_FROM.remove(event.getPlayer().getName());
             return;
         }
         if(SellItemForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
             SellItemForm form = SellItemForm.DISPLAY_FROM.get(event.getPlayer().getName());
-          //  if(form.getId() == event.getFormID()){
+            if(form.getId() == event.getFormID()){
                 if(event.getResponse() instanceof FormResponseCustom){
                     form.onListener(event.getPlayer(), (FormResponseCustom) event.getResponse());
 
                 }
-                SellItemForm.DISPLAY_FROM.remove(event.getPlayer().getName());
-           // }
-            //SellItemForm.DISPLAY_FROM.remove(event.getPlayer().getName());
+            }
+            SellItemForm.DISPLAY_FROM.remove(event.getPlayer().getName());
         }
         if(AdminForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
             AdminForm form = AdminForm.DISPLAY_FROM.get(event.getPlayer().getName());
-          //  if(form.getId() == event.getFormID()){
+            if(form.getId() == event.getFormID()){
                 if(event.getResponse() instanceof FormResponseCustom){
                     form.onListener(event.getPlayer(), (FormResponseCustom) event.getResponse());
 
                 }
-                AdminForm.DISPLAY_FROM.remove(event.getPlayer().getName());
-          //  }
-           // AdminForm.DISPLAY_FROM.remove(event.getPlayer().getName());
+            }
+            AdminForm.DISPLAY_FROM.remove(event.getPlayer().getName());
         }
     }
 
     public static SalesEntity getEntityByPos(Position position){
-//        String[] vl = new String[]{
-//                SalesEntity.asLocation(position),
-//                SalesEntity.asLocation(position.add(0,-1))
-//        };
         String v = SalesEntity.asLocation(position);
-//        for(String v : vl){
             if(cacheEntitys.containsKey(v)){
                 SalesEntity salesEntity = cacheEntitys.get(v);
                 if(salesEntity.finalClose){
