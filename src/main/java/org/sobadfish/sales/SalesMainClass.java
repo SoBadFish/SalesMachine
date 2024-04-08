@@ -61,6 +61,8 @@ public class SalesMainClass extends PluginBase {
 
     public static List<String> banWorlds = new ArrayList<>();
 
+    public static List<String> OnlyUserAdminCore = new ArrayList<>();
+
 
     public SqliteHelper sqliteHelper;
 
@@ -181,6 +183,7 @@ public class SalesMainClass extends PluginBase {
     //加载坐标点
     private void loadConfig() {
         banWorlds = getConfig().getStringList("ban-world");
+        OnlyUserAdminCore = getConfig().getStringList("only-use-admin-money-core");
 
     }
 

@@ -1,2 +1,5 @@
 #阻止放置售货机的世界
 ban-world: []
+
+# 只允许OP使用的经济核心
+only-use-admin-money-core: []

@@ -15,6 +15,7 @@ import org.sobadfish.sales.items.SaleItem;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Sobadfish
@@ -54,9 +55,12 @@ public class SellItemForm {
                         "&r\n&l数量: &r&a"+item.getCount()+"\n")));
         custom.addElement(new ElementSlider("请选择商品的数量",0,item.getCount(),1,0));
         custom.addElement(new ElementInput("请输入价格 若不填则默认为 0 ","商品的价格"));
-        sv = new ArrayList<String>();
-        for(IMoney im: SalesMainClass.getLoadMoney().values()){
-            sv.add(im.displayName());
+        sv = new ArrayList<>();
+        for(Map.Entry<String,IMoney> entry: SalesMainClass.getLoadMoney().entrySet()){
+            if(SalesMainClass.OnlyUserAdminCore.contains(entry.getKey()) && !player.isOp()){
+                continue;
+            }
+            sv.add(entry.getValue().displayName());
         }
 
         custom.addElement(new ElementToggle("是否为收购"));
