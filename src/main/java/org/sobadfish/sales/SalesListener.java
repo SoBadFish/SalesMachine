@@ -28,9 +28,10 @@ import cn.nukkit.item.ItemNameTag;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.Sound;
 import cn.nukkit.math.BlockFace;
+import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.TextFormat;
-import me.onebone.economyapi.EconomyAPI;
 import org.sobadfish.sales.config.SalesData;
+import org.sobadfish.sales.economy.IMoney;
 import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.form.AdminForm;
 import org.sobadfish.sales.form.SellItemForm;
@@ -177,17 +178,23 @@ public class SalesListener implements Listener {
                     return;
                 }
                 double money = item.getNamedTag().getDouble(MoneyItem.TAG) * item.getCount();
+                CompoundTag tag = item.getNamedTag();
+                String mn = SalesMainClass.getFirstMoney();
+                if(tag.contains("loadMoney")){
+                    mn = tag.getString("loadMoney");
+                }
+                IMoney iMoney = SalesMainClass.getMoneyCoreByName(mn);
+                if(iMoney == null){
+                    SalesMainClass.sendMessageToObject("&c经济核心 "+mn+" 未装载!",player);
+                    return;
+                }
                 item.setCount(item.getCount() - item.getCount());
                 player.getInventory().setItemInHand(item);
-                try {
-                    Class.forName("me.onebone.economyapi.EconomyAPI");
-                    EconomyAPI.getInstance().addMoney(player,money);
-                    player.level.addSound(player, Sound.ARMOR_EQUIP_IRON);
-                    SalesMainClass.sendMessageToObject("&r获得金币 x &e"+money,player);
-                } catch (ClassNotFoundException e) {
-                    SalesMainClass.sendMessageToObject("&c无经济核心!",player);
+                iMoney.addMoney(player.getName(),money);
 
-                }
+                player.level.addSound(player, Sound.ARMOR_EQUIP_IRON);
+                SalesMainClass.sendMessageToObject("&r获得"+iMoney.displayName()+" x &e"+money,player);
+
 
             }
             //TODO 自定义物品的放置

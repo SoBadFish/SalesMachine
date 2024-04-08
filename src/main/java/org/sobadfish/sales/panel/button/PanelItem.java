@@ -7,9 +7,9 @@ import cn.nukkit.item.Item;
 import cn.nukkit.level.Sound;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.TextFormat;
-import me.onebone.economyapi.EconomyAPI;
 import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.Utils;
+import org.sobadfish.sales.economy.IMoney;
 import org.sobadfish.sales.items.MoneyItem;
 import org.sobadfish.sales.items.SaleItem;
 import org.sobadfish.sales.panel.lib.ChestPanel;
@@ -53,6 +53,11 @@ public class PanelItem extends BasePlayPanelItemInstance{
             click++;
             Server.getInstance().getScheduler().scheduleDelayedTask(() -> click = 0,40);
         }else{
+            IMoney iMoney = SalesMainClass.getMoneyCoreByName(showItem.loadMoney);
+            if(iMoney == null){
+                SalesMainClass.sendMessageToObject("&c购买失败!经济核心 "+showItem.loadMoney+" 未装载",player);
+                return;
+            }
             //触发购买...
             int size = (int) Math.floor(showItem.stack / (float)showItem.saleItem.getCount());
             if(showItem.tag.contains("noreduce") && showItem.tag.getBoolean("noreduce")){
@@ -70,11 +75,11 @@ public class PanelItem extends BasePlayPanelItemInstance{
 
                     }else{
                         if(!showItem.tag.contains("noreduce") || !showItem.tag.getBoolean("noreduce")){
-                            if(EconomyAPI.getInstance().myMoney(((ChestPanel)inventory).sales.master) < showItem.money){
+                            if(iMoney.myMoney(((ChestPanel)inventory).sales.master) < showItem.money){
                                 SalesMainClass.sendMessageToObject("&c店主没有足够的金钱!",player);
                                 return;
                             }else{
-                                EconomyAPI.getInstance().reduceMoney(((ChestPanel)inventory).sales.master,showItem.money);
+                                iMoney.reduceMoney(((ChestPanel)inventory).sales.master,showItem.money);
                             }
                         }
 
@@ -84,14 +89,13 @@ public class PanelItem extends BasePlayPanelItemInstance{
 
                                 showItem.stack += showItem.saleItem.getCount();
                                 player.getInventory().removeItem(showItem.saleItem);
-                                player.getInventory().addItem(new MoneyItem(showItem.money).getItem());
+                                player.getInventory().addItem(new MoneyItem(showItem.money).getItem(showItem.loadMoney));
                             }
 
                         }else{
                             SalesMainClass.sendMessageToObject("&c购买失败! 物品不足!",player);
                             return;
                         }
-
 
                     }
 
@@ -102,16 +106,16 @@ public class PanelItem extends BasePlayPanelItemInstance{
 
                     }else{
 
-                        if(EconomyAPI.getInstance().myMoney(player) >= showItem.money){
+                        if(iMoney.myMoney(player.getName()) >= showItem.money){
 
                             if(chunkLimit(player)){
-                                EconomyAPI.getInstance().reduceMoney(player,showItem.money);
-                                EconomyAPI.getInstance().addMoney(((ChestPanel)inventory).sales.master,showItem.money);
+                                iMoney.reduceMoney(player.getName(),showItem.money);
+                                iMoney.addMoney(((ChestPanel)inventory).sales.master,showItem.money);
                                 player.getInventory().addItem(showItem.saleItem);
                             }
 
                         }else{
-                            SalesMainClass.sendMessageToObject("&c金钱不足!",player);
+                            SalesMainClass.sendMessageToObject(iMoney.displayName()+"&c不足!",player);
                             return;
                         }
                     }

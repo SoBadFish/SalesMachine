@@ -220,6 +220,9 @@ public class SalesEntity extends EntityHuman {
                     return false;
                 }
                 CompoundTag tg = cl.get(index);
+                if(!tg.contains("loadMoney")){
+                    tg.putString("loadMoney",saleItem.loadMoney);
+                }
                 tg.putInt("stack", tg.getInt("stack") + item.stack);
                 if (item.money > 0) {
                     tg.putDouble("money", item.money);
@@ -244,6 +247,8 @@ public class SalesEntity extends EntityHuman {
 
         CompoundTag ct = item.tag;
         ct.putCompound("item", NBTIO.putItemHelper(item.saleItem));
+
+        ct.putString("loadMoney", item.loadMoney);
         ct.putInt("stack", item.stack);
         ct.putDouble("money", item.money);
 

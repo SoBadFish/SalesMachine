@@ -1,20 +1,20 @@
 package org.sobadfish.sales.form;
 
 import cn.nukkit.Player;
-import cn.nukkit.form.element.ElementInput;
-import cn.nukkit.form.element.ElementLabel;
-import cn.nukkit.form.element.ElementSlider;
-import cn.nukkit.form.element.ElementToggle;
+import cn.nukkit.form.element.*;
 import cn.nukkit.form.response.FormResponseCustom;
 import cn.nukkit.form.window.FormWindowCustom;
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.TextFormat;
 import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.Utils;
+import org.sobadfish.sales.economy.IMoney;
 import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.items.SaleItem;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * @author Sobadfish
@@ -44,6 +44,7 @@ public class SellItemForm {
         this.id = getRid();
     }
 
+    public List<String> sv;
 
     public void display(Player player){
 
@@ -53,7 +54,11 @@ public class SellItemForm {
                         "&r\n&l数量: &r&a"+item.getCount()+"\n")));
         custom.addElement(new ElementSlider("请选择商品的数量",0,item.getCount(),1,0));
         custom.addElement(new ElementInput("请输入价格 若不填则默认为 0 ","商品的价格"));
-
+        sv = new ArrayList<String>();
+        for(IMoney im: SalesMainClass.getLoadMoney().values()){
+            sv.add(im.displayName());
+        }
+        custom.addElement(new ElementDropdown("请选择货币类型 ",sv,0));
         custom.addElement(new ElementToggle("是否为收购"));
 
 
@@ -84,9 +89,15 @@ public class SellItemForm {
         }
         Item cl = item.clone();
         cl.setCount(stack);
-        SaleItem saleItem = new SaleItem(cl,stack,money);
-        if(responseCustom.getResponses().size() > 3){
-            saleItem.tag.putBoolean("sales_exchange",responseCustom.getToggleResponse(3));
+        int index = sv.indexOf(responseCustom.getDropdownResponse(3).getElementContent());
+        if(index == -1){
+            index = 0;
+        }
+
+        SaleItem saleItem = new SaleItem(cl,stack,new ArrayList<>(SalesMainClass.getLoadMoney().keySet()).
+                get(index),money);
+        if(responseCustom.getResponses().size() > 4){
+            saleItem.tag.putBoolean("sales_exchange",responseCustom.getToggleResponse(4));
         }
 
 

@@ -6,7 +6,7 @@
 
     <groupId>org.sobadfish</groupId>
     <artifactId>SalesMachine</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -78,6 +78,20 @@
             <version>2.0.0-SNAPSHOT</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/EconomyAPI_2.0.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>money</groupId>
+            <artifactId>money</artifactId>
+            <version>3.3</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/Money-3.3.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>net.player</groupId>
+            <artifactId>PlayerPoint</artifactId>
+            <version>1.2.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/PlayerPoints_v1.2.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

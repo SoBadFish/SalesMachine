@@ -2,6 +2,7 @@ package org.sobadfish.sales.items;
 
 import cn.nukkit.item.Item;
 import cn.nukkit.nbt.tag.CompoundTag;
+import org.sobadfish.sales.SalesMainClass;
 
 /**
  * @author Sobadfish
@@ -11,6 +12,7 @@ public class SaleItem {
 
     public Item saleItem;
 
+    public String loadMoney;
 
     public int stack;
 
@@ -26,6 +28,14 @@ public class SaleItem {
         this.saleItem = saleItem;
         this.stack = stack;
         this.money = money;
+        if(tag.contains("loadMoney")){
+            this.loadMoney = tag.getString("loadMoney");
+        }else{
+            String firstName = SalesMainClass.getFirstMoney();
+            tag.putString("loadMoney",firstName);
+            this.loadMoney = firstName;
+        }
+
     }
 
     public String getItemName(){
@@ -40,5 +50,13 @@ public class SaleItem {
         this.saleItem = saleItem;
         this.stack = stack;
         this.money = money;
+        this.loadMoney = SalesMainClass.getFirstMoney();
+    }
+
+    public SaleItem(Item saleItem, int stack,String loadMoney, double money){
+        this.saleItem = saleItem;
+        this.stack = stack;
+        this.money = money;
+        this.loadMoney = loadMoney;
     }
 }

@@ -25,6 +25,10 @@ import org.sobadfish.sales.config.SaleSettingConfig;
 import org.sobadfish.sales.config.SaleSkinConfig;
 import org.sobadfish.sales.config.SalesData;
 import org.sobadfish.sales.db.SqliteHelper;
+import org.sobadfish.sales.economy.IMoney;
+import org.sobadfish.sales.economy.core.EconomyMoney;
+import org.sobadfish.sales.economy.core.MoneyCoreMoney;
+import org.sobadfish.sales.economy.core.PlayerPointsMoney;
 import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.items.*;
 import org.sobadfish.sales.panel.lib.AbstractFakeInventory;
@@ -62,6 +66,8 @@ public class SalesMainClass extends PluginBase {
 
     public static final String DB_TABLE = "salelocation";
 
+    private final static LinkedHashMap<String, IMoney> LOAD_MONEY = new LinkedHashMap<>();
+
 
 
     @Override
@@ -93,6 +99,8 @@ public class SalesMainClass extends PluginBase {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        //加载经济核心
+        loadMoneyCore();
 
         saveDefaultConfig();
         //加载配置
@@ -141,6 +149,34 @@ public class SalesMainClass extends PluginBase {
 
     }
 
+    public static String getFirstMoney(){
+        return new ArrayList<>(LOAD_MONEY.keySet()).get(0);
+    }
+
+    public static IMoney getMoneyCoreByName(String name){
+        if(LOAD_MONEY.containsKey(name)){
+            return LOAD_MONEY.get(name);
+        }
+        return null;
+    }
+
+    public static LinkedHashMap<String, IMoney> getLoadMoney() {
+        return LOAD_MONEY;
+    }
+
+    private void loadMoneyCore() {
+        if(isEnableMoneyCore(MoneyType.EconomyAPI)){
+            registerMoneyCore("economyapi",EconomyMoney.class);
+        }
+        if(isEnableMoneyCore(MoneyType.Money)){
+            registerMoneyCore("Money", MoneyCoreMoney.class);
+        }
+        if(isEnableMoneyCore(MoneyType.PlayerPoints)){
+            registerMoneyCore("playerPoints", PlayerPointsMoney.class);
+        }
+
+    }
+
 
     //加载坐标点
     private void loadConfig() {
@@ -148,6 +184,24 @@ public class SalesMainClass extends PluginBase {
 
     }
 
+
+    public static boolean isEnableMoneyCore(MoneyType type){
+        switch (type) {
+            case Money:
+                return Server.getInstance().getPluginManager().getPlugin("Money") != null;
+            case PlayerPoints:
+                return Server.getInstance().getPluginManager().getPlugin("playerPoints") != null;
+            case EconomyAPI:
+                return Server.getInstance().getPluginManager().getPlugin("EconomyAPI") != null;
+            default:break;
+        }
+        return false;
+    }
+
+    public enum MoneyType{
+        /**Economy PlayerPoints Money*/
+        EconomyAPI,PlayerPoints,Money
+    }
 
 
 
@@ -239,6 +293,18 @@ public class SalesMainClass extends PluginBase {
 
 
 
+    }
+
+    public static boolean registerMoneyCore(String moneyName,Class<? extends IMoney> money){
+        if(!LOAD_MONEY.containsKey(moneyName)){
+            try{
+                IMoney my = money.getDeclaredConstructor().newInstance();
+                LOAD_MONEY.put(moneyName, my);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 
 
