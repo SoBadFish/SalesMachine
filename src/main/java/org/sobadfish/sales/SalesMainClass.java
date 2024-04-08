@@ -71,6 +71,9 @@ public class SalesMainClass extends PluginBase {
     private final static LinkedHashMap<String, IMoney> LOAD_MONEY = new LinkedHashMap<>();
 
 
+    public static boolean canGiveMoneyItem = true;
+
+
 
     @Override
     public void onLoad() {
@@ -184,7 +187,7 @@ public class SalesMainClass extends PluginBase {
     private void loadConfig() {
         banWorlds = getConfig().getStringList("ban-world");
         OnlyUserAdminCore = getConfig().getStringList("only-use-admin-money-core");
-
+        canGiveMoneyItem = getConfig().getBoolean("can-give-money-item",true);
     }
 
 

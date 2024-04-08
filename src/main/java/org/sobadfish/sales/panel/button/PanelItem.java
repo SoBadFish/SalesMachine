@@ -89,7 +89,14 @@ public class PanelItem extends BasePlayPanelItemInstance{
 
                                 showItem.stack += showItem.saleItem.getCount();
                                 player.getInventory().removeItem(showItem.saleItem);
-                                player.getInventory().addItem(new MoneyItem(showItem.money).getItem(showItem.loadMoney));
+                                if(SalesMainClass.canGiveMoneyItem){
+                                    player.getInventory().addItem(new MoneyItem(showItem.money).getItem(showItem.loadMoney));
+                                }else{
+                                    iMoney.addMoney(player.getName(),showItem.money);
+                                    SalesMainClass.sendMessageToObject("&a出售成功! 获得 &r"+iMoney.displayName() +"* "+
+                                            String.format("%.2f",showItem.money)+"!",player);
+                                }
+//
                             }
 
                         }else{
