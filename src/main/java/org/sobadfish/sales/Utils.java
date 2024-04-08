@@ -170,9 +170,7 @@ public class Utils {
         StringBuilder line;
         for (String word : words) {
             line = new StringBuilder();
-            for (int i = 0; i < lineWidth; i++) {
-                line.append(" ");
-            }
+            line.append(" ".repeat(lineWidth));
             switch (just) {
                 case 'l':
                     line.replace(0, word.length(), word);
