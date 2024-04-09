@@ -62,9 +62,9 @@ public class SellItemForm {
             }
             sv.add(entry.getValue().displayName());
         }
-
-        custom.addElement(new ElementToggle("是否为收购"));
         custom.addElement(new ElementDropdown("请选择货币类型 ",sv,0));
+        custom.addElement(new ElementToggle("是否为收购"));
+
 
 //        custom.addElement(new ElementToggle("是否收购"));
         player.showFormWindow(custom,getId());
