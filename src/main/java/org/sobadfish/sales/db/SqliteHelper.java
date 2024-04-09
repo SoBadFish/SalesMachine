@@ -1,6 +1,7 @@
 package org.sobadfish.sales.db;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.*;
 
@@ -309,7 +310,7 @@ public class SqliteHelper {
                 ResultSet resultSet = statement.executeQuery(sql);
 
                 while (resultSet.next()) {
-                    T t = tClass.newInstance();
+                    T t = tClass.getDeclaredConstructor().newInstance();
                     int ct = resultSet.getInt("group_count");
                     explainClass(resultSet,tClass,t);
                     DataCount<T> dc = new DataCount<>();
@@ -320,7 +321,7 @@ public class SqliteHelper {
                 resultSet.close();
                 return datas;
 
-            }catch (SQLException | InstantiationException | IllegalAccessException e){
+            }catch (SQLException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
                 e.printStackTrace();
             }
         }
@@ -355,12 +356,12 @@ public class SqliteHelper {
             statement.setString(1, value);
 
             ResultSet resultSet = statement.executeQuery();
-            T t = clazz.newInstance();
+            T t = clazz.getDeclaredConstructor().newInstance();
 
             explainClass(resultSet,clazz,t);
             resultSet.close();
 
-        } catch (SQLException | InstantiationException | IllegalAccessException e) {
+        } catch (SQLException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }
         return instance;
@@ -382,12 +383,12 @@ public class SqliteHelper {
             // 执行查询
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                T t = clazz.newInstance();
+                T t = clazz.getDeclaredConstructor().newInstance();
                 datas.add(explainClass(resultSet,clazz,t));
             }
             resultSet.close();
 
-        } catch (SQLException | InstantiationException | IllegalAccessException e) {
+        } catch (SQLException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }
         return datas;
@@ -405,13 +406,13 @@ public class SqliteHelper {
             // 执行查询
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                T t = clazz.newInstance();
+                T t = clazz.getDeclaredConstructor().newInstance();
                 datas.add(explainClass(resultSet,clazz,t));
             }
 
             resultSet.close();
 
-        } catch (SQLException | InstantiationException | IllegalAccessException e) {
+        } catch (SQLException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }
         return datas;
