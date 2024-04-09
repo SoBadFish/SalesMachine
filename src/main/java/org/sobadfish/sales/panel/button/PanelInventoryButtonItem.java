@@ -5,6 +5,7 @@ import cn.nukkit.Server;
 import cn.nukkit.block.BlockChest;
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.TextFormat;
+import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.items.SaleItem;
 import org.sobadfish.sales.panel.lib.ChestPanel;
@@ -39,7 +40,7 @@ public class PanelInventoryButtonItem extends BasePlayPanelItemInstance{
     public void onClick(ISalePanel inventory, Player player) {
         if(click == 0){
             click++;
-            Server.getInstance().getScheduler().scheduleDelayedTask(() -> click = 0,40);
+            Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE,() -> click = 0,40);
         }else {
             LinkedHashMap<Integer,BasePlayPanelItemInstance> items = new LinkedHashMap<>();
             int i = 0;
