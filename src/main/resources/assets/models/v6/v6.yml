@@ -1,0 +1,22 @@
+
+# 实体大小
+entity-size: 1
+
+# 是否显示开门动画
+open-door-anim: false
+
+# 体积
+weight:
+  width: 3
+  height: 2
+
+
+# 是否显示浮空物品
+display-item:
+  enable: false
+  # 自定义浮空物品位置
+  position:
+    east: []
+    north: []
+    south: []
+    west: []
