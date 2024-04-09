@@ -111,8 +111,7 @@ public class ItemAction {
                     salesData.bf = player.getDirection().getName();
                     salesData.location = SalesEntity.asLocation(block);
                     SalesEntity entity = SalesEntity.spawnToAll(salesData.asPosition(),
-                            BlockFace.valueOf(salesData.bf.toUpperCase()), salesData.master, salesData,
-                            true,true);
+                            BlockFace.valueOf(salesData.bf.toUpperCase()), salesData.master, salesData,false,true);
                     if(entity != null){
                         SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE, salesData);
                     }

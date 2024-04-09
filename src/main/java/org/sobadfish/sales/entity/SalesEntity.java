@@ -697,7 +697,7 @@ public class SalesEntity extends EntityHuman {
 
             SalesEntity.spawnToAll(oldSd.asPosition(),
                     BlockFace.valueOf(oldSd.bf.toUpperCase()), oldSd.master, oldSd,
-                    true, true);
+                    false, true);
 
             return true;
 
