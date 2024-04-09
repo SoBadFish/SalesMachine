@@ -609,14 +609,7 @@ public class SalesEntity extends EntityHuman {
 
         boolean hasBlock = false;
         if (!ignoreBlocks) {
-            for (Position ps : psconfig) {
-                Block block = position.level.getBlock(ps);
-                if (block.getId() != 0 && block.getId() != SalesMainClass.INSTANCE.iBarrier.getBid()) {
-                    hasBlock = true;
-                    break;
-                }
-
-            }
+            hasBlock = hasBlockByPositionList(psconfig);
         }
 
         if (!hasBlock) {
@@ -684,24 +677,40 @@ public class SalesEntity extends EntityHuman {
         return null;
     }
 
+    public static boolean hasBlockByPositionList(List<Position> positions){
+        for (Position ps : positions) {
+            Block block = ps.level.getBlock(ps);
+            if (block.getId() != 0 && block.getId() != SalesMainClass.INSTANCE.iBarrier.getBid()) {
+                return true;
+            }
+
+        }
+        return false;
+    }
+
     public boolean setModel(String model) {
         //重设
         if (SalesMainClass.ENTITY_SKIN.containsKey(model)) {
-            close();
-            SalesData oldSd = salesData;
-            oldSd.skinmodel = model;
+            //先计算一下新的模块是否会覆盖方块...
             SaleSkinConfig saleSkinConfig = SalesMainClass.ENTITY_SKIN.get(model);
-            oldSd.width = saleSkinConfig.config.weight.width;
-            oldSd.height = saleSkinConfig.config.weight.height;
-            saveData();
+            SaleSettingConfig saleSettingConfig = saleSkinConfig.config;
+            boolean ig = hasBlockByPositionList(positionListByConfig(this,blockFace
+                    ,saleSettingConfig.weight.width
+                    ,saleSettingConfig.weight.height));
+            if(!ig){
+                close();
+                SalesData oldSd = salesData;
+                oldSd.skinmodel = model;
 
-            SalesEntity.spawnToAll(oldSd.asPosition(),
-                    BlockFace.valueOf(oldSd.bf.toUpperCase()), oldSd.master, oldSd,
-                    false, true);
+                oldSd.width = saleSkinConfig.config.weight.width;
+                oldSd.height = saleSkinConfig.config.weight.height;
+                saveData();
 
-            return true;
-
-
+                SalesEntity.spawnToAll(oldSd.asPosition(),
+                        BlockFace.valueOf(oldSd.bf.toUpperCase()), oldSd.master, oldSd,
+                        true, true);
+                return true;
+            }
         }
 
         return false;
