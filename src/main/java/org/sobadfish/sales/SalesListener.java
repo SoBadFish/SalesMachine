@@ -245,7 +245,7 @@ public class SalesListener implements Listener {
 
                         Position position = data.asPosition();
                         if(position.getLevel().getFolderName().equalsIgnoreCase(event.getLevel().getFolderName())){
-                            if("null".equalsIgnoreCase(data.world) || "".equalsIgnoreCase(data.world)){
+                            if("null".equalsIgnoreCase(data.world) || "".equalsIgnoreCase(data.world) || data.world == null){
                                 data.world = event.getLevel().getFolderName();
                                 SalesMainClass.INSTANCE.sqliteHelper.set(SalesMainClass.DB_TABLE,"location",data.location,data);
                             }
