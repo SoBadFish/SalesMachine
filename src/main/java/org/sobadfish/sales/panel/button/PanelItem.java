@@ -79,7 +79,12 @@ public class PanelItem extends BasePlayPanelItemInstance{
                                 SalesMainClass.sendMessageToObject("&c店主没有足够的!"+iMoney.displayName(),player);
                                 return;
                             }else{
-                                iMoney.reduceMoney(((ChestPanel)inventory).sales.master,showItem.money);
+                                if(iMoney.reduceMoney(((ChestPanel)inventory).sales.master,showItem.money)){
+                                    SalesMainClass.sendMessageToObject("&a交易成功",player);
+                                }else{
+                                    SalesMainClass.sendMessageToObject("&c交易失败!",player);
+                                    return;
+                                }
                             }
                         }
 
@@ -87,15 +92,21 @@ public class PanelItem extends BasePlayPanelItemInstance{
                         if(count >= showItem.saleItem.getCount()){
                             if(chunkLimit(player)){
 
-                                showItem.stack += showItem.saleItem.getCount();
-                                player.getInventory().removeItem(showItem.saleItem);
                                 if(SalesMainClass.canGiveMoneyItem){
                                     player.getInventory().addItem(new MoneyItem(showItem.money).getItem(showItem.loadMoney));
                                 }else{
-                                    iMoney.addMoney(player.getName(),showItem.money);
-                                    SalesMainClass.sendMessageToObject("&a出售成功! 获得 &r"+iMoney.displayName() +"* "+
-                                            String.format("%.2f",showItem.money)+"!",player);
+                                    if(iMoney.addMoney(player.getName(),showItem.money)){
+                                        SalesMainClass.sendMessageToObject("&a出售成功! 获得 &r"+iMoney.displayName() +"* "+
+                                                String.format("%.2f",showItem.money)+"!",player);
+                                    }else{
+                                        SalesMainClass.sendMessageToObject("&c交易失败!",player);
+                                        return;
+                                    }
+
+
                                 }
+                                showItem.stack += showItem.saleItem.getCount();
+                                player.getInventory().removeItem(showItem.saleItem);
 //
                             }
 
@@ -116,8 +127,14 @@ public class PanelItem extends BasePlayPanelItemInstance{
                         if(iMoney.myMoney(player.getName()) >= showItem.money){
 
                             if(chunkLimit(player)){
-                                iMoney.reduceMoney(player.getName(),showItem.money);
-                                iMoney.addMoney(((ChestPanel)inventory).sales.master,showItem.money);
+                                if(!iMoney.reduceMoney(player.getName(),showItem.money)){
+                                    SalesMainClass.sendMessageToObject("&c交易失败!",player);
+                                    return;
+                                }
+                                if(!iMoney.addMoney(((ChestPanel)inventory).sales.master,showItem.money)){
+                                    SalesMainClass.sendMessageToObject("&c交易失败!",player);
+                                    return;
+                                }
                                 player.getInventory().addItem(showItem.saleItem);
                             }
 

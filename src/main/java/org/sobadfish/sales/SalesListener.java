@@ -188,9 +188,13 @@ public class SalesListener implements Listener {
                     SalesMainClass.sendMessageToObject("&c经济核心 "+mn+" 未装载!",player);
                     return;
                 }
+                if(!iMoney.addMoney(player.getName(),money)){
+                    SalesMainClass.sendMessageToObject("&c交易失败!",player);
+                    return;
+                }
                 item.setCount(item.getCount() - item.getCount());
                 player.getInventory().setItemInHand(item);
-                iMoney.addMoney(player.getName(),money);
+
 
                 player.level.addSound(player, Sound.ARMOR_EQUIP_IRON);
                 SalesMainClass.sendMessageToObject("&r获得"+iMoney.displayName()+" x &e"+money,player);
