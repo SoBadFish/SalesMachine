@@ -75,6 +75,7 @@ public class PanelItem extends BasePlayPanelItemInstance{
 
                     }else{
                         if(!showItem.tag.contains("noreduce") || !showItem.tag.getBoolean("noreduce")){
+                          
                             if(iMoney.myMoney(((ChestPanel)inventory).sales.master) < showItem.money){
                                 SalesMainClass.sendMessageToObject("&c店主没有足够的!"+iMoney.displayName(),player);
                                 return;
