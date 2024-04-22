@@ -256,7 +256,7 @@ public class SalesEntity extends EntityHuman {
         item.tag = ct;
         items.add(item);
 
-        removePackets();
+        removePacketsAll();
         updateInventory(updateInv);
 
         return true;
@@ -338,33 +338,83 @@ public class SalesEntity extends EntityHuman {
         updateMovement();
 
         boolean s = false;
+        //检查online数组
+
         if (saleSettingConfig.enableItem) {
+            for(Player player: new ArrayList<>(onlinePlayers)){
+                if(!player.isOnline()){
+                    onlinePlayers.remove(player);
+                    continue;
+                }
+                if(player.level != this.level){
+                    onlinePlayers.remove(player);
+                }
+            }
             for (Player player : getLevel().getPlayers().values()) {
                 if (player.distance(this) <= 10) {
-                    showItems();
+                    showItems(player);
                     s = true;
                     break;
+                }else{
+                    removePackets(player);
                 }
             }
         }
 
 
         if (!s) {
-            removePackets();
+            removePacketsAll();
         }
 
 
         return b;
     }
 
+    public List<Player> onlinePlayers = new ArrayList<>();
 
-    private void removePackets() {
+
+    private void removePackets(Player player) {
         for (AddItemEntityPacket dataPacket : new ArrayList<>(ipacket)) {
             RemoveEntityPacket pk1 = new RemoveEntityPacket();
             pk1.eid = dataPacket.entityUniqueId;
-            Server.broadcastPacket(Server.getInstance().getOnlinePlayers().values(), pk1);
+            if(player.isOnline()) {
+                player.dataPacket(pk1);
+            }
+        }
+        onlinePlayers.remove(player);
+    }
+    private void removePacketsAll() {
+        for (AddItemEntityPacket dataPacket : new ArrayList<>(ipacket)) {
+            RemoveEntityPacket pk1 = new RemoveEntityPacket();
+            pk1.eid = dataPacket.entityUniqueId;
+            for(Player player: onlinePlayers){
+                if(player.isOnline()){
+                    player.dataPacket(pk1);
+                }
+//                Server.broadcastPacket(Server.getInstance().getOnlinePlayers().values(), pk1);
+            }
+            onlinePlayers.clear();
+
         }
         ipacket.clear();
+    }
+
+    /**
+     * 重新将包发给玩家..
+     * */
+    private void showItems(Player player) {
+        if(ipacket.size() == 0){
+            showItems();
+            return;
+        }
+
+        if(!onlinePlayers.contains(player)){
+            onlinePlayers.add(player);
+            for (AddItemEntityPacket dataPacket : ipacket) {
+                player.dataPacket(dataPacket);
+            }
+        }
+
     }
 
     private void showItems() {
@@ -382,8 +432,9 @@ public class SalesEntity extends EntityHuman {
                 }
                 ipacket.add(i, getEntityTag(ps, items.get(i).saleItem, eid));
             }
+            onlinePlayers.addAll(level.getPlayers().values());
             for (AddItemEntityPacket dataPacket : ipacket) {
-                Server.broadcastPacket(Server.getInstance().getOnlinePlayers().values(), dataPacket);
+                Server.broadcastPacket(onlinePlayers, dataPacket);
             }
         }
     }
@@ -469,7 +520,7 @@ public class SalesEntity extends EntityHuman {
             saveData();
         }
 
-        removePackets();
+        removePacketsAll();
         super.close();
 
 
