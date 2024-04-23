@@ -5,6 +5,7 @@ import cn.nukkit.Server;
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.TextFormat;
 import org.sobadfish.sales.SalesListener;
+import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.Utils;
 import org.sobadfish.sales.form.AdminForm;
 import org.sobadfish.sales.items.SaleItem;
@@ -51,11 +52,11 @@ public class PanelSettingItem extends BasePlayPanelItemInstance{
     public void onClick(ISalePanel inventory, Player player) {
         if(click == 0){
             click++;
-            Server.getInstance().getScheduler().scheduleDelayedTask(() -> click = 0,40);
+            Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE,() -> click = 0,40);
         }else {
             ((ChestPanel)inventory).close(player);
             if(!isInv){
-                Server.getInstance().getScheduler().scheduleDelayedTask(() -> {
+                Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE,() -> {
                     AdminForm adminForm = new AdminForm(showItem);
                     adminForm.display(player);
                 },10);
@@ -64,7 +65,7 @@ public class PanelSettingItem extends BasePlayPanelItemInstance{
                 //关闭其他玩家的
                 inventory.getSales().closePanel();
 
-                Server.getInstance().getScheduler().scheduleDelayedTask(() -> {
+                Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE,() -> {
                     DisplaySaleInventoryPanel displayPlayerPanel = new DisplaySaleInventoryPanel(inventory.getSales(), showItem.saleItem);
                     displayPlayerPanel.open(player);
                     SalesListener.chestPanelLinkedHashMap.put(player.getName(), displayPlayerPanel);

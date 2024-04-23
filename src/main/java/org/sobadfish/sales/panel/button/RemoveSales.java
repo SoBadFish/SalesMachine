@@ -31,7 +31,7 @@ public class RemoveSales extends BasePlayPanelItemInstance{
     public void onClick(ISalePanel inventory, Player player) {
         if(click == 0){
             click++;
-            Server.getInstance().getScheduler().scheduleDelayedTask(() -> click = 0,40);
+            Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE,() -> click = 0,40);
         }else{
             ((ChestPanel)inventory).onClose(player);
             ((ChestPanel)inventory).sales.level.dropItem(((ChestPanel)inventory).sales, SalesMainClass.INSTANCE.iBarrier.getShaleItem());

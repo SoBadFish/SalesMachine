@@ -40,7 +40,7 @@ public class AdminSettingItem extends BasePlayPanelItemInstance{
     public void onClick(ISalePanel inventory, Player player) {
         if(click == 0){
             click++;
-            Server.getInstance().getScheduler().scheduleDelayedTask(() -> click = 0,40);
+            Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE,() -> click = 0,40);
         }else {
             LinkedHashMap<Integer,BasePlayPanelItemInstance> items = new LinkedHashMap<>();
             int i = 0;
