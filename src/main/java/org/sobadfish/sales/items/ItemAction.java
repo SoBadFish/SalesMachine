@@ -40,7 +40,7 @@ public class ItemAction {
                 if(salesEntity.salesData.customname != null){
                     nm = salesEntity.salesData.customname;
                 }
-                SalesMainClass.sendMessageToObject("&e售货机朝向: &a"+salesEntity.blockFace.getName(),player);
+//                SalesMainClass.sendMessageToObject("&e售货机朝向: &a"+salesEntity.blockFace.getName(),player);
 
                 sitem.setCustomName(TextFormat.colorize('&',nm));
                 sitem.addEnchantment(Enchantment.getEnchantment(0));
@@ -51,7 +51,7 @@ public class ItemAction {
                 sitem.setCompoundTag(compoundTag);
                 i.setCount(i.getCount() - 1);
                 player.getInventory().setItemInHand(i);
-                player.getInventory().addItem(sitem);
+                player.getInventory().setItemInHand(sitem);
             }
 
 
@@ -96,7 +96,7 @@ public class ItemAction {
             //这段代码防止 win10 右键放置多次触发
             if(tag.contains("lock")){
                 long lockTime = tag.getLong("lock");
-                if(System.currentTimeMillis() - lockTime < 500){
+                if(System.currentTimeMillis() - lockTime < 700){
                     return false;
                 }
             }
