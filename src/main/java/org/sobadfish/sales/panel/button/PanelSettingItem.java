@@ -57,7 +57,7 @@ public class PanelSettingItem extends BasePlayPanelItemInstance{
             ((ChestPanel)inventory).close(player);
             if(!isInv){
                 Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE,() -> {
-                    AdminForm adminForm = new AdminForm(showItem);
+                    AdminForm adminForm = new AdminForm( ((ChestPanel)inventory).sales,showItem);
                     adminForm.display(player);
                 },10);
             }else{

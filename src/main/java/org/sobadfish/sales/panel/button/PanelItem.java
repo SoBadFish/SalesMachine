@@ -244,10 +244,9 @@ public class PanelItem extends BasePlayPanelItemInstance{
                                 }
                             }
 
-                            //有效
-                            return item;
-
                         }
+                        //有效
+                        return item;
                     }
                 }
                 break;

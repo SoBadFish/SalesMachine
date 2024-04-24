@@ -7,6 +7,7 @@ import cn.nukkit.form.response.FormResponseCustom;
 import cn.nukkit.form.window.FormWindowCustom;
 import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.Utils;
+import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.items.SaleItem;
 
 import java.util.LinkedHashMap;
@@ -25,6 +26,8 @@ public class AdminForm {
 
     public SaleItem sales;
 
+    public SalesEntity salesEntity;
+
     public int getId() {
         return id;
     }
@@ -32,7 +35,8 @@ public class AdminForm {
     public static LinkedHashMap<String, AdminForm> DISPLAY_FROM = new LinkedHashMap<>();
 
 
-    public AdminForm(SaleItem sales) {
+    public AdminForm(SalesEntity entity,SaleItem sales) {
+        this.salesEntity = entity;
         this.sales = sales;
         this.id = getRid();
     }
@@ -128,6 +132,9 @@ public class AdminForm {
 
             sales.money = money;
             sales.tag.putDouble("money",money);
+
+            salesEntity.salesData.saveItemSlots(salesEntity.loadItems);
+            salesEntity.saveData();
 
         }
 
