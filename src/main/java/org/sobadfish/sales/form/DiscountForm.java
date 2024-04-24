@@ -94,16 +94,26 @@ public class DiscountForm {
         if(day > 365){
             day = -1;
         }
-        item.setCustomName(TextFormat.colorize('&',"&r&7"+salesEntity.salesData.customname+"&r&l&a 优惠券 &7(&a"+String.format("%.1f",zk)+"折&7)"));
+        String title = TextFormat.colorize('&',"&r&7"+salesEntity.salesData.customname+"&r&l&a 优惠券 &7(&a"+String.format("%.1f",zk)+"折&7)");
+        int l = title.length();
+        item.setCustomName(title);
         CompoundTag tag = item.getNamedTag();
         tag.putFloat(CustomSaleDiscountItem.USE_ZK_TAG,zk);
         List<String> lore = new ArrayList<>();
         lore.add("");
         if(only){
-            lore.add(format("&7仅对 &r"+salesEntity.salesData.customname+" &7有效"));
+            String l1 = format("&7仅对 &r"+salesEntity.salesData.customname+" &7有效");
+            if(l1.length() > l){
+                l = l1.length();
+            }
+            lore.add(l1);
             tag.putString(CustomSaleDiscountItem.USE_TAG,salesEntity.salesData.uuid);
         }else{
-            lore.add(format("&7仅&e "+salesEntity.master+" &7的售货机有效"));
+            String l2 = format("&7仅&e "+salesEntity.master+" &7的售货机有效");
+            if(l2.length() > l){
+                l = l2.length();
+            }
+            lore.add(l2);
             tag.putString(CustomSaleDiscountItem.USE_TAG,salesEntity.master);
         }
         if(sl != null){
@@ -118,7 +128,10 @@ public class DiscountForm {
             tag.putInt(CustomSaleDiscountItem.USE_TIME_TAG, day);
             tag.putLong(CustomSaleDiscountItem.CRETE_TIME_TAG, System.currentTimeMillis());
         }
-        lore.add("\n"+format("&a "+salesEntity.master+" &b发行"));
+
+        lore.add("  ");
+        String ll = format("&7-- "+salesEntity.master+" 发行");
+        lore.add(ll);
         item.setNamedTag(tag);
 
         item.addEnchantment(Enchantment.getEnchantment(0));
