@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Sobadfish
@@ -19,6 +20,9 @@ import java.util.List;
 public class SalesData {
 
     public long id;
+
+    //唯一ID
+    public String uuid;
 
 
     public int chunkx;
@@ -67,7 +71,11 @@ public class SalesData {
         if(skinmodel != null && !"".equalsIgnoreCase(skinmodel)){
             tag.putString("skinmodel",skinmodel);
         }
+        if(uuid == null){
+            uuid = UUID.randomUUID().toString();
+        }
 
+        tag.putString("uuid",uuid);
 
         tag.putString("master",master);
         tag.putString("itemjson",itemjson);
@@ -97,6 +105,11 @@ public class SalesData {
         }
         if(tag.contains("skinmodel")){
             salesData.skinmodel = tag.getString("skinmodel");
+        }
+        if(tag.contains("uuid")){
+            salesData.uuid = tag.getString("uuid");
+        }else{
+            salesData.uuid = UUID.randomUUID().toString();
         }
 
 

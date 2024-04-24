@@ -15,10 +15,7 @@ import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.utils.DyeColor;
 import cn.nukkit.utils.TextFormat;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Random;
-import java.util.SplittableRandom;
+import java.util.*;
 
 /**
  *
@@ -245,5 +242,15 @@ public class Utils {
     }
 
 
+    /**
+     * 获取未来时间
+     * */
+    public static Long getFutureTime(Long startTime,int day){
+        Date date = new Date(startTime);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_YEAR, day);
+        return calendar.getTimeInMillis();
+    }
 
 }

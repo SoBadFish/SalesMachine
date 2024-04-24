@@ -46,11 +46,13 @@ public class AdminForm {
         String dbuy = sales.tag.contains("limitCount")?sales.tag.getInt("limitCount")+"":"-1";
         String dre = sales.tag.contains("limitTime")?sales.tag.getInt("limitTime")+"":"-1";
         String dm = sales.tag.contains("money")?sales.tag.getDouble("money")+"":"0";
+        String zk = sales.tag.contains("zk")?sales.tag.getDouble("zk")+"":"-1";
 
         custom.addElement(new ElementInput("玩家限购次数","若设置-1则不限制玩家购买次数",dbuy));
         custom.addElement(new ElementInput("刷新时间(h)","若设置-1则不刷新",dre));
         custom.addElement(new ElementToggle("是否为收购", sales.tag.contains("sales_exchange") && sales.tag.getBoolean("sales_exchange")));
         custom.addElement(new ElementInput("商品价格","商品的价格 出售/回收",dm));
+        custom.addElement(new ElementInput("商品折扣","设置商品的折扣 -1则不打折",zk));
 
 
         if(player.isOp()){
@@ -82,9 +84,9 @@ public class AdminForm {
         }
         int count = sales.stack;
         if(player.isOp()){
-            b = responseCustom.getToggleResponse(4);
-            remove = responseCustom.getToggleResponse(5);
-            String tx =  responseCustom.getInputResponse(6);
+            b = responseCustom.getToggleResponse(5);
+            remove = responseCustom.getToggleResponse(6);
+            String tx =  responseCustom.getInputResponse(7);
             int reset = count;
             try {
                 reset = Integer.parseInt(tx);
@@ -104,6 +106,7 @@ public class AdminForm {
             sales.tag.putBoolean("noreduce",b);
             sales.tag.putInt("limitCount",limit);
             sales.tag.putInt("limitTime",hour);
+
             float money = 0;
             try{
                 money = Float.parseFloat(responseCustom.getInputResponse(3));
@@ -111,7 +114,15 @@ public class AdminForm {
                     money = 0;
                 }
             }catch (Exception ignore){}
+            float zk = -1;
+            try{
+                zk = Float.parseFloat(responseCustom.getInputResponse(4));
+                if(zk >= 10){
+                    zk = -1;
+                }
+            }catch (Exception ignore){}
 
+            sales.tag.putFloat("zk",zk);
             sales.stack = count;
             sales.tag.putInt("stack",count);
 

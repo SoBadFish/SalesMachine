@@ -32,6 +32,9 @@
 		},
 		"sale_panel_wall": {
 			"textures":"textures/items/wall.png"
+		},
+		"sale_discount": {
+			"textures":"textures/items/discount.png"
 		}
 	}
 }

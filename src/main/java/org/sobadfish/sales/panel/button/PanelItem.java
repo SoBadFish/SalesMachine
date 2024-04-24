@@ -5,11 +5,14 @@ import cn.nukkit.Server;
 import cn.nukkit.inventory.Inventory;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Sound;
+import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.TextFormat;
 import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.Utils;
 import org.sobadfish.sales.economy.IMoney;
+import org.sobadfish.sales.entity.SalesEntity;
+import org.sobadfish.sales.items.CustomSaleDiscountItem;
 import org.sobadfish.sales.items.MoneyItem;
 import org.sobadfish.sales.items.SaleItem;
 import org.sobadfish.sales.panel.lib.ChestPanel;
@@ -51,7 +54,7 @@ public class PanelItem extends BasePlayPanelItemInstance{
     public void onClick(ISalePanel inventory, Player player) {
         if(click == 0){
             click++;
-            Server.getInstance().getScheduler().scheduleDelayedTask(() -> click = 0,40);
+            Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE,() -> click = 0,40);
         }else{
             IMoney iMoney = SalesMainClass.getMoneyCoreByName(showItem.loadMoney);
             if(iMoney == null){
@@ -128,9 +131,42 @@ public class PanelItem extends BasePlayPanelItemInstance{
                         if(iMoney.myMoney(player.getName()) >= showItem.money){
 
                             if(chunkLimit(player)){
-                                if(!iMoney.reduceMoney(player.getName(),showItem.money)){
+                                //判断是否存在优惠券
+                                double rmoney = showItem.money;
+                                //先计算优惠.
+                                if(rmoney > 0 && showItem.tag.contains("zk")){
+                                    float zk = showItem.tag.getFloat("zk");
+                                    if(zk > 0){
+                                        float discountRate = zk / 100.0f;
+                                        rmoney = (float) rmoney * (1 - discountRate);
+                                    }
+
+                                }
+
+                                Item discount = getDiscountItem(player,((ChestPanel)inventory).sales,showItem.saleItem);
+                                Item cl = null;
+                                if(discount != null && rmoney > 0){
+                                    //优惠券
+                                    cl = discount.clone();
+                                    float zk = discount.getNamedTag().getFloat(CustomSaleDiscountItem.USE_ZK_TAG);
+                                    float discountRate = zk / 100.0f;
+                                    rmoney = (float) rmoney * (1 - discountRate);
+                                    String db2 = String.format("%.2f",rmoney);
+                                    rmoney = Float.parseFloat(db2);
+                                }
+
+                                if(!iMoney.reduceMoney(player.getName(),rmoney)){
                                     SalesMainClass.sendMessageToObject("&c交易失败!",player);
                                     return;
+                                }else{
+                                    if(cl != null){
+                                        cl.setCount(1);
+                                        player.getInventory().removeItem(cl);
+                                        SalesMainClass.sendMessageToObject("&b消耗 &r"+discount.getCustomName()+" &7 * &a1",player);
+                                    }
+                                    SalesMainClass.sendMessageToObject("&a交易成功! 扣除 &7*&e "+String.format("%.2f",rmoney)+iMoney.displayName(),player);
+
+
                                 }
                                 if(!iMoney.addMoney(((ChestPanel)inventory).sales.master,showItem.money)){
                                     SalesMainClass.sendMessageToObject("&c交易失败!",player);
@@ -171,6 +207,53 @@ public class PanelItem extends BasePlayPanelItemInstance{
         }
 
 
+    }
+
+    /**
+     * 获取优惠物品
+     * */
+    public Item getDiscountItem(Player player, SalesEntity sales,Item saleItem){
+        for (Item item: player.getInventory().getContents().values()){
+            Class<?> iv = SalesMainClass.CUSTOM_ITEMS.get("discount").getClass();
+            if(item.getClass() == iv){
+                if(item.hasCompoundTag()){
+                    CompoundTag tag = item.getNamedTag();
+                    if(tag.contains(CustomSaleDiscountItem.USE_TAG)){
+//                        return item;
+                        String useBy = tag.getString(CustomSaleDiscountItem.USE_TAG);
+                        if(!tag.contains(CustomSaleDiscountItem.USE_NONE_TAG)){
+                            //不是通用优惠券
+                            if(!useBy.equalsIgnoreCase(sales.salesData.uuid) || !useBy.equalsIgnoreCase(sales.master)){
+                                //独属
+                                continue;
+                            }
+                        }
+                        if(tag.contains(CustomSaleDiscountItem.USE_ONLY_ITEM_TAG)){
+                            Item only = NBTIO.getItemHelper(tag.getCompound(CustomSaleDiscountItem.USE_ONLY_ITEM_TAG));
+                            if(!only.equals(saleItem,true,true)){
+                                continue;
+                            }
+                        }
+                        if(tag.contains(CustomSaleDiscountItem.USE_TIME_TAG)){
+                            int ussDay = tag.getInt(CustomSaleDiscountItem.USE_TIME_TAG);
+                            if(ussDay > 0){
+                                long createTime = tag.getLong(CustomSaleDiscountItem.CRETE_TIME_TAG);
+                                if(System.currentTimeMillis() > Utils.getFutureTime(createTime,ussDay)){
+                                    //无效
+                                    continue;
+                                }
+                            }
+
+                            //有效
+                            return item;
+
+                        }
+                    }
+                }
+                break;
+            }
+        }
+        return null;
     }
 
     public boolean chunkLimit(Player player){
@@ -222,6 +305,18 @@ public class PanelItem extends BasePlayPanelItemInstance{
         int length = 0;
         boolean v = false;
         List<String> vl = new ArrayList<>();
+        double mm = showItem.money;
+        String db2 = String.format("%.2f",mm);
+        if(mm > 0 && showItem.tag.contains("zk")){
+            float zk = showItem.tag.getFloat("zk");
+            if(zk > 0){
+                float discountRate = zk / 100.0f;
+                mm = (float) mm * (1 - discountRate);
+                db2 = "&d"+String.format("%.2f",mm);
+            }
+
+        }
+        String moneyStr = "&e"+(showItem.money != 0?db2:"免费");
         if(showItem.tag.contains("sales_exchange") && showItem.tag.getBoolean("sales_exchange",false)){
             vl.add(format("&r&7库存: &a"+(getStockStr())));
             vl.add(format("&r&7"+im.displayName()+" &7* &e"+(showItem.money != 0?showItem.money:"免费")));
@@ -230,7 +325,7 @@ public class PanelItem extends BasePlayPanelItemInstance{
 //            lore.add(format(Utils.getCentontString("&r&e▶&7 回收价: &e"+(showItem.getItemName()+" &r*&a "+showItem.saleItem.getCount()),length)));
         }else{
             vl.add(format("&r&7库存: &a"+(getStockStr())));
-            vl.add(format("&r&7价格: &e"+(showItem.money != 0?showItem.money:"免费")));
+            vl.add(format("&r&7价格: "+moneyStr));
         }
 //
         if(showItem.tag.contains("limitCount") ){

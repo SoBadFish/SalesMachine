@@ -11,9 +11,11 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.entity.data.Skin;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.Vector3;
+import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
@@ -246,7 +248,7 @@ public class SalesMainClass extends PluginBase {
 
             CustomItemAPI.getInstance().registerCustomItem(1999, org.sobadfish.sales.items.custom.CustomSalePanelLeftItem.class);
             CustomItemAPI.getInstance().registerCustomItem(2000, org.sobadfish.sales.items.custom.CustomSalePanelRightItem.class);
-            CustomItemAPI.getInstance().registerCustomItem(2001, org.sobadfish.sales.items.custom.CustomSalePanelResetItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(2001, org.sobadfish.sales.items.custom.CustomSaleDiscountItem.class);
             CustomItemAPI.getInstance().registerCustomItem(2002, org.sobadfish.sales.items.custom.CustomSalePanelWallItem.class);
 
 
@@ -261,14 +263,14 @@ public class SalesMainClass extends PluginBase {
 
             CUSTOM_ITEMS.put("left",new org.sobadfish.sales.items.custom.CustomSalePanelLeftItem());
             CUSTOM_ITEMS.put("right",new org.sobadfish.sales.items.custom.CustomSalePanelRightItem());
-            CUSTOM_ITEMS.put("reset",new org.sobadfish.sales.items.custom.CustomSalePanelResetItem());
+            CUSTOM_ITEMS.put("discount",new org.sobadfish.sales.items.custom.CustomSaleDiscountItem());
 
             CUSTOM_ITEMS.put("wall",new org.sobadfish.sales.items.custom.CustomSalePanelWallItem());
 
         }else{
             Item.registerCustomItem(CustomSaleItem.class);
-            Item.registerCustomItem(CustomSaleSettingItem.class);
-            Item.registerCustomItem(CustomSaleRemoveItem.class);
+            Item.registerCustomItem(CustomSaleSettingItem.class,false);
+            Item.registerCustomItem(CustomSaleRemoveItem.class,false);
             Item.registerCustomItem(CustomSaleMoneyItem.class);
 
             Item.registerCustomItem(CustomCtItem.class);
@@ -277,7 +279,7 @@ public class SalesMainClass extends PluginBase {
 
             Item.registerCustomItem(CustomSalePanelLeftItem.class,false);
             Item.registerCustomItem(CustomSalePanelRightItem.class,false);
-            Item.registerCustomItem(CustomSalePanelResetItem.class,false);
+            Item.registerCustomItem(CustomSaleDiscountItem.class);
 
             Item.registerCustomItem(CustomSalePanelWallItem.class,false);
 
@@ -291,7 +293,7 @@ public class SalesMainClass extends PluginBase {
 
             CUSTOM_ITEMS.put("left",new CustomSalePanelLeftItem());
             CUSTOM_ITEMS.put("right",new CustomSalePanelRightItem());
-            CUSTOM_ITEMS.put("reset",new CustomSalePanelResetItem());
+            CUSTOM_ITEMS.put("discount",new CustomSaleDiscountItem());
             CUSTOM_ITEMS.put("wall",new CustomSalePanelWallItem());
         }
 //        Item.removeCreativeItem(CUSTOM_ITEMS.get("ct_sale"));
@@ -326,6 +328,7 @@ public class SalesMainClass extends PluginBase {
                     sendMessageToObject("&a/sa help &7查看帮助",sender);
                     sendMessageToObject("&a/sa give [数量] [玩家(可不填)]  &7给予玩家售货机物品 （放置即可）",sender);
                     sendMessageToObject("&a/sa q [玩家（可不填）]  &7查询玩家售货机坐标信息",sender);
+                    sendMessageToObject("&a/sa d <折扣> [玩家（可不填）]  &7给予玩家一个通用优惠券",sender);
                     break;
                 case "give":
                     int count = 1;
@@ -393,6 +396,34 @@ public class SalesMainClass extends PluginBase {
 //                        sendMessageToObject("&c未知指令 请执行/sa help 查看帮助",sender);
                     }
 
+
+                    break;
+                case "d":
+                    String zks = args[1];
+                    float zk = 0;
+
+                    try{
+                        zk = Float.parseFloat(zks);
+                    }catch (Exception ignore){}
+
+                    String master = args[2];
+                    p = Server.getInstance().getPlayer(master);
+                    if(p != null){
+                        Item item = CUSTOM_ITEMS.get("discount");
+                        item.setCustomName(TextFormat.colorize('&',"&r&e&l通用优惠券 ("+zks+"折)"));
+                        item.setLore(TextFormat.colorize('&',"\n&r&7 可以用作所有的售货机!"));
+                        item.addEnchantment(Enchantment.getEnchantment(0));
+                        CompoundTag tag = item.getNamedTag();
+                        tag.putString(CustomSaleDiscountItem.USE_TAG,"all");
+                        tag.putFloat(CustomSaleDiscountItem.USE_ZK_TAG,zk);
+                        tag.putBoolean(CustomSaleDiscountItem.USE_NONE_TAG,true);
+                        item.setNamedTag(tag);
+                        item.setCount(1);
+                        p.getInventory().addItem(item);
+                        sendMessageToObject("&a你获得一张 &r"+item.getCustomName(),p);
+                    }else{
+                        sendMessageToObject("&c玩家 "+master+" 不在线",sender);
+                    }
 
                     break;
                 default:
