@@ -56,21 +56,21 @@ public class PanelItem extends BasePlayPanelItemInstance{
             click++;
             Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE,() -> click = 0,40);
         }else{
-           toBuyItem(inventory,player);
+           toBuyItem(inventory,player,1);
 
         }
 
 
     }
 
-    public void toBuyItem(ISalePanel inventory, Player player){
+    public void toBuyItem(ISalePanel inventory, Player player,int buyCount){
         IMoney iMoney = SalesMainClass.getMoneyCoreByName(showItem.loadMoney);
         if(iMoney == null){
             SalesMainClass.sendMessageToObject("&c购买失败!经济核心 "+showItem.loadMoney+" 未装载",player);
             return;
         }
         //触发购买...
-        int size = (int) Math.floor(showItem.stack / (float)showItem.saleItem.getCount());
+        int size = (int) Math.floor(showItem.stack / (float)showItem.saleItem.getCount() * buyCount);
         if(showItem.tag.contains("noreduce") && showItem.tag.getBoolean("noreduce")){
             size = 1;
         }
@@ -79,19 +79,21 @@ public class PanelItem extends BasePlayPanelItemInstance{
 
                 if(((ChestPanel)inventory).sales.master.equalsIgnoreCase(player.getName())){
                     //店主不花钱
-                    player.getInventory().addItem(showItem.saleItem);
+                    Item cln = showItem.saleItem.clone();
+                    cln.setCount(cln.getCount() * buyCount);
+                    player.getInventory().addItem(cln);
                     if(!showItem.tag.contains("noreduce") || !showItem.tag.getBoolean("noreduce")){
-                        ((ChestPanel)inventory).sales.removeItem(player.getName(),showItem,showItem.saleItem.getCount(),true);
+                        ((ChestPanel)inventory).sales.removeItem(player.getName(),showItem,showItem.saleItem.getCount() * buyCount,true);
                     }
 
                 }else{
                     if(!showItem.tag.contains("noreduce") || !showItem.tag.getBoolean("noreduce")){
 
-                        if(iMoney.myMoney(((ChestPanel)inventory).sales.master) < showItem.money){
+                        if(iMoney.myMoney(((ChestPanel)inventory).sales.master) < showItem.money * buyCount){
                             SalesMainClass.sendMessageToObject("&c店主没有足够的!"+iMoney.displayName(),player);
                             return;
                         }else{
-                            if(iMoney.reduceMoney(((ChestPanel)inventory).sales.master,showItem.money)){
+                            if(iMoney.reduceMoney(((ChestPanel)inventory).sales.master,showItem.money * buyCount)){
                                 SalesMainClass.sendMessageToObject("&a交易成功",player);
                             }else{
                                 SalesMainClass.sendMessageToObject("&c交易失败!",player);
@@ -101,15 +103,15 @@ public class PanelItem extends BasePlayPanelItemInstance{
                     }
 
                     int count = getInventoryItemCount(player.getInventory(),showItem.saleItem);
-                    if(count >= showItem.saleItem.getCount()){
-                        if(chunkLimit(player)){
+                    if(count >= showItem.saleItem.getCount() * buyCount){
+                        if(chunkLimit(player,buyCount)){
 
                             if(SalesMainClass.canGiveMoneyItem){
-                                player.getInventory().addItem(new MoneyItem(showItem.money).getItem(showItem.loadMoney));
+                                player.getInventory().addItem(new MoneyItem(showItem.money * buyCount).getItem(showItem.loadMoney));
                             }else{
-                                if(iMoney.addMoney(player.getName(),showItem.money)){
+                                if(iMoney.addMoney(player.getName(),showItem.money * buyCount)){
                                     SalesMainClass.sendMessageToObject("&a出售成功! 获得 &r"+iMoney.displayName() +"* "+
-                                            String.format("%.2f",showItem.money)+"!",player);
+                                            String.format("%.2f",showItem.money * buyCount)+"!",player);
                                 }else{
                                     SalesMainClass.sendMessageToObject("&c交易失败!",player);
                                     return;
@@ -117,7 +119,7 @@ public class PanelItem extends BasePlayPanelItemInstance{
 
 
                             }
-                            showItem.stack += showItem.saleItem.getCount();
+                            showItem.stack += showItem.saleItem.getCount() * buyCount;
                             player.getInventory().removeItem(showItem.saleItem);
 //
                         }
@@ -132,12 +134,16 @@ public class PanelItem extends BasePlayPanelItemInstance{
             }else{
                 if(((ChestPanel)inventory).sales.master.equalsIgnoreCase(player.getName())){
                     //店主不花钱
-                    player.getInventory().addItem(showItem.saleItem);
+                    Item clnn = showItem.saleItem.clone();
+                    clnn.setCount(clnn.getCount() * buyCount);
+                    player.getInventory().addItem(clnn);
 
                 }else{
-                    if(chunkLimit(player)){
+                    if(chunkLimit(player,buyCount)){
                         //判断是否存在优惠券
-                        double rmoney = showItem.money;
+
+                        double one =  showItem.money;
+                        double rmoney = showItem.money * buyCount;
                         //先计算优惠.
                         if(rmoney > 0 && showItem.tag.contains("zk")){
                             float zk = showItem.tag.getFloat("zk");
@@ -145,13 +151,19 @@ public class PanelItem extends BasePlayPanelItemInstance{
 //                                    float discountRate = zk / 10.0f;
 //                                    rmoney = (float) rmoney * (1 - discountRate);
                                 rmoney = Utils.mathDiscount(zk,rmoney);
+                                one =   Utils.mathDiscount(zk,one);
                             }
 
                         }
 
+                        double del = one;
+
                         Item discount = getDiscountItem(player,((ChestPanel)inventory).sales,showItem.saleItem);
                         Item cl = null;
+                        int use = 0;
+
                         if(discount != null && rmoney > 0){
+                            use = Math.min(buyCount,discount.count);
                             //优惠券
                             cl = discount.clone();
                             float zk = discount.getNamedTag().getFloat(CustomSaleDiscountItem.USE_ZK_TAG);
@@ -159,9 +171,11 @@ public class PanelItem extends BasePlayPanelItemInstance{
 //                                rmoney = (float) rmoney * (1 - discountRate);
 //                                String db2 = String.format("%.2f",rmoney);
 //                                rmoney = Float.parseFloat(db2);
-                            rmoney = Utils.mathDiscount(zk,rmoney);
-                            String db2 = String.format("%.2f",rmoney);
-                            rmoney = Float.parseFloat(db2);
+                            del = Utils.mathDiscount(zk,del);
+                            String db2 = String.format("%.2f",del);
+                            del = Float.parseFloat(db2);
+                            del = (one - del) * use;
+                            rmoney -= del;
                         }
 
                         if(iMoney.myMoney(player.getName()) >= rmoney){
@@ -169,19 +183,21 @@ public class PanelItem extends BasePlayPanelItemInstance{
                                 SalesMainClass.sendMessageToObject("&c交易失败!",player);
                                 return;
                             }else{
-                                if(cl != null){
-                                    cl.setCount(1);
+                                if(cl != null && use > 0){
+                                    cl.setCount(use);
                                     player.getInventory().removeItem(cl);
-                                    SalesMainClass.sendMessageToObject("&b消耗 &r"+discount.getCustomName()+" &7 * &a1",player);
+                                    SalesMainClass.sendMessageToObject("&b消耗 &r"+discount.getCustomName()+" &7 * &a"+use,player);
                                 }
                                 SalesMainClass.sendMessageToObject("&a交易成功! 扣除 &7*&e "+String.format("%.2f",rmoney)+iMoney.displayName(),player);
 
 
                             }
-                            if(!iMoney.addMoney(((ChestPanel)inventory).sales.master,showItem.money)){
+                            if(!iMoney.addMoney(((ChestPanel)inventory).sales.master,showItem.money * buyCount)){
                                 SalesMainClass.sendMessageToObject("&c交易失败!",player);
                                 return;
                             }
+                            Item cln = showItem.saleItem.clone();
+                            cln.setCount(cln.getCount() * buyCount);
                             player.getInventory().addItem(showItem.saleItem);
                         }else{
                             SalesMainClass.sendMessageToObject(iMoney.displayName()+"&c不足!",player);
@@ -193,23 +209,28 @@ public class PanelItem extends BasePlayPanelItemInstance{
                     }
                 }
                 if(!showItem.tag.contains("noreduce") || !showItem.tag.getBoolean("noreduce")){
-                    ((ChestPanel)inventory).sales.removeItem(player.getName(),showItem,showItem.saleItem.getCount(),true);
+                    ((ChestPanel)inventory).sales.removeItem(player.getName(),showItem,showItem.saleItem.getCount() * buyCount,true);
                 }
             }
             player.getLevel().addSound(player.getPosition(),Sound.RANDOM_ORB);
 
 
         }else{
-            if(((ChestPanel)inventory).sales.master.equalsIgnoreCase(player.getName())){
-                int cc = showItem.stack;
-                Item cl = showItem.saleItem.clone();
-                cl.setCount(cc);
-                player.getInventory().addItem(cl);
-                showItem.stack = 0;
-                ((ChestPanel)inventory).sales.removeItem(player.getName(),showItem,showItem.saleItem.getCount(),true);
+            if(showItem.stack < showItem.saleItem.getCount()){
+                if(((ChestPanel)inventory).sales.master.equalsIgnoreCase(player.getName())){
+                    int cc = showItem.stack;
+                    Item cl = showItem.saleItem.clone();
+                    cl.setCount(cc);
+                    player.getInventory().addItem(cl);
+                    showItem.stack = 0;
+                    ((ChestPanel)inventory).sales.removeItem(player.getName(),showItem,showItem.saleItem.getCount(),true);
+                }else{
+                    SalesMainClass.sendMessageToObject("&c库存不足!",player);
+                }
             }else{
                 SalesMainClass.sendMessageToObject("&c库存不足!",player);
             }
+
 
         }
 
@@ -262,7 +283,7 @@ public class PanelItem extends BasePlayPanelItemInstance{
         return null;
     }
 
-    public boolean chunkLimit(Player player){
+    public boolean chunkLimit(Player player,int buyCount){
         //限购
         if(showItem.tag.contains("limitCount") ){
             int limit = showItem.tag.getInt("limitCount");
@@ -279,11 +300,15 @@ public class PanelItem extends BasePlayPanelItemInstance{
             if (user.contains("buy")) {
                 upsLimit = user.getInt("buy");
             }
-            if(upsLimit == limit){
+            if(limit > 0 && upsLimit + buyCount > limit){
+                SalesMainClass.sendMessageToObject("&c超出购买限制!",player);
+                return false;
+            }
+            if(limit != -1 && upsLimit == limit){
                 SalesMainClass.sendMessageToObject("&c购买失败! 已到达最大购买次数!",player);
                 return false;
             }
-            user.putInt("buy",++upsLimit);
+            user.putInt("buy",upsLimit + buyCount);
             if(!user.contains("buyTime")){
                 user.putLong("buyTime",System.currentTimeMillis());
             }
