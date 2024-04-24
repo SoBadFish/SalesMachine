@@ -241,6 +241,13 @@ public class Utils {
         return Double.parseDouble(String.format("%.2f",r));
     }
 
+    public static float mathDiscount(float zk,double money){
+        float discountRate = zk / 10.0f;
+        float m2 = (float) money * (1 - discountRate);
+//        float f1 = (1 - zk) / 10f;
+//        money = money - (money * f1);
+        return (float) money - m2;
+    }
 
     /**
      * 获取未来时间

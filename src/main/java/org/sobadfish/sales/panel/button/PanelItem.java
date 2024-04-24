@@ -127,34 +127,36 @@ public class PanelItem extends BasePlayPanelItemInstance{
                         player.getInventory().addItem(showItem.saleItem);
 
                     }else{
-
-                        if(iMoney.myMoney(player.getName()) >= showItem.money){
-
-                            if(chunkLimit(player)){
-                                //判断是否存在优惠券
-                                double rmoney = showItem.money;
-                                //先计算优惠.
-                                if(rmoney > 0 && showItem.tag.contains("zk")){
-                                    float zk = showItem.tag.getFloat("zk");
-                                    if(zk > 0){
-                                        float discountRate = zk / 100.0f;
-                                        rmoney = (float) rmoney * (1 - discountRate);
-                                    }
-
+                        if(chunkLimit(player)){
+                            //判断是否存在优惠券
+                            double rmoney = showItem.money;
+                            //先计算优惠.
+                            if(rmoney > 0 && showItem.tag.contains("zk")){
+                                float zk = showItem.tag.getFloat("zk");
+                                if(zk > 0){
+//                                    float discountRate = zk / 10.0f;
+//                                    rmoney = (float) rmoney * (1 - discountRate);
+                                    rmoney = Utils.mathDiscount(zk,rmoney);
                                 }
 
-                                Item discount = getDiscountItem(player,((ChestPanel)inventory).sales,showItem.saleItem);
-                                Item cl = null;
-                                if(discount != null && rmoney > 0){
-                                    //优惠券
-                                    cl = discount.clone();
-                                    float zk = discount.getNamedTag().getFloat(CustomSaleDiscountItem.USE_ZK_TAG);
-                                    float discountRate = zk / 100.0f;
-                                    rmoney = (float) rmoney * (1 - discountRate);
-                                    String db2 = String.format("%.2f",rmoney);
-                                    rmoney = Float.parseFloat(db2);
-                                }
+                            }
 
+                            Item discount = getDiscountItem(player,((ChestPanel)inventory).sales,showItem.saleItem);
+                            Item cl = null;
+                            if(discount != null && rmoney > 0){
+                                //优惠券
+                                cl = discount.clone();
+                                float zk = discount.getNamedTag().getFloat(CustomSaleDiscountItem.USE_ZK_TAG);
+//                                float discountRate = zk / 10.0f;
+//                                rmoney = (float) rmoney * (1 - discountRate);
+//                                String db2 = String.format("%.2f",rmoney);
+//                                rmoney = Float.parseFloat(db2);
+                                rmoney = Utils.mathDiscount(zk,rmoney);
+                                String db2 = String.format("%.2f",rmoney);
+                                rmoney = Float.parseFloat(db2);
+                            }
+
+                            if(iMoney.myMoney(player.getName()) >= rmoney){
                                 if(!iMoney.reduceMoney(player.getName(),rmoney)){
                                     SalesMainClass.sendMessageToObject("&c交易失败!",player);
                                     return;
@@ -173,10 +175,12 @@ public class PanelItem extends BasePlayPanelItemInstance{
                                     return;
                                 }
                                 player.getInventory().addItem(showItem.saleItem);
+                            }else{
+                                SalesMainClass.sendMessageToObject(iMoney.displayName()+"&c不足!",player);
+                                return;
                             }
 
                         }else{
-                            SalesMainClass.sendMessageToObject(iMoney.displayName()+"&c不足!",player);
                             return;
                         }
                     }
@@ -185,6 +189,9 @@ public class PanelItem extends BasePlayPanelItemInstance{
                     }
                 }
                 player.getLevel().addSound(player.getPosition(),Sound.RANDOM_ORB);
+
+
+
 
 
 
@@ -216,15 +223,16 @@ public class PanelItem extends BasePlayPanelItemInstance{
         for (Item item: player.getInventory().getContents().values()){
             Class<?> iv = SalesMainClass.CUSTOM_ITEMS.get("discount").getClass();
             if(item.getClass() == iv){
+
                 if(item.hasCompoundTag()){
                     CompoundTag tag = item.getNamedTag();
+
                     if(tag.contains(CustomSaleDiscountItem.USE_TAG)){
 //                        return item;
                         String useBy = tag.getString(CustomSaleDiscountItem.USE_TAG);
                         if(!tag.contains(CustomSaleDiscountItem.USE_NONE_TAG)){
                             //不是通用优惠券
-                            if(!useBy.equalsIgnoreCase(sales.salesData.uuid) || !useBy.equalsIgnoreCase(sales.master)){
-                                //独属
+                            if(!useBy.equalsIgnoreCase(sales.salesData.uuid) && !useBy.equalsIgnoreCase(sales.master)){
                                 continue;
                             }
                         }
@@ -309,11 +317,12 @@ public class PanelItem extends BasePlayPanelItemInstance{
         if(mm > 0 && showItem.tag.contains("zk")){
             float zk = showItem.tag.getFloat("zk");
             if(zk > 0){
-                float discountRate = zk / 100.0f;
-                mm = (float) mm * (1 - discountRate);
+//                float discountRate = zk / 10.0f;
+//                mm = (float) mm * (1 - discountRate);
+                mm = Utils.mathDiscount(zk,mm);
                 db2 = "&d"+String.format("%.2f",mm);
             }
-
+//
         }
         String moneyStr = "&e"+(showItem.money != 0?db2:"免费");
         if(showItem.tag.contains("sales_exchange") && showItem.tag.getBoolean("sales_exchange",false)){

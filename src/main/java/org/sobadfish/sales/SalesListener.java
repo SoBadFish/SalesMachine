@@ -34,6 +34,7 @@ import org.sobadfish.sales.config.SalesData;
 import org.sobadfish.sales.economy.IMoney;
 import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.form.AdminForm;
+import org.sobadfish.sales.form.DiscountForm;
 import org.sobadfish.sales.form.SellItemForm;
 import org.sobadfish.sales.items.MoneyItem;
 import org.sobadfish.sales.panel.DisplayPlayerPanel;
@@ -81,6 +82,21 @@ public class SalesListener implements Listener {
             }
             Item ei = event.getItem();
 
+            if(ei.equals(SalesMainClass.CUSTOM_ITEMS.get("discount")) && !player.isSneaking()){
+                //使用空白优惠券
+                event.setCancelled();
+                if(!ei.hasCompoundTag()){
+                    //制作空白优惠券 UI
+                    if(player.isOp() || entity1.master.equalsIgnoreCase(player.getName())){
+                        DiscountForm discountForm = new DiscountForm(entity1,ei);
+                        discountForm.display(player);
+                    }else{
+                        SalesMainClass.sendMessageToObject("&c这不是你的售货机!",player);
+                    }
+                }
+
+                return;
+            }
 
             if(!ei.equals(SalesMainClass.CUSTOM_ITEMS.get("ct")) &&
                     !ei.equals(SalesMainClass.CUSTOM_ITEMS.get("ct_sale")) &&
@@ -106,6 +122,7 @@ public class SalesListener implements Listener {
 
                 return;
             }
+
 
             Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE, new Runnable() {
                 @Override
@@ -340,6 +357,16 @@ public class SalesListener implements Listener {
                 }
             }
             AdminForm.DISPLAY_FROM.remove(event.getPlayer().getName());
+        }
+        if(DiscountForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
+            DiscountForm form = DiscountForm.DISPLAY_FROM.get(event.getPlayer().getName());
+            if(form.getId() == event.getFormID()){
+                if(event.getResponse() instanceof FormResponseCustom){
+                    form.onListener(event.getPlayer(), (FormResponseCustom) event.getResponse());
+
+                }
+            }
+            DiscountForm.DISPLAY_FROM.remove(event.getPlayer().getName());
         }
     }
 
