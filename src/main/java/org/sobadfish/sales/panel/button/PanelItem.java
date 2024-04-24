@@ -56,163 +56,162 @@ public class PanelItem extends BasePlayPanelItemInstance{
             click++;
             Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE,() -> click = 0,40);
         }else{
-            IMoney iMoney = SalesMainClass.getMoneyCoreByName(showItem.loadMoney);
-            if(iMoney == null){
-                SalesMainClass.sendMessageToObject("&c购买失败!经济核心 "+showItem.loadMoney+" 未装载",player);
-                return;
-            }
-            //触发购买...
-            int size = (int) Math.floor(showItem.stack / (float)showItem.saleItem.getCount());
-            if(showItem.tag.contains("noreduce") && showItem.tag.getBoolean("noreduce")){
-                size = 1;
-            }
-            if(size > 0){
-                if(showItem.tag.contains("sales_exchange") && showItem.tag.getBoolean("sales_exchange",false)){
+           toBuyItem(inventory,player);
 
-                    if(((ChestPanel)inventory).sales.master.equalsIgnoreCase(player.getName())){
-                        //店主不花钱
-                        player.getInventory().addItem(showItem.saleItem);
-                        if(!showItem.tag.contains("noreduce") || !showItem.tag.getBoolean("noreduce")){
-                            ((ChestPanel)inventory).sales.removeItem(player.getName(),showItem,showItem.saleItem.getCount(),true);
-                        }
+        }
 
-                    }else{
-                        if(!showItem.tag.contains("noreduce") || !showItem.tag.getBoolean("noreduce")){
-                          
-                            if(iMoney.myMoney(((ChestPanel)inventory).sales.master) < showItem.money){
-                                SalesMainClass.sendMessageToObject("&c店主没有足够的!"+iMoney.displayName(),player);
-                                return;
+
+    }
+
+    public void toBuyItem(ISalePanel inventory, Player player){
+        IMoney iMoney = SalesMainClass.getMoneyCoreByName(showItem.loadMoney);
+        if(iMoney == null){
+            SalesMainClass.sendMessageToObject("&c购买失败!经济核心 "+showItem.loadMoney+" 未装载",player);
+            return;
+        }
+        //触发购买...
+        int size = (int) Math.floor(showItem.stack / (float)showItem.saleItem.getCount());
+        if(showItem.tag.contains("noreduce") && showItem.tag.getBoolean("noreduce")){
+            size = 1;
+        }
+        if(size > 0){
+            if(showItem.tag.contains("sales_exchange") && showItem.tag.getBoolean("sales_exchange",false)){
+
+                if(((ChestPanel)inventory).sales.master.equalsIgnoreCase(player.getName())){
+                    //店主不花钱
+                    player.getInventory().addItem(showItem.saleItem);
+                    if(!showItem.tag.contains("noreduce") || !showItem.tag.getBoolean("noreduce")){
+                        ((ChestPanel)inventory).sales.removeItem(player.getName(),showItem,showItem.saleItem.getCount(),true);
+                    }
+
+                }else{
+                    if(!showItem.tag.contains("noreduce") || !showItem.tag.getBoolean("noreduce")){
+
+                        if(iMoney.myMoney(((ChestPanel)inventory).sales.master) < showItem.money){
+                            SalesMainClass.sendMessageToObject("&c店主没有足够的!"+iMoney.displayName(),player);
+                            return;
+                        }else{
+                            if(iMoney.reduceMoney(((ChestPanel)inventory).sales.master,showItem.money)){
+                                SalesMainClass.sendMessageToObject("&a交易成功",player);
                             }else{
-                                if(iMoney.reduceMoney(((ChestPanel)inventory).sales.master,showItem.money)){
-                                    SalesMainClass.sendMessageToObject("&a交易成功",player);
+                                SalesMainClass.sendMessageToObject("&c交易失败!",player);
+                                return;
+                            }
+                        }
+                    }
+
+                    int count = getInventoryItemCount(player.getInventory(),showItem.saleItem);
+                    if(count >= showItem.saleItem.getCount()){
+                        if(chunkLimit(player)){
+
+                            if(SalesMainClass.canGiveMoneyItem){
+                                player.getInventory().addItem(new MoneyItem(showItem.money).getItem(showItem.loadMoney));
+                            }else{
+                                if(iMoney.addMoney(player.getName(),showItem.money)){
+                                    SalesMainClass.sendMessageToObject("&a出售成功! 获得 &r"+iMoney.displayName() +"* "+
+                                            String.format("%.2f",showItem.money)+"!",player);
                                 }else{
                                     SalesMainClass.sendMessageToObject("&c交易失败!",player);
                                     return;
                                 }
+
+
                             }
-                        }
-
-                        int count = getInventoryItemCount(player.getInventory(),showItem.saleItem);
-                        if(count >= showItem.saleItem.getCount()){
-                            if(chunkLimit(player)){
-
-                                if(SalesMainClass.canGiveMoneyItem){
-                                    player.getInventory().addItem(new MoneyItem(showItem.money).getItem(showItem.loadMoney));
-                                }else{
-                                    if(iMoney.addMoney(player.getName(),showItem.money)){
-                                        SalesMainClass.sendMessageToObject("&a出售成功! 获得 &r"+iMoney.displayName() +"* "+
-                                                String.format("%.2f",showItem.money)+"!",player);
-                                    }else{
-                                        SalesMainClass.sendMessageToObject("&c交易失败!",player);
-                                        return;
-                                    }
-
-
-                                }
-                                showItem.stack += showItem.saleItem.getCount();
-                                player.getInventory().removeItem(showItem.saleItem);
+                            showItem.stack += showItem.saleItem.getCount();
+                            player.getInventory().removeItem(showItem.saleItem);
 //
-                            }
-
-                        }else{
-                            SalesMainClass.sendMessageToObject("&c购买失败! 物品不足!",player);
-                            return;
                         }
-
-                    }
-
-                }else{
-                    if(((ChestPanel)inventory).sales.master.equalsIgnoreCase(player.getName())){
-                        //店主不花钱
-                        player.getInventory().addItem(showItem.saleItem);
 
                     }else{
-                        if(chunkLimit(player)){
-                            //判断是否存在优惠券
-                            double rmoney = showItem.money;
-                            //先计算优惠.
-                            if(rmoney > 0 && showItem.tag.contains("zk")){
-                                float zk = showItem.tag.getFloat("zk");
-                                if(zk > 0){
+                        SalesMainClass.sendMessageToObject("&c购买失败! 物品不足!",player);
+                        return;
+                    }
+
+                }
+
+            }else{
+                if(((ChestPanel)inventory).sales.master.equalsIgnoreCase(player.getName())){
+                    //店主不花钱
+                    player.getInventory().addItem(showItem.saleItem);
+
+                }else{
+                    if(chunkLimit(player)){
+                        //判断是否存在优惠券
+                        double rmoney = showItem.money;
+                        //先计算优惠.
+                        if(rmoney > 0 && showItem.tag.contains("zk")){
+                            float zk = showItem.tag.getFloat("zk");
+                            if(zk > 0){
 //                                    float discountRate = zk / 10.0f;
 //                                    rmoney = (float) rmoney * (1 - discountRate);
-                                    rmoney = Utils.mathDiscount(zk,rmoney);
-                                }
-
+                                rmoney = Utils.mathDiscount(zk,rmoney);
                             }
 
-                            Item discount = getDiscountItem(player,((ChestPanel)inventory).sales,showItem.saleItem);
-                            Item cl = null;
-                            if(discount != null && rmoney > 0){
-                                //优惠券
-                                cl = discount.clone();
-                                float zk = discount.getNamedTag().getFloat(CustomSaleDiscountItem.USE_ZK_TAG);
+                        }
+
+                        Item discount = getDiscountItem(player,((ChestPanel)inventory).sales,showItem.saleItem);
+                        Item cl = null;
+                        if(discount != null && rmoney > 0){
+                            //优惠券
+                            cl = discount.clone();
+                            float zk = discount.getNamedTag().getFloat(CustomSaleDiscountItem.USE_ZK_TAG);
 //                                float discountRate = zk / 10.0f;
 //                                rmoney = (float) rmoney * (1 - discountRate);
 //                                String db2 = String.format("%.2f",rmoney);
 //                                rmoney = Float.parseFloat(db2);
-                                rmoney = Utils.mathDiscount(zk,rmoney);
-                                String db2 = String.format("%.2f",rmoney);
-                                rmoney = Float.parseFloat(db2);
-                            }
+                            rmoney = Utils.mathDiscount(zk,rmoney);
+                            String db2 = String.format("%.2f",rmoney);
+                            rmoney = Float.parseFloat(db2);
+                        }
 
-                            if(iMoney.myMoney(player.getName()) >= rmoney){
-                                if(!iMoney.reduceMoney(player.getName(),rmoney)){
-                                    SalesMainClass.sendMessageToObject("&c交易失败!",player);
-                                    return;
-                                }else{
-                                    if(cl != null){
-                                        cl.setCount(1);
-                                        player.getInventory().removeItem(cl);
-                                        SalesMainClass.sendMessageToObject("&b消耗 &r"+discount.getCustomName()+" &7 * &a1",player);
-                                    }
-                                    SalesMainClass.sendMessageToObject("&a交易成功! 扣除 &7*&e "+String.format("%.2f",rmoney)+iMoney.displayName(),player);
-
-
-                                }
-                                if(!iMoney.addMoney(((ChestPanel)inventory).sales.master,showItem.money)){
-                                    SalesMainClass.sendMessageToObject("&c交易失败!",player);
-                                    return;
-                                }
-                                player.getInventory().addItem(showItem.saleItem);
+                        if(iMoney.myMoney(player.getName()) >= rmoney){
+                            if(!iMoney.reduceMoney(player.getName(),rmoney)){
+                                SalesMainClass.sendMessageToObject("&c交易失败!",player);
+                                return;
                             }else{
-                                SalesMainClass.sendMessageToObject(iMoney.displayName()+"&c不足!",player);
+                                if(cl != null){
+                                    cl.setCount(1);
+                                    player.getInventory().removeItem(cl);
+                                    SalesMainClass.sendMessageToObject("&b消耗 &r"+discount.getCustomName()+" &7 * &a1",player);
+                                }
+                                SalesMainClass.sendMessageToObject("&a交易成功! 扣除 &7*&e "+String.format("%.2f",rmoney)+iMoney.displayName(),player);
+
+
+                            }
+                            if(!iMoney.addMoney(((ChestPanel)inventory).sales.master,showItem.money)){
+                                SalesMainClass.sendMessageToObject("&c交易失败!",player);
                                 return;
                             }
-
+                            player.getInventory().addItem(showItem.saleItem);
                         }else{
+                            SalesMainClass.sendMessageToObject(iMoney.displayName()+"&c不足!",player);
                             return;
                         }
-                    }
-                    if(!showItem.tag.contains("noreduce") || !showItem.tag.getBoolean("noreduce")){
-                        ((ChestPanel)inventory).sales.removeItem(player.getName(),showItem,showItem.saleItem.getCount(),true);
+
+                    }else{
+                        return;
                     }
                 }
-                player.getLevel().addSound(player.getPosition(),Sound.RANDOM_ORB);
-
-
-
-
-
-
-
-            }else{
-                if(((ChestPanel)inventory).sales.master.equalsIgnoreCase(player.getName())){
-                    int cc = showItem.stack;
-                    Item cl = showItem.saleItem.clone();
-                    cl.setCount(cc);
-                    player.getInventory().addItem(cl);
-                    showItem.stack = 0;
+                if(!showItem.tag.contains("noreduce") || !showItem.tag.getBoolean("noreduce")){
                     ((ChestPanel)inventory).sales.removeItem(player.getName(),showItem,showItem.saleItem.getCount(),true);
-                }else{
-                    SalesMainClass.sendMessageToObject("&c库存不足!",player);
                 }
+            }
+            player.getLevel().addSound(player.getPosition(),Sound.RANDOM_ORB);
 
+
+        }else{
+            if(((ChestPanel)inventory).sales.master.equalsIgnoreCase(player.getName())){
+                int cc = showItem.stack;
+                Item cl = showItem.saleItem.clone();
+                cl.setCount(cc);
+                player.getInventory().addItem(cl);
+                showItem.stack = 0;
+                ((ChestPanel)inventory).sales.removeItem(player.getName(),showItem,showItem.saleItem.getCount(),true);
+            }else{
+                SalesMainClass.sendMessageToObject("&c库存不足!",player);
             }
 
-
         }
-
 
     }
 
