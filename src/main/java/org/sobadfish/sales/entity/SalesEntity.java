@@ -705,6 +705,7 @@ public class SalesEntity extends EntityHuman {
                 data.world = position.level.getFolderName();
                 data.location = ps;
                 data.master = master;
+                data.uuid = UUID.randomUUID().toString();
                 data.bf = bf.getName();
                 data.skinmodel = modelName;
                 data.customname = master + " 的售货机";
@@ -718,6 +719,9 @@ public class SalesEntity extends EntityHuman {
             }else{
                 if(data.world == null || "".equalsIgnoreCase(data.world)){
                     data.world = position.level.getFolderName();
+                }
+                if(data.uuid == null || "".equalsIgnoreCase(data.uuid)){
+                    data.uuid = UUID.randomUUID().toString();
                 }
             }
             sales.salesData = data;
