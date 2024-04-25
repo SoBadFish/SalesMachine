@@ -7,3 +7,6 @@ only-use-admin-money-core: []
 
 #是否直接给予金币物品
 can-give-money-item: true
+
+# 是否允许玩家合成空白优惠券
+craft-discount: true

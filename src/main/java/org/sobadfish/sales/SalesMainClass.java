@@ -10,7 +10,9 @@ import cn.nukkit.command.CommandSender;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.entity.data.Skin;
+import cn.nukkit.inventory.ShapelessRecipe;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemPaper;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
@@ -299,7 +301,22 @@ public class SalesMainClass extends PluginBase {
 //        Item.removeCreativeItem(CUSTOM_ITEMS.get("ct_sale"));
 
 
+        registerCraft();
 
+
+
+
+    }
+
+    private void registerCraft() {
+        //注册合成配方 通过这个可以合成优惠券.
+        if(getConfig().getBoolean("craft-discount",true)){
+            List<Item> items = new ArrayList<>();
+            items.add(new ItemPaper());
+            //一张纸合成一个空白优惠券
+            ShapelessRecipe result = new ShapelessRecipe(CUSTOM_ITEMS.get("discount"),items);
+            getServer().getCraftingManager().registerRecipe(result);
+        }
 
     }
 
