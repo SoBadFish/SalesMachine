@@ -63,7 +63,7 @@ public class DiscountForm {
         }
 
         custom.addElement(new ElementDropdown("选择打折的物品",dItem,0));
-        custom.addElement(new ElementInput("使用期限","-1则不限制时间 单位为 天 从创建时开始计算","-1"));
+        custom.addElement(new ElementInput("有效期 （天） 从创建开始计算","-1则不限制时间 单位为 天 从创建时开始计算","-1"));
         player.showFormWindow(custom,getId());
         DISPLAY_FROM.put(player.getName(),this);
     }
