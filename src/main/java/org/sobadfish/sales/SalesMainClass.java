@@ -10,7 +10,8 @@ import cn.nukkit.command.CommandSender;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.entity.data.Skin;
-import cn.nukkit.inventory.ShapelessRecipe;
+import cn.nukkit.inventory.CraftingManager;
+import cn.nukkit.inventory.ShapedRecipe;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemPaper;
 import cn.nukkit.item.enchantment.Enchantment;
@@ -74,8 +75,11 @@ public class SalesMainClass extends PluginBase {
 
     private final static LinkedHashMap<String, IMoney> LOAD_MONEY = new LinkedHashMap<>();
 
+    public ShapedRecipe result;
 
     public static boolean canGiveMoneyItem = true;
+
+    public static String CORE_NAME = "";
 
 
 
@@ -84,6 +88,7 @@ public class SalesMainClass extends PluginBase {
         //提前注册好
         BlockEntity.registerBlockEntity(SalesEntity.SalesBlockEntity.ENTITY_TYPE,SalesEntity.SalesBlockEntity.class);
         Entity.registerEntity(SalesEntity.ENTITY_TYPE,SalesEntity.class);
+        initItem();
     }
 
     @Override
@@ -133,7 +138,7 @@ public class SalesMainClass extends PluginBase {
         chunkDb();
 
         initSkin();
-        initItem();
+
 
 
         if(Block.list.length <= 256){
@@ -154,6 +159,7 @@ public class SalesMainClass extends PluginBase {
         this.getServer().getPluginManager().registerEvents(new SalesListener(this),this);
 
 
+        registerCraft();
         sendMessageToConsole("&a加载完成!");
 
     }
@@ -301,7 +307,7 @@ public class SalesMainClass extends PluginBase {
 //        Item.removeCreativeItem(CUSTOM_ITEMS.get("ct_sale"));
 
 
-        registerCraft();
+
 
 
 
@@ -311,15 +317,26 @@ public class SalesMainClass extends PluginBase {
     private void registerCraft() {
         //注册合成配方 通过这个可以合成优惠券.
         if(getConfig().getBoolean("craft-discount",true)){
-            List<Item> items = new ArrayList<>();
-            items.add(new ItemPaper());
+            CraftingManager manager = this.getServer().getCraftingManager();
+
             //一张纸合成一个空白优惠券
-            ShapelessRecipe result = new ShapelessRecipe(CUSTOM_ITEMS.get("discount"),items);
+            Map<Character, Item> ingredients = new HashMap<>();
+            ingredients.put('A',new ItemPaper());
+            result = new ShapedRecipe(CUSTOM_ITEMS.get("discount"),new String[]{"AA"},ingredients,new LinkedList<>());
             if(AbstractFakeInventory.IS_PM1E){
-                getServer().getCraftingManager().registerRecipe(419,result);
-                getServer().getCraftingManager().registerRecipe(527,result);
+                manager.registerShapedRecipe(313,result);
+                manager.registerShapedRecipe(332,result);
+                manager.registerShapedRecipe(388,result);
+                manager.registerShapedRecipe(419,result);
+                manager.registerShapedRecipe(527,result);
+                manager.registerShapedRecipe(649,result);
+
+            }else{
+                manager.registerShapedRecipe(result);
             }
-            getServer().getCraftingManager().registerRecipe(result);
+            manager.rebuildPacket();
+            sendMessageToConsole("&a成功注册 &r"+CORE_NAME+" &a核心合成配方");
+
 
         }
 
@@ -619,18 +636,18 @@ public class SalesMainClass extends PluginBase {
     private void checkServer(){
         boolean ver = false;
         //双核心兼容
-        String coreName = "Nukkit";
+        CORE_NAME = "Nukkit";
         try {
             Class<?> c = Class.forName("cn.nukkit.Nukkit");
             c.getField("NUKKIT_PM1E");
             ver = true;
-            coreName = "Nukkit PM1E";
+            CORE_NAME = "Nukkit PM1E";
 
 
         } catch (ClassNotFoundException | NoSuchFieldException ignore) { }
         try {
             Class<?> c = Class.forName("cn.nukkit.Nukkit");
-            coreName = c.getField("NUKKIT").get(c).toString();
+            CORE_NAME = c.getField("NUKKIT").get(c).toString();
 
             ver = true;
 
@@ -642,7 +659,7 @@ public class SalesMainClass extends PluginBase {
             Server.getInstance().enableExperimentMode = true;
             Server.getInstance().forceResources = true;
         }
-        sendMessageToConsole("&e当前核心为 "+coreName);
+        sendMessageToConsole("&e当前核心为 "+CORE_NAME);
     }
 
     @Override
