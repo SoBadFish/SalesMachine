@@ -315,7 +315,12 @@ public class SalesMainClass extends PluginBase {
             items.add(new ItemPaper());
             //一张纸合成一个空白优惠券
             ShapelessRecipe result = new ShapelessRecipe(CUSTOM_ITEMS.get("discount"),items);
+            if(AbstractFakeInventory.IS_PM1E){
+                getServer().getCraftingManager().registerRecipe(419,result);
+                getServer().getCraftingManager().registerRecipe(527,result);
+            }
             getServer().getCraftingManager().registerRecipe(result);
+
         }
 
     }
@@ -614,28 +619,30 @@ public class SalesMainClass extends PluginBase {
     private void checkServer(){
         boolean ver = false;
         //双核心兼容
+        String coreName = "Nukkit";
         try {
             Class<?> c = Class.forName("cn.nukkit.Nukkit");
             c.getField("NUKKIT_PM1E");
             ver = true;
+            coreName = "Nukkit PM1E";
 
 
         } catch (ClassNotFoundException | NoSuchFieldException ignore) { }
         try {
             Class<?> c = Class.forName("cn.nukkit.Nukkit");
-            c.getField("NUKKIT").get(c).toString().equalsIgnoreCase("Nukkit PetteriM1 Edition");
+            coreName = c.getField("NUKKIT").get(c).toString();
+
             ver = true;
+
         } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException ignore) {
         }
 
         AbstractFakeInventory.IS_PM1E = ver;
         if(ver){
-            sendMessageToConsole("&e当前核心为 Nukkit MOT");
             Server.getInstance().enableExperimentMode = true;
             Server.getInstance().forceResources = true;
-        }else{
-            sendMessageToConsole("&e当前核心为 Nukkit");
         }
+        sendMessageToConsole("&e当前核心为 "+coreName);
     }
 
     @Override
