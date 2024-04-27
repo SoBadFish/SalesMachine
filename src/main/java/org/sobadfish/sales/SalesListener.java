@@ -34,6 +34,7 @@ import org.sobadfish.sales.config.SalesData;
 import org.sobadfish.sales.economy.IMoney;
 import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.form.AdminForm;
+import org.sobadfish.sales.form.BuyItemForm;
 import org.sobadfish.sales.form.DiscountForm;
 import org.sobadfish.sales.form.SellItemForm;
 import org.sobadfish.sales.items.MoneyItem;
@@ -368,6 +369,16 @@ public class SalesListener implements Listener {
             }
             DiscountForm.DISPLAY_FROM.remove(event.getPlayer().getName());
         }
+        if(BuyItemForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
+            BuyItemForm form = BuyItemForm.DISPLAY_FROM.get(event.getPlayer().getName());
+            if(form.getId() == event.getFormID()){
+                if(event.getResponse() instanceof FormResponseCustom){
+                    form.onListener(event.getPlayer(), (FormResponseCustom) event.getResponse());
+
+                }
+            }
+            BuyItemForm.DISPLAY_FROM.remove(event.getPlayer().getName());
+        }
     }
 
     public static SalesEntity getEntityByPos(Position position){
@@ -445,6 +456,7 @@ public class SalesListener implements Listener {
 
                 }
                 if(inventory instanceof DoubleChestPanel){
+                    //拿取库存物品的判断
                     Player player = ((DoubleChestPanel) inventory).getPlayer();
                     Item i = action.getSourceItem();
                     Item i2 = action.getTargetItem();

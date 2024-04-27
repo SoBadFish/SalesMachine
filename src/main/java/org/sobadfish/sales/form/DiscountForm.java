@@ -94,25 +94,19 @@ public class DiscountForm {
         if(day > 365){
             day = -1;
         }
-        String title = TextFormat.colorize('&',"&r&7"+salesEntity.salesData.customname+"&r&l&a 优惠券 &7(&a"+String.format("%.1f",zk)+"折&7)");
-        int l = title.length();
+        String title = TextFormat.colorize('&',"&r&l&e优惠券 &7(&a"+String.format("%.1f",zk)+"折&7)");
         item.setCustomName(title);
         CompoundTag tag = item.getNamedTag();
         tag.putFloat(CustomSaleDiscountItem.USE_ZK_TAG,zk);
         List<String> lore = new ArrayList<>();
         lore.add("");
         if(only){
-            String l1 = format("&7仅对 &r"+salesEntity.salesData.customname+" &7有效");
-            if(l1.length() > l){
-                l = l1.length();
-            }
+            String l1 = format("&7仅 &r"+salesEntity.salesData.customname+" &7有效");
             lore.add(l1);
             tag.putString(CustomSaleDiscountItem.USE_TAG,salesEntity.salesData.uuid);
         }else{
             String l2 = format("&7仅&e "+salesEntity.master+" &7的售货机有效");
-            if(l2.length() > l){
-                l = l2.length();
-            }
+
             lore.add(l2);
             tag.putString(CustomSaleDiscountItem.USE_TAG,salesEntity.master);
         }
@@ -130,7 +124,7 @@ public class DiscountForm {
         }
 
         lore.add("  ");
-        String ll = format("&7-- "+salesEntity.master+" 发行");
+        String ll = format("&e"+salesEntity.master+" &7发行");
         lore.add(ll);
         item.setNamedTag(tag);
 
