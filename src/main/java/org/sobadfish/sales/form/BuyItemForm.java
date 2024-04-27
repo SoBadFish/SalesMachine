@@ -47,7 +47,8 @@ public class BuyItemForm {
     public void display(Player player){
         IMoney iMoney = SalesMainClass.getMoneyCoreByName(salesItem.loadMoney);
 
-        int maxCount = getLimitCount(player.getName());
+        int limitCount = getLimitCount(player.getName());
+        int maxCount = limitCount;
         int stock = (int)Math.floor(salesItem.stack / (float)salesItem.saleItem.getCount());
         if(maxCount == -1){
             //最大选择为 99
@@ -93,6 +94,10 @@ public class BuyItemForm {
             maxCount = Math.min(canCell,99);
             stringBuilder.append("&7我的库存: &l&a").append(pStock).append(" &7(可出售: &e").append(canCell).append("&7)").append("\n\n");
         }
+        if(limitCount != -1){
+            stringBuilder.append("&c剩余购买次数: &l&a").append(limitCount);
+        }
+
 
 
         FormWindowCustom custom = new FormWindowCustom("售货机 ————— "+title);
