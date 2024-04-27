@@ -53,12 +53,12 @@ public class BuyItemForm {
             //最大选择为 99
             maxCount = 99;
         }
-        if(!salesItem.tag.contains("noreduce") || !salesItem.tag.getBoolean("noreduce")){
+        if(!salesItem.isNoReduce()){
             maxCount = Math.min(stock,99);
         }
         boolean isSell = false;
         String title = "购买";
-        if(salesItem.tag.contains("sales_exchange") && salesItem.tag.getBoolean("sales_exchange",false)){
+        if(salesItem.isAcquisition()){
             //收购
             title = "出售";
             isSell = true;
@@ -70,7 +70,12 @@ public class BuyItemForm {
         stringBuilder.append("&7售货机名称: &r: ").append(salesEntity.salesData.customname).append("\n\n");
         stringBuilder.append("&7售货机坐标: &r: ").append(salesEntity.salesData.location).append("\n");
         stringBuilder.append("&7售货机主人: &r: ").append(salesEntity.master).append("\n\n");
-        stringBuilder.append("&7当前库存: &l&a").append(stock > 0 ? stock : "&c缺货").append("\n\n");
+        if(salesItem.isNoReduce()){
+            stringBuilder.append("&7当前库存: &l&e无限").append("\n\n");
+        }else{
+            stringBuilder.append("&7当前库存: &l&a").append(stock > 0 ? stock : "&c缺货").append("\n\n");
+        }
+
         if(!isSell){
             Item dItem = salesItem.getDiscountItem(player,salesEntity,salesItem.saleItem);
             if(dItem != null){
