@@ -102,7 +102,7 @@ public class BuyItemForm {
 
         FormWindowCustom custom = new FormWindowCustom("售货机 ————— "+title);
         custom.addElement(new ElementLabel(TextFormat.colorize('&',stringBuilder.toString())));
-        custom.addElement(new ElementSlider("请选择"+title+"数量",0,maxCount,1,0));
+        custom.addElement(new ElementSlider("请选择"+title+"数量： ",0,maxCount,1,0));
         if(disCount > 0){
             custom.addElement(new ElementToggle("是否使用优惠券",true));
         }
