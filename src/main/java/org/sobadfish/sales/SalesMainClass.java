@@ -13,7 +13,6 @@ import cn.nukkit.entity.data.Skin;
 import cn.nukkit.inventory.CraftingManager;
 import cn.nukkit.inventory.ShapedRecipe;
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemPaper;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
@@ -321,18 +320,18 @@ public class SalesMainClass extends PluginBase {
 
             //一张纸合成一个空白优惠券
             Map<Character, Item> ingredients = new HashMap<>();
-            ingredients.put('A',new ItemPaper());
+            ingredients.put('A', Item.get(Item.PAPER));
             result = new ShapedRecipe(CUSTOM_ITEMS.get("discount"),new String[]{"AA"},ingredients,new LinkedList<>());
             if(AbstractFakeInventory.IS_PM1E){
-                manager.registerShapedRecipe(313,result);
-                manager.registerShapedRecipe(332,result);
-                manager.registerShapedRecipe(388,result);
-                manager.registerShapedRecipe(419,result);
-                manager.registerShapedRecipe(527,result);
-                manager.registerShapedRecipe(649,result);
+                manager.registerRecipe(313,result);
+                manager.registerRecipe(332,result);
+                manager.registerRecipe(388,result);
+                manager.registerRecipe(419,result);
+                manager.registerRecipe(527,result);
+                manager.registerRecipe(649,result);
 
             }else{
-                manager.registerShapedRecipe(result);
+                manager.registerRecipe(result);
             }
             manager.rebuildPacket();
             sendMessageToConsole("&a成功注册 &r"+CORE_NAME+" &a核心合成配方");
