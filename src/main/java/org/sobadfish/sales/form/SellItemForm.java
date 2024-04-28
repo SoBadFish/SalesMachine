@@ -2,18 +2,18 @@ package org.sobadfish.sales.form;
 
 import cn.nukkit.Player;
 import cn.nukkit.form.element.*;
+import cn.nukkit.form.response.FormResponse;
 import cn.nukkit.form.response.FormResponseCustom;
+import cn.nukkit.form.window.FormWindow;
 import cn.nukkit.form.window.FormWindowCustom;
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.TextFormat;
 import org.sobadfish.sales.SalesMainClass;
-import org.sobadfish.sales.Utils;
 import org.sobadfish.sales.economy.IMoney;
 import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.items.SaleItem;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,33 +21,21 @@ import java.util.Map;
  * @author Sobadfish
  * @date 2023/11/21
  */
-public class SellItemForm {
-
-    private final int id;
-
-    private static int getRid(){
-        return Utils.rand(11900,21000);
-    }
+public class SellItemForm extends AbstractSaleForm{
 
     public SalesEntity sales;
-
-    public int getId() {
-        return id;
-    }
-
-    public static LinkedHashMap<String, SellItemForm> DISPLAY_FROM = new LinkedHashMap<>();
 
     public Item item;
 
     public SellItemForm(SalesEntity sales, Item item) {
         this.item = item;
         this.sales = sales;
-        this.id = getRid();
     }
 
     public List<String> sv;
 
-    public void display(Player player){
+    @Override
+    public FormWindow getForm(Player player){
 
         FormWindowCustom custom = new FormWindowCustom("售货机 ————— 上架");
         custom.addElement(new ElementLabel(TextFormat.colorize('&',
@@ -67,12 +55,13 @@ public class SellItemForm {
 
 
 //        custom.addElement(new ElementToggle("是否收购"));
-        player.showFormWindow(custom,getId());
-        DISPLAY_FROM.put(player.getName(),this);
+        return custom;
 
     }
 
-    public void onListener(Player player, FormResponseCustom responseCustom){
+    @Override
+    public void onListener(Player player, FormResponse response){
+        FormResponseCustom responseCustom = (FormResponseCustom) response;
         int stack = (int) responseCustom.getSliderResponse(1);
         if(stack == 0){
             return;

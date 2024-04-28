@@ -221,7 +221,7 @@ public class SaleItem {
                             }
                             Item cln = saleItem.clone();
                             cln.setCount(cln.getCount() * buyCount);
-                            player.getInventory().addItem(saleItem);
+                            player.getInventory().addItem(cln);
                         }else{
                             SalesMainClass.sendMessageToObject(iMoney.displayName()+"&c不足!",player);
                             return false;

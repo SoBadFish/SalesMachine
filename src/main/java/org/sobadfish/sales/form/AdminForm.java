@@ -3,45 +3,36 @@ package org.sobadfish.sales.form;
 import cn.nukkit.Player;
 import cn.nukkit.form.element.ElementInput;
 import cn.nukkit.form.element.ElementToggle;
+import cn.nukkit.form.response.FormResponse;
 import cn.nukkit.form.response.FormResponseCustom;
+import cn.nukkit.form.window.FormWindow;
 import cn.nukkit.form.window.FormWindowCustom;
 import org.sobadfish.sales.SalesMainClass;
-import org.sobadfish.sales.Utils;
 import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.items.SaleItem;
-
-import java.util.LinkedHashMap;
 
 /**
  * @author Sobadfish
  * @date 2023/11/22
  */
-public class AdminForm {
+public class AdminForm extends AbstractSaleForm {
 
-    private final int id;
-
-    private static int getRid(){
-        return Utils.rand(223300,323300);
-    }
 
     public SaleItem sales;
 
     public SalesEntity salesEntity;
 
-    public int getId() {
-        return id;
-    }
-
-    public static LinkedHashMap<String, AdminForm> DISPLAY_FROM = new LinkedHashMap<>();
 
 
     public AdminForm(SalesEntity entity,SaleItem sales) {
+        super();
         this.salesEntity = entity;
         this.sales = sales;
-        this.id = getRid();
+
     }
 
-    public void display(Player player){
+    @Override
+    public FormWindow getForm(Player player){
 
         FormWindowCustom custom = new FormWindowCustom("售货机 ————— 管理");
 
@@ -67,11 +58,12 @@ public class AdminForm {
 
 
 
-        player.showFormWindow(custom,getId());
-        DISPLAY_FROM.put(player.getName(),this);
+        return custom;
 
     }
-    public void onListener(Player player, FormResponseCustom responseCustom){
+    @Override
+    public void onListener(Player player, FormResponse response){
+        FormResponseCustom responseCustom = (FormResponseCustom) response;
         boolean b = false;
         boolean remove = false;
         int limit = -1;

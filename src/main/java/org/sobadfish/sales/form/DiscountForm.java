@@ -4,7 +4,9 @@ import cn.nukkit.Player;
 import cn.nukkit.form.element.ElementDropdown;
 import cn.nukkit.form.element.ElementInput;
 import cn.nukkit.form.element.ElementToggle;
+import cn.nukkit.form.response.FormResponse;
 import cn.nukkit.form.response.FormResponseCustom;
+import cn.nukkit.form.window.FormWindow;
 import cn.nukkit.form.window.FormWindowCustom;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.enchantment.Enchantment;
@@ -19,40 +21,29 @@ import org.sobadfish.sales.items.SaleItem;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
  * @author Sobadfish
  * @date 2024/4/24
  */
-public class DiscountForm {
+public class DiscountForm extends AbstractSaleForm{
 
-    private final int id;
-
-    private static int getRid(){
-        return Utils.rand(323301,423300);
-    }
 
     public Item item;
 
     public SalesEntity salesEntity;
 
-    public int getId() {
-        return id;
-    }
-
-    public static LinkedHashMap<String, DiscountForm> DISPLAY_FROM = new LinkedHashMap<>();
-
     public List<String> dItem;
 
     public DiscountForm(SalesEntity entity, Item item) {
+        super();
         this.salesEntity = entity;
         this.item = item;
-        this.id = getRid();
     }
 
-    public void display(Player player){
+    @Override
+    public FormWindow getForm(Player player){
         FormWindowCustom custom = new FormWindowCustom("售货机 ————— 优惠券");
         custom.addElement(new ElementInput("优惠折扣","请输入0 ~ 10的折扣值"));
         custom.addElement(new ElementToggle("是否仅对此售货机打折",false));
@@ -64,11 +55,12 @@ public class DiscountForm {
 
         custom.addElement(new ElementDropdown("选择打折的物品",dItem,0));
         custom.addElement(new ElementInput("有效期 （天） 从创建开始计算","-1则不限制时间 单位为 天 从创建时开始计算","-1"));
-        player.showFormWindow(custom,getId());
-        DISPLAY_FROM.put(player.getName(),this);
+        return custom;
     }
 
-    public void onListener(Player player, FormResponseCustom responseCustom){
+    @Override
+    public void onListener(Player player, FormResponse response){
+        FormResponseCustom responseCustom = (FormResponseCustom) response;
         String zks = responseCustom.getInputResponse(0);
         float zk = 10;
         boolean only = false;

@@ -17,7 +17,6 @@ import cn.nukkit.event.level.ChunkLoadEvent;
 import cn.nukkit.event.level.ChunkUnloadEvent;
 import cn.nukkit.event.player.PlayerFormRespondedEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
-import cn.nukkit.form.response.FormResponseCustom;
 import cn.nukkit.inventory.Inventory;
 import cn.nukkit.inventory.transaction.InventoryTransaction;
 import cn.nukkit.inventory.transaction.action.InventoryAction;
@@ -33,8 +32,7 @@ import cn.nukkit.utils.TextFormat;
 import org.sobadfish.sales.config.SalesData;
 import org.sobadfish.sales.economy.IMoney;
 import org.sobadfish.sales.entity.SalesEntity;
-import org.sobadfish.sales.form.AdminForm;
-import org.sobadfish.sales.form.BuyItemForm;
+import org.sobadfish.sales.form.AbstractSaleForm;
 import org.sobadfish.sales.form.DiscountForm;
 import org.sobadfish.sales.form.SellItemForm;
 import org.sobadfish.sales.items.MoneyItem;
@@ -339,46 +337,52 @@ public class SalesListener implements Listener {
         if (event.wasClosed()) {
             return;
         }
-        if(SellItemForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
-            SellItemForm form = SellItemForm.DISPLAY_FROM.get(event.getPlayer().getName());
+        if(AbstractSaleForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
+            AbstractSaleForm form = AbstractSaleForm.DISPLAY_FROM.get(event.getPlayer().getName());
             if(form.getId() == event.getFormID()){
-                if(event.getResponse() instanceof FormResponseCustom){
-                    form.onListener(event.getPlayer(), (FormResponseCustom) event.getResponse());
-
-                }
+                form.onListener(event.getPlayer(),event.getResponse());
             }
-            SellItemForm.DISPLAY_FROM.remove(event.getPlayer().getName());
         }
-        if(AdminForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
-            AdminForm form = AdminForm.DISPLAY_FROM.get(event.getPlayer().getName());
-            if(form.getId() == event.getFormID()){
-                if(event.getResponse() instanceof FormResponseCustom){
-                    form.onListener(event.getPlayer(), (FormResponseCustom) event.getResponse());
-
-                }
-            }
-            AdminForm.DISPLAY_FROM.remove(event.getPlayer().getName());
-        }
-        if(DiscountForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
-            DiscountForm form = DiscountForm.DISPLAY_FROM.get(event.getPlayer().getName());
-            if(form.getId() == event.getFormID()){
-                if(event.getResponse() instanceof FormResponseCustom){
-                    form.onListener(event.getPlayer(), (FormResponseCustom) event.getResponse());
-
-                }
-            }
-            DiscountForm.DISPLAY_FROM.remove(event.getPlayer().getName());
-        }
-        if(BuyItemForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
-            BuyItemForm form = BuyItemForm.DISPLAY_FROM.get(event.getPlayer().getName());
-            if(form.getId() == event.getFormID()){
-                if(event.getResponse() instanceof FormResponseCustom){
-                    form.onListener(event.getPlayer(), (FormResponseCustom) event.getResponse());
-
-                }
-            }
-            BuyItemForm.DISPLAY_FROM.remove(event.getPlayer().getName());
-        }
+//        if(SellItemForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
+//            SellItemForm form = SellItemForm.DISPLAY_FROM.get(event.getPlayer().getName());
+//            if(form.getId() == event.getFormID()){
+//                if(event.getResponse() instanceof FormResponseCustom){
+//                    form.onListener(event.getPlayer(), (FormResponseCustom) event.getResponse());
+//
+//                }
+//            }
+//            SellItemForm.DISPLAY_FROM.remove(event.getPlayer().getName());
+//        }
+//        if(AdminForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
+//            AdminForm form = AdminForm.DISPLAY_FROM.get(event.getPlayer().getName());
+//            if(form.getId() == event.getFormID()){
+//                if(event.getResponse() instanceof FormResponseCustom){
+//                    form.onListener(event.getPlayer(), (FormResponseCustom) event.getResponse());
+//
+//                }
+//            }
+//            AdminForm.DISPLAY_FROM.remove(event.getPlayer().getName());
+//        }
+//        if(DiscountForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
+//            DiscountForm form = DiscountForm.DISPLAY_FROM.get(event.getPlayer().getName());
+//            if(form.getId() == event.getFormID()){
+//                if(event.getResponse() instanceof FormResponseCustom){
+//                    form.onListener(event.getPlayer(), (FormResponseCustom) event.getResponse());
+//
+//                }
+//            }
+//            DiscountForm.DISPLAY_FROM.remove(event.getPlayer().getName());
+//        }
+//        if(BuyItemForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
+//            BuyItemForm form = BuyItemForm.DISPLAY_FROM.get(event.getPlayer().getName());
+//            if(form.getId() == event.getFormID()){
+//                if(event.getResponse() instanceof FormResponseCustom){
+//                    form.onListener(event.getPlayer(), (FormResponseCustom) event.getResponse());
+//
+//                }
+//            }
+//            BuyItemForm.DISPLAY_FROM.remove(event.getPlayer().getName());
+//        }
     }
 
     public static SalesEntity getEntityByPos(Position position){

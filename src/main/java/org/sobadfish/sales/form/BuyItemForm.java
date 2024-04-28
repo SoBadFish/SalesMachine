@@ -4,47 +4,39 @@ import cn.nukkit.Player;
 import cn.nukkit.form.element.ElementLabel;
 import cn.nukkit.form.element.ElementSlider;
 import cn.nukkit.form.element.ElementToggle;
+import cn.nukkit.form.response.FormResponse;
 import cn.nukkit.form.response.FormResponseCustom;
+import cn.nukkit.form.window.FormWindow;
 import cn.nukkit.form.window.FormWindowCustom;
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.TextFormat;
 import org.sobadfish.sales.SalesMainClass;
-import org.sobadfish.sales.Utils;
 import org.sobadfish.sales.economy.IMoney;
 import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.items.SaleItem;
-
-import java.util.LinkedHashMap;
 
 /**
  * @author Sobadfish
  * @date 2024/4/27
  */
-public class BuyItemForm {
-    private final int id;
+public class BuyItemForm extends AbstractSaleForm{
 
-    private static int getRid(){
-        return Utils.rand(423300,523300);
-    }
 
     public SaleItem salesItem;
 
     public SalesEntity salesEntity;
 
-    public int getId() {
-        return id;
-    }
 
-    public static LinkedHashMap<String, BuyItemForm> DISPLAY_FROM = new LinkedHashMap<>();
 
 
     public BuyItemForm(SalesEntity entity,SaleItem salesItem) {
+        super();
         this.salesEntity = entity;
         this.salesItem = salesItem;
-        this.id = getRid();
     }
 
-    public void display(Player player){
+    @Override
+    public FormWindow getForm(Player player){
         IMoney iMoney = SalesMainClass.getMoneyCoreByName(salesItem.loadMoney);
 
         int limitCount = getLimitCount(player.getName());
@@ -107,13 +99,13 @@ public class BuyItemForm {
             custom.addElement(new ElementToggle("是否使用优惠券",true));
         }
 
-        player.showFormWindow(custom,getId());
-        DISPLAY_FROM.put(player.getName(),this);
+        return custom;
     }
 
 
-    public void onListener(Player player, FormResponseCustom responseCustom){
-
+    @Override
+    public void onListener(Player player, FormResponse response){
+        FormResponseCustom responseCustom = (FormResponseCustom) response;
         if(salesEntity != null && !salesEntity.finalClose && !salesEntity.closed){
             boolean dis = false;
             if(responseCustom.getResponses().size() > 2){
@@ -136,7 +128,7 @@ public class BuyItemForm {
         if(salesItem.tag.contains("limitCount") ) {
             int limit = salesItem.tag.getInt("limitCount");
             int upsLimit = salesItem.getUserLimitCount(player);
-            return Math.max(limit - upsLimit,0);
+            return Math.max(limit - upsLimit,-1);
         }
         return -1;
     }
