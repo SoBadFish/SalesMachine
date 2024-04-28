@@ -343,46 +343,6 @@ public class SalesListener implements Listener {
                 form.onListener(event.getPlayer(),event.getResponse());
             }
         }
-//        if(SellItemForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
-//            SellItemForm form = SellItemForm.DISPLAY_FROM.get(event.getPlayer().getName());
-//            if(form.getId() == event.getFormID()){
-//                if(event.getResponse() instanceof FormResponseCustom){
-//                    form.onListener(event.getPlayer(), (FormResponseCustom) event.getResponse());
-//
-//                }
-//            }
-//            SellItemForm.DISPLAY_FROM.remove(event.getPlayer().getName());
-//        }
-//        if(AdminForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
-//            AdminForm form = AdminForm.DISPLAY_FROM.get(event.getPlayer().getName());
-//            if(form.getId() == event.getFormID()){
-//                if(event.getResponse() instanceof FormResponseCustom){
-//                    form.onListener(event.getPlayer(), (FormResponseCustom) event.getResponse());
-//
-//                }
-//            }
-//            AdminForm.DISPLAY_FROM.remove(event.getPlayer().getName());
-//        }
-//        if(DiscountForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
-//            DiscountForm form = DiscountForm.DISPLAY_FROM.get(event.getPlayer().getName());
-//            if(form.getId() == event.getFormID()){
-//                if(event.getResponse() instanceof FormResponseCustom){
-//                    form.onListener(event.getPlayer(), (FormResponseCustom) event.getResponse());
-//
-//                }
-//            }
-//            DiscountForm.DISPLAY_FROM.remove(event.getPlayer().getName());
-//        }
-//        if(BuyItemForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
-//            BuyItemForm form = BuyItemForm.DISPLAY_FROM.get(event.getPlayer().getName());
-//            if(form.getId() == event.getFormID()){
-//                if(event.getResponse() instanceof FormResponseCustom){
-//                    form.onListener(event.getPlayer(), (FormResponseCustom) event.getResponse());
-//
-//                }
-//            }
-//            BuyItemForm.DISPLAY_FROM.remove(event.getPlayer().getName());
-//        }
     }
 
     public static SalesEntity getEntityByPos(Position position){
