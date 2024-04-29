@@ -8,6 +8,7 @@ import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.Utils;
+import org.sobadfish.sales.config.ItemData;
 import org.sobadfish.sales.economy.IMoney;
 import org.sobadfish.sales.entity.SalesEntity;
 
@@ -46,11 +47,16 @@ public class SaleItem {
     }
 
     public String getItemName(){
+        ItemData itemData = SalesMainClass.INSTANCE.getItemDataByItem(saleItem);
+        String name = saleItem.getName();
+        if(itemData != null){
+            name = itemData.nameChinese;
+        }
         if(saleItem.hasCustomName()){
             String id = saleItem.getId()+":"+saleItem.getDamage();
             return saleItem.getCustomName()+"&7 (&r"+id+"&7)";
         }
-        return saleItem.getName()+"&7 (&r"+saleItem.getId()+":"+saleItem.getDamage()+"&7)";
+        return name+"&7 (&r"+saleItem.getId()+":"+saleItem.getDamage()+"&7)";
     }
 
     public SaleItem(Item saleItem, int stack, double money){

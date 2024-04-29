@@ -22,9 +22,12 @@ import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import cn.nukkit.utils.Utils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.sobadfish.sales.block.BarrierBlock;
 import org.sobadfish.sales.block.BarrierBlock_Nukkit;
 import org.sobadfish.sales.block.IBarrier;
+import org.sobadfish.sales.config.ItemData;
 import org.sobadfish.sales.config.SaleSettingConfig;
 import org.sobadfish.sales.config.SaleSkinConfig;
 import org.sobadfish.sales.config.SalesData;
@@ -40,6 +43,8 @@ import org.sobadfish.sales.panel.lib.AbstractFakeInventory;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.sql.SQLException;
@@ -80,6 +85,9 @@ public class SalesMainClass extends PluginBase {
 
     public static String CORE_NAME = "";
 
+    public LinkedHashMap<String, ItemData> itemInfoData = new LinkedHashMap<>();
+
+
 
 
     @Override
@@ -118,6 +126,16 @@ public class SalesMainClass extends PluginBase {
         saveDefaultConfig();
         //加载配置
         loadConfig();
+
+        //加载物品属性
+        sendMessageToConsole("&e 正在加载 &r物品数据信息");
+
+        if(loadItemInfo()){
+            sendMessageToConsole("&r物品数据信息 &a加载成功!");
+        }else{
+            sendMessageToConsole("&r物品数据信息 &c加载失败!");
+        }
+
 
         checkServer();
 
@@ -161,6 +179,36 @@ public class SalesMainClass extends PluginBase {
         registerCraft();
         sendMessageToConsole("&a加载完成!");
 
+    }
+
+    private boolean loadItemInfo() {
+
+        saveResource("ItemInfoData.json",false);
+        File file = new File(this.getDataFolder()+"/ItemInfoData.json");
+        try {
+            FileReader r = new FileReader(file);
+            Gson gson = new Gson();
+            ArrayList<ItemData> itemData = gson.fromJson(r, new TypeToken<List<ItemData>>() {}.getType());
+            //装载到map
+            for(ItemData data: itemData){
+                itemInfoData.put(data.id+":"+data.damage,data);
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+
+
+    }
+
+    public ItemData getItemDataByItem(Item item){
+        String str = item.getId()+":"+item.getDamage();
+        if(itemInfoData.containsKey(str)){
+            return itemInfoData.get(str);
+        }
+        return null;
     }
 
     public static String getFirstMoney(){
