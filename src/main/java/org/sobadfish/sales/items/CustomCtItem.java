@@ -12,7 +12,7 @@ import cn.nukkit.math.BlockFace;
  * @author Sobadfish
  * @date 2024/3/30
  */
-public class CustomCtItem extends ItemCustom {
+public class CustomCtItem extends ItemCustom  {
 
     public CustomCtItem() {
         super("minecraft:ct_iron", "售货机搬运器", "ct_iron");
@@ -29,13 +29,23 @@ public class CustomCtItem extends ItemCustom {
         return 1;
     }
 
+
+
     @Override
     public boolean canBeActivated() {
         return true;
     }
 
+
+
     @Override
     public boolean onActivate(Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-       return ItemAction.onCtActivate(this,level,player,block,target,face,fx,fy,fz);
+       return ItemAction.onCtActivate(this,player,target);
+
+
     }
+
+
+
+
 }

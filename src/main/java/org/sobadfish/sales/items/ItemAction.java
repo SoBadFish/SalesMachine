@@ -26,7 +26,7 @@ public class ItemAction {
 
 
 
-    public static boolean onCtActivate(Item i,Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
+    public static boolean onCtActivate(Item i, Player player, Block target) {
         //编写拿取的逻辑
         if(player.isSneaking()){
             return false;
@@ -50,6 +50,8 @@ public class ItemAction {
                 compoundTag.putLong("lock",System.currentTimeMillis());
                 sitem.setCompoundTag(compoundTag);
                 i.setCount(i.getCount() - 1);
+
+
                 player.getInventory().setItemInHand(i);
                 player.getInventory().setItemInHand(sitem);
             }
@@ -57,7 +59,7 @@ public class ItemAction {
 
         }
 
-        return false;
+        return true;
     }
 
     public static boolean onSaleModelChange(Item item,Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz){
@@ -86,7 +88,7 @@ public class ItemAction {
     }
 
 
-    public static boolean onSaleActivate(Item item,Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
+    public static boolean onSaleActivate(Item item,Level level, Player player, Block block) {
         //编写放置的逻辑
         if(player.isSneaking()){
             return false;
@@ -118,7 +120,8 @@ public class ItemAction {
 
                 },1);
 
-                player.getInventory().setItemInHand(SalesMainClass.CUSTOM_ITEMS.get("ct"));
+                Item cc = SalesMainClass.CUSTOM_ITEMS.get("ct").clone();
+                player.getInventory().setItemInHand(cc);
 
             }
         }

@@ -364,29 +364,38 @@ public class SalesMainClass extends PluginBase {
     private void registerCraft() {
         //注册合成配方 通过这个可以合成优惠券.
         if(getConfig().getBoolean("craft-discount",true)){
-            CraftingManager manager = this.getServer().getCraftingManager();
+
 
             //一张纸合成一个空白优惠券
             Map<Character, Item> ingredients = new HashMap<>();
             ingredients.put('A', Item.get(Item.PAPER));
-            result = new ShapedRecipe(CUSTOM_ITEMS.get("discount"),new String[]{"AA"},ingredients,new LinkedList<>());
-            if(AbstractFakeInventory.IS_PM1E){
-                manager.registerRecipe(313,result);
-                manager.registerRecipe(332,result);
-                manager.registerRecipe(388,result);
-                manager.registerRecipe(419,result);
-                manager.registerRecipe(527,result);
-                manager.registerRecipe(649,result);
+            ShapedRecipe result = new ShapedRecipe(CUSTOM_ITEMS.get("discount"),new String[]{"AA"},ingredients,new LinkedList<>());
 
-            }else{
-                manager.registerRecipe(result);
-            }
-            manager.rebuildPacket();
+            registerRecipe(result);
+            //搬运器合成
+
+
             sendMessageToConsole("&a成功注册 &r"+CORE_NAME+" &a核心合成配方");
 
 
         }
 
+    }
+
+    private void registerRecipe(ShapedRecipe result){
+        CraftingManager manager = this.getServer().getCraftingManager();
+        if(AbstractFakeInventory.IS_PM1E){
+            manager.registerRecipe(313,result);
+            manager.registerRecipe(332,result);
+            manager.registerRecipe(388,result);
+            manager.registerRecipe(419,result);
+            manager.registerRecipe(527,result);
+            manager.registerRecipe(649,result);
+
+        }else{
+            manager.registerRecipe(result);
+        }
+        manager.rebuildPacket();
     }
 
     public static void registerMoneyCore(String moneyName,Class<? extends IMoney> money){

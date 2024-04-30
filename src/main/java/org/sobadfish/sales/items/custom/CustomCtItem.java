@@ -27,8 +27,13 @@ public class CustomCtItem extends ItemCustom {
         return true;
     }
 
+
+
+
     @Override
     public boolean onActivate(Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        return ItemAction.onCtActivate(this,level,player,block,target,face,fx,fy,fz);
+        return ItemAction.onCtActivate(this,player,target);
     }
+
+
 }
