@@ -133,7 +133,7 @@ public class SalesEntity extends EntityHuman {
 
                         break;
                     } else {
-                        int count2 = tg.getInt("stack");
+//                        int count2 = tg.getInt("stack");
                         saleItem.stack = 0;
                         cl.remove(tg);
                         items.remove(saleItem);
@@ -148,6 +148,9 @@ public class SalesEntity extends EntityHuman {
         //重新写入
     }
 
+    /**
+     * 计算库存数量
+     * */
     public ItemStack getItemInventoryByItem(Item item) {
 //        List<Item> itemMap = new ArrayList<>();
         ItemStack stack = null;
@@ -492,36 +495,41 @@ public class SalesEntity extends EntityHuman {
     @Override
     public void close() {
         //移除
-        List<Position> p3 = positionListByConfig(this, blockFace, salesData.width, salesData.height);
-        for (Position position : p3) {
-            String lo = asLocation(position);
-            if (SalesListener.cacheEntitys.containsKey(lo)) {
-                SalesEntity salesEntity = SalesListener.cacheEntitys.get(lo);
-                if (salesEntity.equals(this)) {
-                    SalesListener.cacheEntitys.remove(lo);
-                } else {
-                    continue;
+        try {
+            List<Position> p3 = positionListByConfig(this, blockFace, salesData.width, salesData.height);
+            for (Position position : p3) {
+                String lo = asLocation(position);
+                if (SalesListener.cacheEntitys.containsKey(lo)) {
+                    SalesEntity salesEntity = SalesListener.cacheEntitys.get(lo);
+                    if (salesEntity.equals(this)) {
+                        SalesListener.cacheEntitys.remove(lo);
+                    } else {
+                        continue;
+                    }
+                }
+
+
+                level.setBlock(position, new BlockAir(), true, true);
+                if (!isPackage) {
+                    level.addParticle(new DestroyBlockParticle(position, new BlockStone()));
+                }
+                BlockEntity be = level.getBlockEntity(position);
+                if (be instanceof SalesBlockEntity) {
+                    level.removeBlockEntity(be);
                 }
             }
 
-
-            level.setBlock(position, new BlockAir(), true, true);
-            if (!isPackage) {
-                level.addParticle(new DestroyBlockParticle(position, new BlockStone()));
+            if (!finalClose) {
+                salesData.saveItemSlots(loadItems);
+                saveData();
             }
-            BlockEntity be = level.getBlockEntity(position);
-            if (be instanceof SalesBlockEntity) {
-                level.removeBlockEntity(be);
-            }
-        }
 
-        if (!finalClose) {
-            salesData.saveItemSlots(loadItems);
-            saveData();
+        }catch (Exception ignore){
+        }finally {
+            //不管怎么样 保证移除
+            removePacketsAll();
+            super.close();
         }
-
-        removePacketsAll();
-        super.close();
 
 
     }
