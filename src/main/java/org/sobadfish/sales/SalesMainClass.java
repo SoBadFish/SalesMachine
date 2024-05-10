@@ -634,7 +634,7 @@ public class SalesMainClass extends PluginBase {
             }
 
             SalesMainClass.sendMessageToConsole("加载模型 &e"+name);
-            ENTITY_SKIN.put(name,new SaleSkinConfig(name,hashMap,loadSettingConfig(config)));
+            ENTITY_SKIN.put(name,new SaleSkinConfig(name,hashMap,loadSettingConfig(config,name)));
         }
 
 
@@ -642,11 +642,19 @@ public class SalesMainClass extends PluginBase {
 
     }
 
-    private SaleSettingConfig loadSettingConfig(Config config){
+    private SaleSettingConfig loadSettingConfig(Config config,String folder){
         SaleSettingConfig saleSettingConfig = new SaleSettingConfig();
         saleSettingConfig.enableAnim = config.getBoolean("open-door-anim",true);
         saleSettingConfig.enableItem = config.getBoolean("display-item.enable",true);
-        saleSettingConfig.meta = config.getInt("meta",0);
+        int v = 0;
+        if(!config.exists("meta")){
+            String ve = folder.substring(1);
+            try{
+                int num = Integer.parseInt(ve);
+                v = num - 1;
+            }catch (Exception ignore){}
+        }
+        saleSettingConfig.meta = config.getInt("meta",v);
 
         saleSettingConfig.entitySize = config.getDouble("entity-size",0.9d);
         SaleSettingConfig.SaleWeight weight = new SaleSettingConfig.SaleWeight();
