@@ -18,6 +18,8 @@ public class SaleSettingConfig {
 
     public double entitySize = 0.9f;
 
+    public int meta = 0;
+
 
     public SaleWeight weight = new SaleWeight();
 

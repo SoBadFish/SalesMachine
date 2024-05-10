@@ -5,6 +5,7 @@ import cn.nukkit.Server;
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.TextFormat;
 import org.sobadfish.sales.SalesMainClass;
+import org.sobadfish.sales.config.SaleSkinConfig;
 import org.sobadfish.sales.panel.lib.ChestPanel;
 import org.sobadfish.sales.panel.lib.ISalePanel;
 
@@ -34,7 +35,10 @@ public class RemoveSales extends BasePlayPanelItemInstance{
             Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE,() -> click = 0,40);
         }else{
             ((ChestPanel)inventory).onClose(player);
-            ((ChestPanel)inventory).sales.level.dropItem(((ChestPanel)inventory).sales, SalesMainClass.INSTANCE.iBarrier.getShaleItem());
+            Item item =  ((ChestPanel)inventory).sales.getShaleItem();
+            SaleSkinConfig saleSkinConfig = SalesMainClass.ENTITY_SKIN.get(((ChestPanel)inventory).sales.salesData.skinmodel);
+            item.setDamage(saleSkinConfig.config.meta);
+            ((ChestPanel)inventory).sales.level.dropItem(((ChestPanel)inventory).sales,item);
             ((ChestPanel)inventory).sales.toClose();
 
         }

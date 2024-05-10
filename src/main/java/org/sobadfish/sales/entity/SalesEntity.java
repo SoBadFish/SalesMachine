@@ -15,6 +15,7 @@ import cn.nukkit.inventory.Inventory;
 import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.inventory.InventoryType;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.level.particle.DestroyBlockParticle;
@@ -25,6 +26,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.network.protocol.AddItemEntityPacket;
 import cn.nukkit.network.protocol.RemoveEntityPacket;
+import cn.nukkit.utils.TextFormat;
 import org.sobadfish.sales.SalesListener;
 import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.config.SaleSettingConfig;
@@ -622,10 +624,14 @@ public class SalesEntity extends EntityHuman {
     }
 
     public static SalesEntity spawnToAll(Position position, BlockFace bf, String master, SalesData data) {
-        return spawnToAll(position, bf, master, data, false, true);
+        return spawnToAll(position, bf, master, data, false, true,-1);
     }
 
-    public static SalesEntity spawnToAll(Position position, BlockFace bf, String master, SalesData data, boolean ignoreBlocks, boolean init) {
+    public static SalesEntity spawnToAll(Position position, BlockFace bf, String master, SalesData data,int meta) {
+        return spawnToAll(position, bf, master, data, false, true,meta);
+    }
+
+    public static SalesEntity spawnToAll(Position position, BlockFace bf, String master, SalesData data, boolean ignoreBlocks, boolean init,int meta) {
         if (bf == null) {
             bf = BlockFace.EAST;
         }
@@ -646,13 +652,29 @@ public class SalesEntity extends EntityHuman {
             return null;
         }
         String modelName = new ArrayList<>(SalesMainClass.ENTITY_SKIN.keySet()).get(0);
-        if (data != null && data.skinmodel != null) {
-            String smd = data.skinmodel;
-            if (SalesMainClass.ENTITY_SKIN.containsKey(smd)) {
-                modelName = smd;
+        SaleSkinConfig saleSkinConfig = null;
+        if(meta == -1){
+            if (data != null && data.skinmodel != null) {
+                String smd = data.skinmodel;
+                if (SalesMainClass.ENTITY_SKIN.containsKey(smd)) {
+                    modelName = smd;
+                }
             }
+            saleSkinConfig = SalesMainClass.ENTITY_SKIN.get(modelName);
+        }else{
+            for(SaleSkinConfig sc: SalesMainClass.ENTITY_SKIN.values()){
+                if(sc.config.meta == meta){
+                    saleSkinConfig = sc;
+                    modelName = sc.modelName;
+                    break;
+                }
+            }
+
         }
-        SaleSkinConfig saleSkinConfig = SalesMainClass.ENTITY_SKIN.get(modelName);
+        if(saleSkinConfig == null){
+            saleSkinConfig = SalesMainClass.ENTITY_SKIN.get(modelName);
+        }
+
 
 
         Position pos = new Position(
@@ -771,7 +793,7 @@ public class SalesEntity extends EntityHuman {
 
                 SalesEntity.spawnToAll(oldSd.asPosition(),
                         BlockFace.valueOf(oldSd.bf.toUpperCase()), oldSd.master, oldSd,
-                        true, true);
+                        true, true,-1);
                 return true;
             }
         }
@@ -834,6 +856,23 @@ public class SalesEntity extends EntityHuman {
             }
         }
     }
+
+
+    public Item getShaleItem(){
+        String name = "sale_v"+(saleSettingConfig.meta+1);
+        if(!SalesMainClass.CUSTOM_ITEMS.containsKey(name)){
+            name = "sale_v1";
+        }
+        Item item = SalesMainClass.CUSTOM_ITEMS.get(name);
+        item.setCustomName(TextFormat.colorize('&',"&r&l&e售货机"));
+
+        item.setLore(TextFormat.colorize('&',"&r&7\n放置即可生成"));
+        CompoundTag compoundTag = item.getNamedTag();
+        compoundTag.putBoolean("saleskey",true);
+        item.addEnchantment(Enchantment.getEnchantment(0).setLevel(1));
+        return item;
+    }
+
 
     @Override
     public boolean equals(Object obj) {

@@ -2,6 +2,9 @@
 # 实体大小
 entity-size: 0.9
 
+# 物品图标
+meta: 0
+
 # 是否显示开门动画
 open-door-anim: true
 

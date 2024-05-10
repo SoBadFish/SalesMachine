@@ -3,8 +3,23 @@
 	"texture_name":"atlas.items",
 	"texture_data":
 	{
-		"sale_item":{
-			"textures":"textures/items/sale_item.png"
+		"sale_item_v1":{
+			"textures": "textures/items/sale_item_v1.png"
+		},
+		"sale_item_v2":{
+			"textures": "textures/items/sale_item_v2.png"
+		},
+		"sale_item_v3":{
+			"textures": "textures/items/sale_item_v3.png"
+		},
+		"sale_item_v4":{
+			"textures": "textures/items/sale_item_v4.png"
+		},
+		"sale_item_v5":{
+			"textures": "textures/items/sale_item_v5.png"
+		},
+		"sale_item_v6":{
+			"textures": "textures/items/sale_item_v6.png"
 		},
 		"sale_setting": {
 			"textures":"textures/items/sale_setting.png"
@@ -18,8 +33,23 @@
 		"ct_iron": {
 			"textures":"textures/items/ct_iron.png"
 		},
-		"ct_iron_sale": {
-			"textures":"textures/items/ct_iron_sale.png"
+		"ct_iron_sale_v1": {
+			"textures": "textures/items/ct_iron_sale_v1.png"
+		},
+		"ct_iron_sale_v2": {
+			"textures": "textures/items/ct_iron_sale_v2.png"
+		},
+		"ct_iron_sale_v3": {
+			"textures": "textures/items/ct_iron_sale_v3.png"
+		},
+		"ct_iron_sale_v4": {
+			"textures": "textures/items/ct_iron_sale_v4.png"
+		},
+		"ct_iron_sale_v5": {
+			"textures": "textures/items/ct_iron_sale_v5.png"
+		},
+		"ct_iron_sale_v6": {
+			"textures": "textures/items/ct_iron_sale_v6.png"
 		},
 		"pipe_wrench": {
 			"textures":"textures/items/pipe_wrench.png"

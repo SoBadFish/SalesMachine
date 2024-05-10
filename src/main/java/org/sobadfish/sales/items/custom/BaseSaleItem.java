@@ -5,23 +5,23 @@ import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
+import org.sobadfish.sales.items.ISaleItem;
 import org.sobadfish.sales.items.ItemAction;
 
 /**
  * @author Sobadfish
- * @date 2024/3/30
+ * @date 2024/5/10
  */
-public class CustomCtSaleItem extends ItemCustom {
+public class BaseSaleItem extends ItemCustom implements ISaleItem {
 
 
-    public CustomCtSaleItem() {
-        super(1997,0,1, "售货机搬运器", "ct_iron_sale");
+
+    //2001 ~ v6
+    public BaseSaleItem(int id,String textureName) {
+        super(id,0,1, "售货机", textureName);
     }
 
-    @Override
-    public int getMaxStackSize() {
-        return 1;
-    }
+
 
     @Override
     public boolean canBeActivated() {
@@ -29,11 +29,13 @@ public class CustomCtSaleItem extends ItemCustom {
     }
 
 
-
     @Override
     public boolean onActivate(Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        return ItemAction.onSaleActivate(this,level,player,block);
+        return ItemAction.onSalePlace(block, player,getSaleMeta());
     }
 
-
+    @Override
+    public int getSaleMeta() {
+        return 0;
+    }
 }

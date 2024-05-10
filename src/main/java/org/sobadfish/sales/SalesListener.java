@@ -35,6 +35,7 @@ import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.form.AbstractSaleForm;
 import org.sobadfish.sales.form.DiscountForm;
 import org.sobadfish.sales.form.SellItemForm;
+import org.sobadfish.sales.items.ISaleItem;
 import org.sobadfish.sales.items.MoneyItem;
 import org.sobadfish.sales.panel.DisplayPlayerPanel;
 import org.sobadfish.sales.panel.button.BasePlayPanelItemInstance;
@@ -221,7 +222,13 @@ public class SalesListener implements Listener {
             //TODO 放置物品
             if(SalesMainClass.LOAD_CUSTOM){
                 if(item.hasCompoundTag() && item.getNamedTag().contains("saleskey")){
-                    if(SalesEntity.spawnToAll(block.getSide(event.getFace()),player.getDirection(),player.getName(),null) != null){
+                    ISaleItem it;
+                    int meta = 0;
+                    if(item instanceof ISaleItem){
+                        it = ((ISaleItem)item);
+                        meta = it.getSaleMeta();
+                    }
+                    if(SalesEntity.spawnToAll(block.getSide(event.getFace()),player.getDirection(),player.getName(),null,meta) != null){
                         if (player.isSurvival() || player.isAdventure()) {
                             Item item2 = player.getInventory().getItemInHand();
                             item2.setCount(item2.getCount() - 1);
@@ -266,7 +273,7 @@ public class SalesListener implements Listener {
                                 SalesMainClass.INSTANCE.sqliteHelper.set(SalesMainClass.DB_TABLE,"location",data.location,data);
                             }
                             if(!cacheEntitys.containsKey(data.location)){
-                                if(SalesEntity.spawnToAll(data.asPosition(), BlockFace.valueOf(data.bf.toUpperCase()),data.master,data, true,false) == null){
+                                if(SalesEntity.spawnToAll(data.asPosition(), BlockFace.valueOf(data.bf.toUpperCase()),data.master,data, true,false,-1) == null){
                                     SalesMainClass.sendMessageToConsole("&c加载 位置: ("+data.location+") "+" 售货机失败!");
                                 }
 

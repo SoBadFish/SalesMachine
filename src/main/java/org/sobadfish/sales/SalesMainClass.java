@@ -38,6 +38,8 @@ import org.sobadfish.sales.economy.core.MoneyCoreMoney;
 import org.sobadfish.sales.economy.core.PlayerPointsMoney;
 import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.items.*;
+import org.sobadfish.sales.items.ct.*;
+import org.sobadfish.sales.items.sales.*;
 import org.sobadfish.sales.panel.lib.AbstractFakeInventory;
 
 import javax.imageio.ImageIO;
@@ -79,7 +81,6 @@ public class SalesMainClass extends PluginBase {
 
     private final static LinkedHashMap<String, IMoney> LOAD_MONEY = new LinkedHashMap<>();
 
-    public ShapedRecipe result;
 
     public static boolean canGiveMoneyItem = true;
 
@@ -87,7 +88,7 @@ public class SalesMainClass extends PluginBase {
 
     public LinkedHashMap<String, ItemData> itemInfoData = new LinkedHashMap<>();
 
-
+    public String[] lists = new String[]{"v1", "v2","v3","v4","v5","v6"};
 
 
     @Override
@@ -292,13 +293,13 @@ public class SalesMainClass extends PluginBase {
         }catch (Exception ignore){}
         if(LOAD_CUSTOM){
 
-            CustomItemAPI.getInstance().registerCustomItem(1992, org.sobadfish.sales.items.custom.CustomSaleItem.class);
+
             CustomItemAPI.getInstance().registerCustomItem(1993, org.sobadfish.sales.items.custom.CustomSaleSettingItem.class);
             CustomItemAPI.getInstance().registerCustomItem(1994, org.sobadfish.sales.items.custom.CustomSaleRemoveItem.class);
             CustomItemAPI.getInstance().registerCustomItem(1995, org.sobadfish.sales.items.custom.CustomSaleMoneyItem.class);
 
             CustomItemAPI.getInstance().registerCustomItem(1996, org.sobadfish.sales.items.custom.CustomCtItem.class);
-            CustomItemAPI.getInstance().registerCustomItem(1997, org.sobadfish.sales.items.custom.CustomCtSaleItem.class);
+
             CustomItemAPI.getInstance().registerCustomItem(1998, org.sobadfish.sales.items.custom.CustomWrench.class);
 
             CustomItemAPI.getInstance().registerCustomItem(1999, org.sobadfish.sales.items.custom.CustomSalePanelLeftItem.class);
@@ -307,13 +308,41 @@ public class SalesMainClass extends PluginBase {
             CustomItemAPI.getInstance().registerCustomItem(2002, org.sobadfish.sales.items.custom.CustomSalePanelWallItem.class);
 
 
+            CustomItemAPI.getInstance().registerCustomItem(2003, org.sobadfish.sales.items.custom.sales.CustomV1SaleItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(2004, org.sobadfish.sales.items.custom.sales.CustomV2SaleItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(2005, org.sobadfish.sales.items.custom.sales.CustomV3SaleItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(2006, org.sobadfish.sales.items.custom.sales.CustomV4SaleItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(2007, org.sobadfish.sales.items.custom.sales.CustomV5SaleItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(2008, org.sobadfish.sales.items.custom.sales.CustomV6SaleItem.class);
 
-            CUSTOM_ITEMS.put("sale",new org.sobadfish.sales.items.custom.CustomSaleItem());
+            CustomItemAPI.getInstance().registerCustomItem(2009, org.sobadfish.sales.items.custom.ct.CustomV1CtSaleItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(2010, org.sobadfish.sales.items.custom.ct.CustomV2CtSaleItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(2011, org.sobadfish.sales.items.custom.ct.CustomV3CtSaleItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(2012, org.sobadfish.sales.items.custom.ct.CustomV4CtSaleItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(2013, org.sobadfish.sales.items.custom.ct.CustomV5CtSaleItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(2014, org.sobadfish.sales.items.custom.ct.CustomV6CtSaleItem.class);
+
+
+            CUSTOM_ITEMS.put("sale_v1",new  org.sobadfish.sales.items.custom.sales.CustomV1SaleItem());
+            CUSTOM_ITEMS.put("sale_v2",new  org.sobadfish.sales.items.custom.sales.CustomV2SaleItem());
+            CUSTOM_ITEMS.put("sale_v3",new  org.sobadfish.sales.items.custom.sales.CustomV3SaleItem());
+            CUSTOM_ITEMS.put("sale_v4",new  org.sobadfish.sales.items.custom.sales.CustomV4SaleItem());
+            CUSTOM_ITEMS.put("sale_v5",new  org.sobadfish.sales.items.custom.sales.CustomV5SaleItem());
+            CUSTOM_ITEMS.put("sale_v6",new  org.sobadfish.sales.items.custom.sales.CustomV6SaleItem());
+
+            CUSTOM_ITEMS.put("ct_sale_v1",new org.sobadfish.sales.items.custom.ct.CustomV1CtSaleItem());
+            CUSTOM_ITEMS.put("ct_sale_v2",new org.sobadfish.sales.items.custom.ct.CustomV2CtSaleItem());
+            CUSTOM_ITEMS.put("ct_sale_v3",new org.sobadfish.sales.items.custom.ct.CustomV3CtSaleItem());
+            CUSTOM_ITEMS.put("ct_sale_v4",new org.sobadfish.sales.items.custom.ct.CustomV4CtSaleItem());
+            CUSTOM_ITEMS.put("ct_sale_v5",new org.sobadfish.sales.items.custom.ct.CustomV5CtSaleItem());
+            CUSTOM_ITEMS.put("ct_sale_v6",new org.sobadfish.sales.items.custom.ct.CustomV6CtSaleItem());
+
+
             CUSTOM_ITEMS.put("setting",new org.sobadfish.sales.items.custom.CustomSaleSettingItem());
             CUSTOM_ITEMS.put("remove",new org.sobadfish.sales.items.custom.CustomSaleRemoveItem());
             CUSTOM_ITEMS.put("money",new org.sobadfish.sales.items.custom.CustomSaleMoneyItem());
             CUSTOM_ITEMS.put("ct",new org.sobadfish.sales.items.custom.CustomCtItem());
-            CUSTOM_ITEMS.put("ct_sale",new org.sobadfish.sales.items.custom.CustomCtSaleItem());
+
             CUSTOM_ITEMS.put("pipe_wrench",new org.sobadfish.sales.items.custom.CustomWrench());
 
             CUSTOM_ITEMS.put("left",new org.sobadfish.sales.items.custom.CustomSalePanelLeftItem());
@@ -323,13 +352,25 @@ public class SalesMainClass extends PluginBase {
             CUSTOM_ITEMS.put("wall",new org.sobadfish.sales.items.custom.CustomSalePanelWallItem());
 
         }else{
-            Item.registerCustomItem(CustomSaleItem.class);
+            Item.registerCustomItem(CustomV1SaleItem.class);
+            Item.registerCustomItem(CustomV2SaleItem.class);
+            Item.registerCustomItem(CustomV3SaleItem.class);
+            Item.registerCustomItem(CustomV4SaleItem.class);
+            Item.registerCustomItem(CustomV5SaleItem.class);
+            Item.registerCustomItem(CustomV6SaleItem.class);
+            //
+
             Item.registerCustomItem(CustomSaleSettingItem.class,false);
             Item.registerCustomItem(CustomSaleRemoveItem.class,false);
             Item.registerCustomItem(CustomSaleMoneyItem.class);
 
             Item.registerCustomItem(CustomCtItem.class);
-            Item.registerCustomItem(CustomCtSaleItem.class,false);
+            Item.registerCustomItem(CustomV1CtSaleItem.class,false);
+            Item.registerCustomItem(CustomV2CtSaleItem.class,false);
+            Item.registerCustomItem(CustomV3CtSaleItem.class,false);
+            Item.registerCustomItem(CustomV4CtSaleItem.class,false);
+            Item.registerCustomItem(CustomV5CtSaleItem.class,false);
+            Item.registerCustomItem(CustomV6CtSaleItem.class,false);
             Item.registerCustomItem(CustomWrench.class);
 
             Item.registerCustomItem(CustomSalePanelLeftItem.class,false);
@@ -338,12 +379,24 @@ public class SalesMainClass extends PluginBase {
 
             Item.registerCustomItem(CustomSalePanelWallItem.class,false);
 
-            CUSTOM_ITEMS.put("sale",new CustomSaleItem());
+            CUSTOM_ITEMS.put("sale_v1",new CustomV1SaleItem());
+            CUSTOM_ITEMS.put("sale_v2",new CustomV2SaleItem());
+            CUSTOM_ITEMS.put("sale_v3",new CustomV3SaleItem());
+            CUSTOM_ITEMS.put("sale_v4",new CustomV4SaleItem());
+            CUSTOM_ITEMS.put("sale_v5",new CustomV5SaleItem());
+            CUSTOM_ITEMS.put("sale_v6",new CustomV6SaleItem());
+
+            CUSTOM_ITEMS.put("ct_sale_v1",new CustomV1CtSaleItem());
+            CUSTOM_ITEMS.put("ct_sale_v2",new CustomV2CtSaleItem());
+            CUSTOM_ITEMS.put("ct_sale_v3",new CustomV3CtSaleItem());
+            CUSTOM_ITEMS.put("ct_sale_v4",new CustomV4CtSaleItem());
+            CUSTOM_ITEMS.put("ct_sale_v5",new CustomV5CtSaleItem());
+            CUSTOM_ITEMS.put("ct_sale_v6",new CustomV6CtSaleItem());
+
             CUSTOM_ITEMS.put("setting",new CustomSaleSettingItem());
             CUSTOM_ITEMS.put("remove",new CustomSaleRemoveItem());
             CUSTOM_ITEMS.put("money",new CustomSaleMoneyItem());
             CUSTOM_ITEMS.put("ct",new CustomCtItem());
-            CUSTOM_ITEMS.put("ct_sale",new CustomCtSaleItem());
             CUSTOM_ITEMS.put("pipe_wrench",new CustomWrench());
 
             CUSTOM_ITEMS.put("left",new CustomSalePanelLeftItem());
@@ -351,6 +404,7 @@ public class SalesMainClass extends PluginBase {
             CUSTOM_ITEMS.put("discount",new CustomSaleDiscountItem());
             CUSTOM_ITEMS.put("wall",new CustomSalePanelWallItem());
         }
+
 //        Item.removeCreativeItem(CUSTOM_ITEMS.get("ct_sale"));
 
 
@@ -446,7 +500,7 @@ public class SalesMainClass extends PluginBase {
                         }
                     }
                     if(p != null){
-                        Item item =  SalesMainClass.INSTANCE.iBarrier.getShaleItem();
+                        Item item =  SalesMainClass.CUSTOM_ITEMS.get("sale_v1");
                         item.setCount(count);
                         p.getInventory().addItem(item);
                         sendMessageToObject("&b 你获得了 &e 售货机 * &a"+count,p);
@@ -550,7 +604,7 @@ public class SalesMainClass extends PluginBase {
         //初始化文件夹
         if(noExists){
 
-            String[] lists = new String[]{"v1", "v2","v3","v4","v5","v6"};
+
             for(String verName: lists){
                 saveResource("assets/models/" +verName+"/machine.png", "/assets/" +verName+"/machine.png",false);
                 saveResource("assets/models/" +verName+"/"+verName+".yml", "/assets/" +verName+"/"+verName+".yml",false);
@@ -592,6 +646,7 @@ public class SalesMainClass extends PluginBase {
         SaleSettingConfig saleSettingConfig = new SaleSettingConfig();
         saleSettingConfig.enableAnim = config.getBoolean("open-door-anim",true);
         saleSettingConfig.enableItem = config.getBoolean("display-item.enable",true);
+        saleSettingConfig.meta = config.getInt("meta",0);
 
         saleSettingConfig.entitySize = config.getDouble("entity-size",0.9d);
         SaleSettingConfig.SaleWeight weight = new SaleSettingConfig.SaleWeight();

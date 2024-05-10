@@ -1,18 +1,16 @@
 package org.sobadfish.sales.block;
 
-import cn.nukkit.item.Item;
-
 /**
  * @author Sobadfish
  * @date 2023/11/21
  */
 public interface IBarrier {
 
-    /**
-     * 获取售货机物品
-     * @return 物品
-     * */
-    Item getShaleItem();
+//    /**
+//     * 获取售货机物品
+//     * @return 物品
+//     * */
+//    Item getShaleItem();
 
     /**
      * 方块ID

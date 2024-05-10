@@ -5,6 +5,11 @@ entity-size: 1
 # 是否显示开门动画
 open-door-anim: false
 
+# 物品图标
+meta: 3
+
+
+
 # 体积
 weight:
   width: 2

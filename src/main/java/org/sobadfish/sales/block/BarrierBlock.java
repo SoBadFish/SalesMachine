@@ -74,17 +74,6 @@ public class BarrierBlock extends BlockSolid implements IBarrier {
         return new ItemBlock(new BlockAir());
     }
 
-    @Override
-    public Item getShaleItem(){
-        Item item = SalesMainClass.CUSTOM_ITEMS.get("sale");
-        item.setCustomName(TextFormat.colorize('&',"&r&l&e售货机"));
-
-        item.setLore(TextFormat.colorize('&',"&r&7\n放置即可生成"));
-        CompoundTag compoundTag = item.getNamedTag();
-        compoundTag.putBoolean("saleskey",true);
-        item.addEnchantment(Enchantment.getEnchantment(0).setLevel(1));
-        return item;
-    }
 
     @Override
     public int getBid() {

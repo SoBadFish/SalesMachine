@@ -2,22 +2,25 @@ package org.sobadfish.sales.items;
 
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
-import cn.nukkit.item.Item;
 import cn.nukkit.item.customitem.CustomItemDefinition;
 import cn.nukkit.item.customitem.ItemCustom;
 import cn.nukkit.item.customitem.data.ItemCreativeCategory;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
-import org.sobadfish.sales.SalesMainClass;
-import org.sobadfish.sales.entity.SalesEntity;
 
 /**
  * @author Sobadfish
- * @date 2023/11/27
+ * @date 2024/5/9
  */
-public class CustomSaleItem extends ItemCustom {
+public abstract class BaseSaleItem extends ItemCustom implements ISaleItem {
 
-    public CustomSaleItem() {
+    public BaseSaleItem(String id,String textureName) {
+        super(id, "售货机", textureName);
+
+    }
+
+
+    public BaseSaleItem() {
         super("minecraft:sale", "售货机", "sale_item");
     }
 
@@ -34,15 +37,6 @@ public class CustomSaleItem extends ItemCustom {
 
     @Override
     public boolean onActivate(Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        if(SalesEntity.spawnToAll(block,player.getDirection(),player.getName(),null) != null){
-            if (player.isSurvival() || player.isAdventure()) {
-                Item item = player.getInventory().getItemInHand();
-                item.setCount(item.getCount() - 1);
-                player.getInventory().setItemInHand(item);
-            }
-            return true;
-        }
-        SalesMainClass.sendMessageToObject("&c生成失败！ 请保证周围没有其他方块",player);
-        return false;
+       return ItemAction.onSalePlace(block,player,getSaleMeta());
     }
 }

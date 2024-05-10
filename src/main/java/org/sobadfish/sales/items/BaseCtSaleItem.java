@@ -2,7 +2,6 @@ package org.sobadfish.sales.items;
 
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
-import cn.nukkit.item.ItemDurable;
 import cn.nukkit.item.customitem.CustomItemDefinition;
 import cn.nukkit.item.customitem.ItemCustom;
 import cn.nukkit.item.customitem.data.ItemCreativeCategory;
@@ -11,12 +10,12 @@ import cn.nukkit.math.BlockFace;
 
 /**
  * @author Sobadfish
- * @date 2024/3/30
+ * @date 2024/5/10
  */
-public class CustomCtSaleItem extends ItemCustom implements ItemDurable {
+public abstract class BaseCtSaleItem extends ItemCustom {
 
-    public CustomCtSaleItem() {
-        super("minecraft:ct_iron_sale", "售货机搬运器", "ct_iron_sale");
+    public BaseCtSaleItem(String id, String textureName) {
+        super(id, "售货机搬运器", textureName);
     }
 
 
@@ -38,8 +37,6 @@ public class CustomCtSaleItem extends ItemCustom implements ItemDurable {
 
     @Override
     public boolean onActivate(Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        return ItemAction.onSaleActivate(this,level,player,block);
+        return ItemAction.onSaleActivate(this, level, player, block);
     }
-
-
 }

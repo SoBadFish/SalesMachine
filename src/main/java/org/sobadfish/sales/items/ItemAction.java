@@ -12,6 +12,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.TextFormat;
 import org.sobadfish.sales.SalesListener;
 import org.sobadfish.sales.SalesMainClass;
+import org.sobadfish.sales.config.SaleSkinConfig;
 import org.sobadfish.sales.config.SalesData;
 import org.sobadfish.sales.entity.SalesEntity;
 
@@ -25,6 +26,21 @@ import java.util.List;
 public class ItemAction {
 
 
+    /**
+     * 放置售货机
+     * */
+    public static boolean onSalePlace(Block block,Player player,int meta){
+        if(SalesEntity.spawnToAll(block,player.getDirection(),player.getName(),null,meta) != null){
+            if (player.isSurvival() || player.isAdventure()) {
+                Item item = player.getInventory().getItemInHand();
+                item.setCount(item.getCount() - 1);
+                player.getInventory().setItemInHand(item);
+            }
+            return true;
+        }
+        SalesMainClass.sendMessageToObject("&c生成失败！ 请保证周围没有其他方块",player);
+        return false;
+    }
 
     public static boolean onCtActivate(Item i, Player player, Block target) {
         //编写拿取的逻辑
@@ -34,8 +50,16 @@ public class ItemAction {
         SalesEntity salesEntity = SalesListener.getEntityByPos(target);
         if(salesEntity != null){
             if(player.isOp() || salesEntity.master.equalsIgnoreCase(player.getName())){
-                Item sitem = SalesMainClass.CUSTOM_ITEMS.get("ct_sale");
+                SaleSkinConfig saleSkinConfig = SalesMainClass.ENTITY_SKIN.get(salesEntity.salesData.skinmodel);
+                String name = "ct_sale_v"+(saleSkinConfig.config.meta+1);
+
+                if(!SalesMainClass.CUSTOM_ITEMS.containsKey(name)){
+                    name = "ct_sale_v1";
+                }
+
+                Item sitem = SalesMainClass.CUSTOM_ITEMS.get(name);
                 sitem.setCount(1);
+                sitem.setDamage(saleSkinConfig.config.meta);
                 String nm = "&r&e"+salesEntity.master+" 的售货机";
                 if(salesEntity.salesData.customname != null){
                     nm = salesEntity.salesData.customname;
@@ -113,7 +137,7 @@ public class ItemAction {
                     salesData.bf = player.getDirection().getName();
                     salesData.location = SalesEntity.asLocation(block);
                     SalesEntity entity = SalesEntity.spawnToAll(salesData.asPosition(),
-                            BlockFace.valueOf(salesData.bf.toUpperCase()), salesData.master, salesData,false,true);
+                            BlockFace.valueOf(salesData.bf.toUpperCase()), salesData.master, salesData,false,true,-1);
                     if(entity != null){
                         SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE, salesData);
                     }

@@ -4,11 +4,8 @@ import cn.nukkit.block.BlockAir;
 import cn.nukkit.block.BlockSolidMeta;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
-import cn.nukkit.item.enchantment.Enchantment;
-import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.BlockColor;
 import cn.nukkit.utils.DyeColor;
-import cn.nukkit.utils.TextFormat;
 
 /**
  * @author Sobadfish
@@ -77,18 +74,6 @@ public class BarrierBlock_Nukkit extends BlockSolidMeta implements IBarrier {
 
 
 
-
-    @Override
-    public Item getShaleItem(){
-        Item item = Item.get(54);
-        item.setCustomName(TextFormat.colorize('&',"&r&l&e售货机"));
-
-        item.setLore(TextFormat.colorize('&',"&r&7\n放置即可生成"));
-        CompoundTag compoundTag = item.getNamedTag();
-        compoundTag.putBoolean("saleskey",true);
-        item.addEnchantment(Enchantment.getEnchantment(0).setLevel(1));
-        return item;
-    }
 
 
     public DyeColor getDyeColor() {
