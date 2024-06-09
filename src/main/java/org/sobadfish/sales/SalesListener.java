@@ -99,7 +99,7 @@ public class SalesListener implements Listener {
             }
 
             if(!ei.equals(SalesMainClass.CUSTOM_ITEMS.get("ct")) &&
-                    !ei.equals(SalesMainClass.CUSTOM_ITEMS.get("ct_sale")) &&
+                    !(ei instanceof ISaleItem)&&
                     !ei.equals(SalesMainClass.CUSTOM_ITEMS.get("pipe_wrench"))
             && !ei.equals(new ItemHopper()) && !ei.equals(new ItemMinecartHopper())){
                 event.setCancelled();
@@ -139,7 +139,7 @@ public class SalesListener implements Listener {
 
                         if(player.isSneaking()){
                             //看看点击的朝向是不是实体朝向
-                            if(ei.equals(SalesMainClass.CUSTOM_ITEMS.get("ct_sale"),false,false)){
+                            if(ei instanceof ISaleItem){
                                 SalesMainClass.sendMessageToObject("&c禁止套娃！",player);
                                 return;
                             }
