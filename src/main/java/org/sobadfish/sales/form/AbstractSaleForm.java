@@ -22,7 +22,7 @@ public abstract class AbstractSaleForm {
     private final int id;
 
     private static int getRid(){
-        return Utils.rand(223300,323300);
+        return Utils.rand(1293000,3233000);
     }
 
     public AbstractSaleForm(){

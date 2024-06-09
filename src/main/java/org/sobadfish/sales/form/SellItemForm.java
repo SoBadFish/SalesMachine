@@ -64,6 +64,7 @@ public class SellItemForm extends AbstractSaleForm{
         FormResponseCustom responseCustom = (FormResponseCustom) response;
         int stack = (int) responseCustom.getSliderResponse(1);
         if(stack == 0){
+            SalesMainClass.sendMessageToObject("&c数量必须大于0!",player);
             return;
         }
         float money;
