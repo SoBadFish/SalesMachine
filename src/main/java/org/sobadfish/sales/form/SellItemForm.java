@@ -54,6 +54,10 @@ public class SellItemForm extends AbstractSaleForm{
         custom.addElement(new ElementDropdown("请选择货币类型 ",sv,0));
         custom.addElement(new ElementToggle("是否为收购"));
 
+        if(player.isOp()){
+            custom.addElement(new ElementToggle("是否不消耗库存"));
+        }
+
 
 //        custom.addElement(new ElementToggle("是否收购"));
         return custom;
@@ -93,6 +97,9 @@ public class SellItemForm extends AbstractSaleForm{
                 get(index),money);
         if(responseCustom.getResponses().size() > 4){
             saleItem.tag.putBoolean("sales_exchange",responseCustom.getToggleResponse(4));
+        }
+        if(player.isOp() && responseCustom.getResponses().size() > 5){
+            saleItem.tag.putBoolean("noreduce",responseCustom.getToggleResponse(5));
         }
 
 
