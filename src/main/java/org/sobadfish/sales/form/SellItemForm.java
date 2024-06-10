@@ -28,6 +28,7 @@ public class SellItemForm extends AbstractSaleForm{
     public Item item;
 
     public SellItemForm(SalesEntity sales, Item item) {
+        super();
         this.item = item;
         this.sales = sales;
     }
