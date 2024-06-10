@@ -97,6 +97,9 @@ public class AdminForm extends AbstractSaleForm {
         }
         if(remove){
             sales.isRemove = true;
+            salesEntity.removeItem(player.getName(),sales,0,true);
+            salesEntity.salesData.saveItemSlots(salesEntity.loadItems);
+            salesEntity.saveData();
         }else{
             sales.tag.putBoolean("sales_exchange",responseCustom.getToggleResponse(2));
             sales.tag.putBoolean("noreduce",b);
