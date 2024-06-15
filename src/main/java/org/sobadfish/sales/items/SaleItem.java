@@ -118,7 +118,7 @@ public class SaleItem {
                                         SalesMainClass.sendMessageToObject("&a出售成功! 获得 &r" + iMoney.displayName() + "* " +
                                                 String.format("%.2f", money * buyCount) + "!", player);
                                     } else {
-                                        SalesMainClass.sendMessageToObject("&c交易失败!", player);
+                                        SalesMainClass.sendMessageToObject("&c交易失败! 原因: 经济核心异常", player);
                                         //还钱..
                                         iMoney.addMoney(sales.master,money * buyCount);
 
@@ -131,7 +131,7 @@ public class SaleItem {
                                 int count2 = getInventoryItemCount(player.getInventory(),saleItem);
                                 if(count2 < sclon.getCount()){
                                     //特殊情况交易失败..
-                                    SalesMainClass.sendMessageToObject("&c交易失败!", player);
+                                    SalesMainClass.sendMessageToObject("&c交易失败! 原因: 背包物品不足", player);
                                     //还钱..
                                     iMoney.addMoney(sales.master,money * buyCount);
                                     return false;
@@ -143,7 +143,7 @@ public class SaleItem {
 //                                SalesMainClass.sendMessageToObject("&a交易成功", player);
                                 return true;
                             }else{
-                                SalesMainClass.sendMessageToObject("&c交易失败!",player);
+                                SalesMainClass.sendMessageToObject("&c交易失败! 原因: 店长没有足够的金钱",player);
                                 return false;
                             }
 //
@@ -209,7 +209,7 @@ public class SaleItem {
 
                         if(iMoney.myMoney(player.getName()) >= rmoney){
                             if(!iMoney.reduceMoney(player.getName(),rmoney)){
-                                SalesMainClass.sendMessageToObject("&c交易失败!",player);
+                                SalesMainClass.sendMessageToObject("&c交易失败! ",player);
                                 return false;
                             }else{
                                 if(cl != null && use > 0){
