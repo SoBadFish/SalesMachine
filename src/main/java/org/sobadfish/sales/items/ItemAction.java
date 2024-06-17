@@ -59,7 +59,7 @@ public class ItemAction {
 
                 Item sitem = SalesMainClass.CUSTOM_ITEMS.get(name);
                 sitem.setCount(1);
-                sitem.setDamage(saleSkinConfig.config.meta);
+                //sitem.setDamage(saleSkinConfig.config.meta);
                 String nm = "&r&e"+salesEntity.master+" 的售货机";
                 if(salesEntity.salesData.customname != null){
                     nm = salesEntity.salesData.customname;
@@ -73,10 +73,10 @@ public class ItemAction {
                 //防止过快使用锁
                 compoundTag.putLong("lock",System.currentTimeMillis());
                 sitem.setCompoundTag(compoundTag);
-                i.setCount(i.getCount() - 1);
+                //i.setCount(i.getCount() - 1);
 
 
-                player.getInventory().setItemInHand(i);
+                player.getInventory().removeItem(i);
                 player.getInventory().setItemInHand(sitem);
             }
 
