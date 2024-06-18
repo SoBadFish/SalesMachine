@@ -98,8 +98,8 @@ public class SaleItem {
                     }
 
                 }else{
-                    if(!isNoReduce()){
-
+                    boolean passMoney = isNoReduce();
+                    if(!passMoney){
                         if(iMoney.myMoney(sales.master) < money * buyCount){
                             SalesMainClass.sendMessageToObject("&c店主没有足够的!"+iMoney.displayName(),player);
                             return false;
@@ -109,44 +109,42 @@ public class SaleItem {
                     int count = getInventoryItemCount(player.getInventory(),saleItem);
                     if(count >= saleItem.getCount() * buyCount){
                         if(chunkLimit(player,buyCount)){
-                            if(iMoney.reduceMoney(sales.master,money * buyCount)) {
-
-                                if (SalesMainClass.canGiveMoneyItem) {
-                                    player.getInventory().addItem(new MoneyItem(money * buyCount).getItem(loadMoney));
-                                } else {
-                                    if (iMoney.addMoney(player.getName(), money * buyCount)) {
-                                        SalesMainClass.sendMessageToObject("&a出售成功! 获得 &r" + iMoney.displayName() + "* " +
-                                                String.format("%.2f", money * buyCount) + "!", player);
-                                    } else {
-                                        SalesMainClass.sendMessageToObject("&c交易失败! 原因: 经济核心异常", player);
-                                        //还钱..
-                                        iMoney.addMoney(sales.master,money * buyCount);
-
-                                        return false;
-                                    }
-                                }
-                                stack += saleItem.getCount() * buyCount;
-                                Item sclon = saleItem.clone();
-                                sclon.setCount(sclon.getCount() * buyCount);
-                                int count2 = getInventoryItemCount(player.getInventory(),saleItem);
-                                if(count2 < sclon.getCount()){
-                                    //特殊情况交易失败..
-                                    SalesMainClass.sendMessageToObject("&c交易失败! 原因: 背包物品不足", player);
-                                    //还钱..
-                                    iMoney.addMoney(sales.master,money * buyCount);
+                            if(!passMoney){
+                                if(!iMoney.reduceMoney(sales.master,money * buyCount)){
+                                    SalesMainClass.sendMessageToObject("&c交易失败！ 无法扣除用户: "+sales.master+" 的 "+iMoney.displayName(),player);
                                     return false;
                                 }
-                                player.getInventory().removeItem(sclon);
+                            }
+                            if (SalesMainClass.canGiveMoneyItem) {
+                                player.getInventory().addItem(new MoneyItem(money * buyCount).getItem(loadMoney));
+                            } else {
+                                if (iMoney.addMoney(player.getName(), money * buyCount)) {
+                                    SalesMainClass.sendMessageToObject("&a出售成功! 获得 &r" + iMoney.displayName() + "* " +
+                                            String.format("%.2f", money * buyCount) + "!", player);
+                                } else {
+                                    SalesMainClass.sendMessageToObject("&c交易失败! 原因: 经济核心异常", player);
+                                    //还钱..
+                                    iMoney.addMoney(sales.master,money * buyCount);
 
-//                                sales.addItem(this,true);
-
-//                                SalesMainClass.sendMessageToObject("&a交易成功", player);
-                                return true;
-                            }else{
-                                SalesMainClass.sendMessageToObject("&c交易失败! 原因: 店长没有足够的金钱",player);
+                                    return false;
+                                }
+                            }
+                            stack += saleItem.getCount() * buyCount;
+                            Item sclon = saleItem.clone();
+                            sclon.setCount(sclon.getCount() * buyCount);
+                            int count2 = getInventoryItemCount(player.getInventory(),saleItem);
+                            if(count2 < sclon.getCount()){
+                                //特殊情况交易失败..
+                                SalesMainClass.sendMessageToObject("&c交易失败! 原因: 背包物品不足", player);
+                                //还钱..
+                                iMoney.addMoney(sales.master,money * buyCount);
                                 return false;
                             }
-//
+                            player.getInventory().removeItem(sclon);
+//                                sales.addItem(this,true);
+//                                SalesMainClass.sendMessageToObject("&a交易成功", player);
+                            return true;
+
                         }
 
                     }else{
