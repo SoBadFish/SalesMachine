@@ -277,11 +277,18 @@ public class SalesListener implements Listener {
                                     SalesMainClass.sendMessageToConsole("&c加载 位置: ("+data.location+") "+" 售货机失败!");
                                 }
 
+                            }else{
+                                //重新生成一下，防止不显示
+                                SalesEntity et = cacheEntitys.get(data.location);
+                                et.close();
+                                if(SalesEntity.spawnToAll(data.asPosition(), BlockFace.valueOf(data.bf.toUpperCase()),data.master,data, true,false,-1) == null){
+                                    SalesMainClass.sendMessageToConsole("&c加载 位置: ("+data.location+") "+" 售货机失败!");
+                                }
                             }
                         }
 
                     }
-                }, 1);
+                }, 40);
             }
 
 
