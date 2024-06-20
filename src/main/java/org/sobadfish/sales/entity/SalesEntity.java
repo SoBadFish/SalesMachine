@@ -352,7 +352,8 @@ public class SalesEntity extends EntityHuman {
                     continue;
                 }
                 if(player.level != this.level){
-                    onlinePlayers.remove(player);
+                    //onlinePlayers.remove(player);
+                    removePackets(player);
                 }
             }
             for (Player player : getLevel().getPlayers().values()) {
