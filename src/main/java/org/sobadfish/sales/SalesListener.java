@@ -288,7 +288,7 @@ public class SalesListener implements Listener {
                         }
 
                     }
-                }, 40);
+                }, 20);
             }
 
 

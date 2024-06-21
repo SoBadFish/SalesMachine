@@ -351,7 +351,7 @@ public class SalesEntity extends EntityHuman {
                     onlinePlayers.remove(player);
                     continue;
                 }
-                if(player.level != this.level){
+                if(!player.level.getFolderName().equalsIgnoreCase(this.level.getFolderName())){
                     //onlinePlayers.remove(player);
                     removePackets(player);
                 }
@@ -360,7 +360,7 @@ public class SalesEntity extends EntityHuman {
                 if (player.distance(this) <= 10) {
                     showItems(player);
                     s = true;
-                    break;
+//                    break;
                 }else{
                     removePackets(player);
                 }
