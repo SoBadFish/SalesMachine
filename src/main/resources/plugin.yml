@@ -1,6 +1,6 @@
 name: SalesmMchine
 main: org.sobadfish.sales.SalesMainClass
-version: 1.2.7
+version: 1.2.8
 api:
   - 1.0.14
 author: Sobadfish

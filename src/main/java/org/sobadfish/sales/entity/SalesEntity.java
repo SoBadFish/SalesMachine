@@ -147,7 +147,9 @@ public class SalesEntity extends EntityHuman {
             index++;
         }
         updateInventory(updateInv);
-        //重新写入
+//        //重新写入
+//        salesData.saveItemSlots(loadItems);
+//        saveData();
     }
 
     /**
@@ -236,7 +238,7 @@ public class SalesEntity extends EntityHuman {
                 saleItem.stack += item.stack;
                 updateInventory(updateInv);
 
-
+                saveData();
                 return true;
             }
             index++;
@@ -263,6 +265,7 @@ public class SalesEntity extends EntityHuman {
 
         removePacketsAll();
         updateInventory(updateInv);
+//        saveData();
 
         return true;
     }
@@ -379,7 +382,7 @@ public class SalesEntity extends EntityHuman {
     public List<Player> onlinePlayers = new ArrayList<>();
 
 
-    private void removePackets(Player player) {
+    public void removePackets(Player player) {
         for (AddItemEntityPacket dataPacket : new ArrayList<>(ipacket)) {
             RemoveEntityPacket pk1 = new RemoveEntityPacket();
             pk1.eid = dataPacket.entityUniqueId;
@@ -389,7 +392,7 @@ public class SalesEntity extends EntityHuman {
         }
         onlinePlayers.remove(player);
     }
-    private void removePacketsAll() {
+    public void removePacketsAll() {
         for (AddItemEntityPacket dataPacket : new ArrayList<>(ipacket)) {
             RemoveEntityPacket pk1 = new RemoveEntityPacket();
             pk1.eid = dataPacket.entityUniqueId;

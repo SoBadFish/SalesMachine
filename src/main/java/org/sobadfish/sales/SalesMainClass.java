@@ -783,6 +783,14 @@ public class SalesMainClass extends PluginBase {
 
     @Override
     public void onDisable() {
+        //TODO 保存数据
+        sendMessageToConsole("&c正在保存数据...");
+        for (SalesEntity sales: SalesListener.cacheEntitys.values()){
+            sales.salesData.saveItemSlots(sales.loadItems);
+            sales.saveData();
+        }
+
+        sendMessageToConsole("&a数据保存成功!");
         if(sqliteHelper != null){
             sqliteHelper.destroyed();
         }

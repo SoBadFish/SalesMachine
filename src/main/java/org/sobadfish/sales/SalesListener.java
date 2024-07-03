@@ -11,6 +11,7 @@ import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
 import cn.nukkit.event.block.BlockUpdateEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
+import cn.nukkit.event.entity.EntityLevelChangeEvent;
 import cn.nukkit.event.inventory.InventoryMoveItemEvent;
 import cn.nukkit.event.inventory.InventoryTransactionEvent;
 import cn.nukkit.event.level.ChunkLoadEvent;
@@ -24,6 +25,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemHopper;
 import cn.nukkit.item.ItemMinecartHopper;
 import cn.nukkit.item.ItemNameTag;
+import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.Sound;
 import cn.nukkit.math.BlockFace;
@@ -243,10 +245,22 @@ public class SalesListener implements Listener {
             }
 
         }
-//        }
 
+    }
 
-//        }
+    @EventHandler
+    public void onLevelChange(EntityLevelChangeEvent event){
+        //TODO 解决切换世界 出现的残留
+        Entity player = event.getEntity();
+        if(player instanceof Player){
+            //上个世界
+            Level level = event.getOrigin();
+            for(Entity entity: level.getEntities()){
+                if(entity instanceof SalesEntity){
+                    ((SalesEntity) entity).removePackets((Player) player);
+                }
+            }
+        }
     }
 
     @EventHandler
