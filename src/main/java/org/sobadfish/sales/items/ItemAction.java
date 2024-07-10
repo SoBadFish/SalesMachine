@@ -1,7 +1,6 @@
 package org.sobadfish.sales.items;
 
 import cn.nukkit.Player;
-import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.enchantment.Enchantment;
@@ -130,22 +129,27 @@ public class ItemAction {
                 return false;
             }
             if(tag.contains("sale_data")){
-                level.addSound(block, Sound.MOB_ZOMBIE_WOODBREAK);
-                Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE, () -> {
-                    CompoundTag data = tag.getCompound("sale_data");
-                    SalesData salesData = SalesData.getSaleDataByCompoundTag(data);
-                    salesData.bf = player.getDirection().getName();
-                    salesData.location = SalesEntity.asLocation(block);
-                    SalesEntity entity = SalesEntity.spawnToAll(salesData.asPosition(),
-                            BlockFace.valueOf(salesData.bf.toUpperCase()), salesData.master, salesData,false,true,-1);
-                    if(entity != null){
-                        SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE, salesData);
-                    }
 
-                },1);
+              //  Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE, () -> {
+                CompoundTag data = tag.getCompound("sale_data");
+                SalesData salesData = SalesData.getSaleDataByCompoundTag(data);
+                salesData.bf = player.getDirection().getName();
+                salesData.location = SalesEntity.asLocation(block);
+                SalesEntity entity = SalesEntity.spawnToAll(salesData.asPosition(),
+                        BlockFace.valueOf(salesData.bf.toUpperCase()), salesData.master, salesData,false,true,-1);
+                if(entity != null){
+                    level.addSound(block, Sound.MOB_ZOMBIE_WOODBREAK);
+                    SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE, salesData);
+                    Item cc = SalesMainClass.CUSTOM_ITEMS.get("ct").clone();
+                    player.getInventory().setItemInHand(cc);
+                }else{
+                    SalesMainClass.sendMessageToObject("&c生成失败！ 请保证周围没有其他方块",player);
+                }
 
-                Item cc = SalesMainClass.CUSTOM_ITEMS.get("ct").clone();
-                player.getInventory().setItemInHand(cc);
+
+              //  },1);
+
+
 
             }
         }

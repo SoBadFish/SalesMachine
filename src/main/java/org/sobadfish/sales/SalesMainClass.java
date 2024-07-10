@@ -526,10 +526,10 @@ public class SalesMainClass extends PluginBase {
                     }else{
                         int allCount = SalesMainClass.INSTANCE.sqliteHelper.countAllData(SalesMainClass.DB_TABLE);
                         sendMessageToObject("&e当前服务器共计 &a"+allCount+" &e台售货机",sender);
-                        sendMessageToObject("&7每张地图最多显示 &c20 &7条售货机最多的区块信息",sender);
+                        sendMessageToObject("&7每张地图最多显示 &c40 &7条售货机最多的区块信息",sender);
                         for(Level level: Server.getInstance().getLevels().values()){
                             List<SqliteHelper.DataCount<SalesData>> dataCounts = SalesMainClass.INSTANCE.sqliteHelper.sortDataCount(
-                                    SalesMainClass.DB_TABLE,"chunkX,chunkZ","location like %"+level.getFolderName()+"%",20,SalesData.class
+                                    SalesMainClass.DB_TABLE,"chunkX,chunkZ","world = '"+level.getFolderName()+"'",40,SalesData.class
                             );
                             if(dataCounts.size() > 0){
                                 int mapCount = SalesMainClass.INSTANCE.sqliteHelper.countData(SalesMainClass.DB_TABLE,"world",level.getFolderName());
@@ -539,7 +539,6 @@ public class SalesMainClass extends PluginBase {
                                             +dataCount.data.chunkz+") &2存在 &b"+dataCount.count+" &2台售货机 &7坐标: "+dataCount.data.location,sender);
                                 }
                             }
-
 
                         }
 //                        sendMessageToObject("&c未知指令 请执行/sa help 查看帮助",sender);
