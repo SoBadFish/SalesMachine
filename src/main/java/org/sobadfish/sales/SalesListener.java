@@ -390,18 +390,19 @@ public class SalesListener implements Listener {
 
     @EventHandler
     public void onBlockUpdate(BlockUpdateEvent event){
-        Block upblock = event.getBlock();
-        Block old = upblock.level.getBlock(upblock);
-        if(old.getId() != main.iBarrier.getBid() && upblock.getId() == main.iBarrier.getBid()){
-            SalesEntity entity1 = getEntityByPos(event.getBlock());
-            if(entity1 != null){
-                if(entity1.finalClose){
-                    return;
-                }
-                entity1.toClose();
-
-            }
-        }
+        //元凶!!!
+//        Block upblock = event.getBlock();
+//        Block old = upblock.level.getBlock(upblock);
+//        if(old.getId() != main.iBarrier.getBid() && upblock.getId() == main.iBarrier.getBid()){
+//            SalesEntity entity1 = getEntityByPos(event.getBlock());
+//            if(entity1 != null){
+//                if(entity1.finalClose){
+//                    return;
+//                }
+//                entity1.toClose();
+//
+//            }
+//        }
 
     }
 
