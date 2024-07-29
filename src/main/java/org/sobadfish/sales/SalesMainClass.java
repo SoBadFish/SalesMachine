@@ -1,17 +1,11 @@
 package org.sobadfish.sales;
 
-import cn.lanink.customitemapi.CustomItemAPI;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
-import cn.nukkit.block.Block;
-import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
-import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.entity.data.Skin;
-import cn.nukkit.inventory.CraftingManager;
-import cn.nukkit.inventory.ShapedRecipe;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.level.Level;
@@ -24,9 +18,6 @@ import cn.nukkit.utils.TextFormat;
 import cn.nukkit.utils.Utils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import org.sobadfish.sales.block.BarrierBlock;
-import org.sobadfish.sales.block.BarrierBlock_Nukkit;
-import org.sobadfish.sales.block.IBarrier;
 import org.sobadfish.sales.config.ItemData;
 import org.sobadfish.sales.config.SaleSettingConfig;
 import org.sobadfish.sales.config.SaleSkinConfig;
@@ -37,9 +28,8 @@ import org.sobadfish.sales.economy.core.EconomyMoney;
 import org.sobadfish.sales.economy.core.MoneyCoreMoney;
 import org.sobadfish.sales.economy.core.PlayerPointsMoney;
 import org.sobadfish.sales.entity.SalesEntity;
-import org.sobadfish.sales.items.*;
-import org.sobadfish.sales.items.ct.*;
-import org.sobadfish.sales.items.sales.*;
+import org.sobadfish.sales.items.CustomSaleDiscountItem;
+import org.sobadfish.sales.items.ISaleItem;
 import org.sobadfish.sales.panel.lib.AbstractFakeInventory;
 
 import javax.imageio.ImageIO;
@@ -62,13 +52,13 @@ public class SalesMainClass extends PluginBase {
 
     public static final String PLUGIN_NAME = "&7[&e售货机&7]&r";
 
-    public IBarrier iBarrier;
+
 
     public static SalesMainClass INSTANCE;
 
-    public static LinkedHashMap<String,Item> CUSTOM_ITEMS = new LinkedHashMap<>();
 
-    public static boolean LOAD_CUSTOM = false;
+
+
 
     public static List<String> banWorlds = new ArrayList<>();
 
@@ -86,6 +76,11 @@ public class SalesMainClass extends PluginBase {
 
     public static String CORE_NAME = "";
 
+    /**
+     * 注册物品服务
+     * */
+    public RegisterItemServices services = new RegisterItemServices();
+
     public LinkedHashMap<String, ItemData> itemInfoData = new LinkedHashMap<>();
 
     public String[] lists = new String[]{"v1", "v2","v3","v4","v5","v6"};
@@ -94,9 +89,11 @@ public class SalesMainClass extends PluginBase {
     @Override
     public void onLoad() {
         //提前注册好
-        BlockEntity.registerBlockEntity(SalesEntity.SalesBlockEntity.ENTITY_TYPE,SalesEntity.SalesBlockEntity.class);
-        Entity.registerEntity(SalesEntity.ENTITY_TYPE,SalesEntity.class);
-        initItem();
+//        BlockEntity.registerBlockEntity(SalesEntity.SalesBlockEntity.ENTITY_TYPE,SalesEntity.SalesBlockEntity.class);
+//        Entity.registerEntity(SalesEntity.ENTITY_TYPE,SalesEntity.class);
+        checkServer();
+        services.setCoreName(CORE_NAME);
+        services.registerItem();
     }
 
     @Override
@@ -125,6 +122,7 @@ public class SalesMainClass extends PluginBase {
         loadMoneyCore();
 
         saveDefaultConfig();
+        services.config = getConfig();
         //加载配置
         loadConfig();
 
@@ -138,7 +136,7 @@ public class SalesMainClass extends PluginBase {
         }
 
 
-        checkServer();
+
 
         saveResource("data.db",false);
         try {
@@ -158,18 +156,9 @@ public class SalesMainClass extends PluginBase {
         initSkin();
 
 
+        services.registerBlock();
 
-        if(Block.list.length <= 256){
-            iBarrier = new BarrierBlock_Nukkit();
-            //TODO 放弃了 使用Nkx后好多都没法用 比如实体点击不到
-//            sendMessageToConsole("&c当前核心不支持此插件！");
-//            this.getServer().getPluginManager().disablePlugin(this);
-//            return;
 
-        }else{
-            Block.list[416] = BarrierBlock.class;
-            iBarrier = new BarrierBlock();
-        }
 
 
 
@@ -177,7 +166,7 @@ public class SalesMainClass extends PluginBase {
         this.getServer().getPluginManager().registerEvents(new SalesListener(this),this);
 
 
-        registerCraft();
+        services.registerCraft();
         sendMessageToConsole("&a加载完成!");
 
     }
@@ -286,171 +275,7 @@ public class SalesMainClass extends PluginBase {
 
     }
 
-    private void initItem() {
-        try{
-            Class.forName("cn.lanink.customitemapi.item.ItemCustom");
-            LOAD_CUSTOM = true;
-        }catch (Exception ignore){}
-        if(LOAD_CUSTOM){
 
-
-            CustomItemAPI.getInstance().registerCustomItem(1993, org.sobadfish.sales.items.custom.CustomSaleSettingItem.class);
-            CustomItemAPI.getInstance().registerCustomItem(1994, org.sobadfish.sales.items.custom.CustomSaleRemoveItem.class);
-            CustomItemAPI.getInstance().registerCustomItem(1995, org.sobadfish.sales.items.custom.CustomSaleMoneyItem.class);
-
-            CustomItemAPI.getInstance().registerCustomItem(1996, org.sobadfish.sales.items.custom.CustomCtItem.class);
-
-            CustomItemAPI.getInstance().registerCustomItem(1998, org.sobadfish.sales.items.custom.CustomWrench.class);
-
-            CustomItemAPI.getInstance().registerCustomItem(1999, org.sobadfish.sales.items.custom.CustomSalePanelLeftItem.class);
-            CustomItemAPI.getInstance().registerCustomItem(2000, org.sobadfish.sales.items.custom.CustomSalePanelRightItem.class);
-            CustomItemAPI.getInstance().registerCustomItem(2001, org.sobadfish.sales.items.custom.CustomSaleDiscountItem.class);
-            CustomItemAPI.getInstance().registerCustomItem(2002, org.sobadfish.sales.items.custom.CustomSalePanelWallItem.class);
-
-
-            CustomItemAPI.getInstance().registerCustomItem(2003, org.sobadfish.sales.items.custom.sales.CustomV1SaleItem.class);
-            CustomItemAPI.getInstance().registerCustomItem(2004, org.sobadfish.sales.items.custom.sales.CustomV2SaleItem.class);
-            CustomItemAPI.getInstance().registerCustomItem(2005, org.sobadfish.sales.items.custom.sales.CustomV3SaleItem.class);
-            CustomItemAPI.getInstance().registerCustomItem(2006, org.sobadfish.sales.items.custom.sales.CustomV4SaleItem.class);
-            CustomItemAPI.getInstance().registerCustomItem(2007, org.sobadfish.sales.items.custom.sales.CustomV5SaleItem.class);
-            CustomItemAPI.getInstance().registerCustomItem(2008, org.sobadfish.sales.items.custom.sales.CustomV6SaleItem.class);
-
-            CustomItemAPI.getInstance().registerCustomItem(2009, org.sobadfish.sales.items.custom.ct.CustomV1CtSaleItem.class);
-            CustomItemAPI.getInstance().registerCustomItem(2010, org.sobadfish.sales.items.custom.ct.CustomV2CtSaleItem.class);
-            CustomItemAPI.getInstance().registerCustomItem(2011, org.sobadfish.sales.items.custom.ct.CustomV3CtSaleItem.class);
-            CustomItemAPI.getInstance().registerCustomItem(2012, org.sobadfish.sales.items.custom.ct.CustomV4CtSaleItem.class);
-            CustomItemAPI.getInstance().registerCustomItem(2013, org.sobadfish.sales.items.custom.ct.CustomV5CtSaleItem.class);
-            CustomItemAPI.getInstance().registerCustomItem(2014, org.sobadfish.sales.items.custom.ct.CustomV6CtSaleItem.class);
-
-
-            CUSTOM_ITEMS.put("sale_v1",new  org.sobadfish.sales.items.custom.sales.CustomV1SaleItem());
-            CUSTOM_ITEMS.put("sale_v2",new  org.sobadfish.sales.items.custom.sales.CustomV2SaleItem());
-            CUSTOM_ITEMS.put("sale_v3",new  org.sobadfish.sales.items.custom.sales.CustomV3SaleItem());
-            CUSTOM_ITEMS.put("sale_v4",new  org.sobadfish.sales.items.custom.sales.CustomV4SaleItem());
-            CUSTOM_ITEMS.put("sale_v5",new  org.sobadfish.sales.items.custom.sales.CustomV5SaleItem());
-            CUSTOM_ITEMS.put("sale_v6",new  org.sobadfish.sales.items.custom.sales.CustomV6SaleItem());
-
-            CUSTOM_ITEMS.put("ct_sale_v1",new org.sobadfish.sales.items.custom.ct.CustomV1CtSaleItem());
-            CUSTOM_ITEMS.put("ct_sale_v2",new org.sobadfish.sales.items.custom.ct.CustomV2CtSaleItem());
-            CUSTOM_ITEMS.put("ct_sale_v3",new org.sobadfish.sales.items.custom.ct.CustomV3CtSaleItem());
-            CUSTOM_ITEMS.put("ct_sale_v4",new org.sobadfish.sales.items.custom.ct.CustomV4CtSaleItem());
-            CUSTOM_ITEMS.put("ct_sale_v5",new org.sobadfish.sales.items.custom.ct.CustomV5CtSaleItem());
-            CUSTOM_ITEMS.put("ct_sale_v6",new org.sobadfish.sales.items.custom.ct.CustomV6CtSaleItem());
-
-
-            CUSTOM_ITEMS.put("setting",new org.sobadfish.sales.items.custom.CustomSaleSettingItem());
-            CUSTOM_ITEMS.put("remove",new org.sobadfish.sales.items.custom.CustomSaleRemoveItem());
-            CUSTOM_ITEMS.put("money",new org.sobadfish.sales.items.custom.CustomSaleMoneyItem());
-            CUSTOM_ITEMS.put("ct",new org.sobadfish.sales.items.custom.CustomCtItem());
-
-            CUSTOM_ITEMS.put("pipe_wrench",new org.sobadfish.sales.items.custom.CustomWrench());
-
-            CUSTOM_ITEMS.put("left",new org.sobadfish.sales.items.custom.CustomSalePanelLeftItem());
-            CUSTOM_ITEMS.put("right",new org.sobadfish.sales.items.custom.CustomSalePanelRightItem());
-            CUSTOM_ITEMS.put("discount",new org.sobadfish.sales.items.custom.CustomSaleDiscountItem());
-
-            CUSTOM_ITEMS.put("wall",new org.sobadfish.sales.items.custom.CustomSalePanelWallItem());
-
-        }else{
-            Item.registerCustomItem(CustomV1SaleItem.class);
-            Item.registerCustomItem(CustomV2SaleItem.class);
-            Item.registerCustomItem(CustomV3SaleItem.class);
-            Item.registerCustomItem(CustomV4SaleItem.class);
-            Item.registerCustomItem(CustomV5SaleItem.class);
-            Item.registerCustomItem(CustomV6SaleItem.class);
-            //
-
-            Item.registerCustomItem(CustomSaleSettingItem.class,false);
-            Item.registerCustomItem(CustomSaleRemoveItem.class,false);
-            Item.registerCustomItem(CustomSaleMoneyItem.class);
-
-            Item.registerCustomItem(CustomCtItem.class);
-            Item.registerCustomItem(CustomV1CtSaleItem.class,false);
-            Item.registerCustomItem(CustomV2CtSaleItem.class,false);
-            Item.registerCustomItem(CustomV3CtSaleItem.class,false);
-            Item.registerCustomItem(CustomV4CtSaleItem.class,false);
-            Item.registerCustomItem(CustomV5CtSaleItem.class,false);
-            Item.registerCustomItem(CustomV6CtSaleItem.class,false);
-            Item.registerCustomItem(CustomWrench.class);
-
-            Item.registerCustomItem(CustomSalePanelLeftItem.class,false);
-            Item.registerCustomItem(CustomSalePanelRightItem.class,false);
-            Item.registerCustomItem(CustomSaleDiscountItem.class);
-
-            Item.registerCustomItem(CustomSalePanelWallItem.class,false);
-
-            CUSTOM_ITEMS.put("sale_v1",new CustomV1SaleItem());
-            CUSTOM_ITEMS.put("sale_v2",new CustomV2SaleItem());
-            CUSTOM_ITEMS.put("sale_v3",new CustomV3SaleItem());
-            CUSTOM_ITEMS.put("sale_v4",new CustomV4SaleItem());
-            CUSTOM_ITEMS.put("sale_v5",new CustomV5SaleItem());
-            CUSTOM_ITEMS.put("sale_v6",new CustomV6SaleItem());
-
-            CUSTOM_ITEMS.put("ct_sale_v1",new CustomV1CtSaleItem());
-            CUSTOM_ITEMS.put("ct_sale_v2",new CustomV2CtSaleItem());
-            CUSTOM_ITEMS.put("ct_sale_v3",new CustomV3CtSaleItem());
-            CUSTOM_ITEMS.put("ct_sale_v4",new CustomV4CtSaleItem());
-            CUSTOM_ITEMS.put("ct_sale_v5",new CustomV5CtSaleItem());
-            CUSTOM_ITEMS.put("ct_sale_v6",new CustomV6CtSaleItem());
-
-            CUSTOM_ITEMS.put("setting",new CustomSaleSettingItem());
-            CUSTOM_ITEMS.put("remove",new CustomSaleRemoveItem());
-            CUSTOM_ITEMS.put("money",new CustomSaleMoneyItem());
-            CUSTOM_ITEMS.put("ct",new CustomCtItem());
-            CUSTOM_ITEMS.put("pipe_wrench",new CustomWrench());
-
-            CUSTOM_ITEMS.put("left",new CustomSalePanelLeftItem());
-            CUSTOM_ITEMS.put("right",new CustomSalePanelRightItem());
-            CUSTOM_ITEMS.put("discount",new CustomSaleDiscountItem());
-            CUSTOM_ITEMS.put("wall",new CustomSalePanelWallItem());
-        }
-
-//        Item.removeCreativeItem(CUSTOM_ITEMS.get("ct_sale"));
-
-
-
-
-
-
-
-    }
-
-    private void registerCraft() {
-        //注册合成配方 通过这个可以合成优惠券.
-        if(getConfig().getBoolean("craft-discount",true)){
-
-
-            //一张纸合成一个空白优惠券
-            Map<Character, Item> ingredients = new HashMap<>();
-            ingredients.put('A', Item.get(Item.PAPER));
-            ShapedRecipe result = new ShapedRecipe(CUSTOM_ITEMS.get("discount"),new String[]{"AA"},ingredients,new LinkedList<>());
-
-            registerRecipe(result);
-            //搬运器合成
-
-
-            sendMessageToConsole("&a成功注册 &r"+CORE_NAME+" &a核心合成配方");
-
-
-        }
-
-    }
-
-    private void registerRecipe(ShapedRecipe result){
-        CraftingManager manager = this.getServer().getCraftingManager();
-        if(AbstractFakeInventory.IS_PM1E){
-            manager.registerRecipe(313,result);
-            manager.registerRecipe(332,result);
-            manager.registerRecipe(388,result);
-            manager.registerRecipe(419,result);
-            manager.registerRecipe(527,result);
-            manager.registerRecipe(649,result);
-
-        }else{
-            manager.registerRecipe(result);
-        }
-        manager.rebuildPacket();
-    }
 
     public static void registerMoneyCore(String moneyName,Class<? extends IMoney> money){
         if(!LOAD_MONEY.containsKey(moneyName)){
@@ -506,7 +331,7 @@ public class SalesMainClass extends PluginBase {
                         }
                     }
                     if(p != null){
-                        Item item =  SalesMainClass.CUSTOM_ITEMS.get("sale_v1");
+                        Item item =  RegisterItemServices.CUSTOM_ITEMS.get("sale_v1");
                         item.setCount(count);
                         p.getInventory().addItem(item);
                         sendMessageToObject("&b 你获得了 &e 售货机 * &a"+count,p);
@@ -563,7 +388,7 @@ public class SalesMainClass extends PluginBase {
                     String master = args[2];
                     p = Server.getInstance().getPlayer(master);
                     if(p != null){
-                        Item item = CUSTOM_ITEMS.get("discount");
+                        Item item =RegisterItemServices.CUSTOM_ITEMS.get("discount");
                         item.setCustomName(TextFormat.colorize('&',"&r&e&l通用优惠券 ("+zks+"折)"));
                         item.setLore(TextFormat.colorize('&',"\n&r&7 可以用作所有的售货机!"));
                         item.addEnchantment(Enchantment.getEnchantment(0));
@@ -809,6 +634,7 @@ public class SalesMainClass extends PluginBase {
 
         } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException ignore) {
         }
+
 
         AbstractFakeInventory.IS_PM1E = ver;
         if(ver){

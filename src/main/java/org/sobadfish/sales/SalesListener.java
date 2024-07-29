@@ -9,7 +9,6 @@ import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
-import cn.nukkit.event.block.BlockUpdateEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.entity.EntityLevelChangeEvent;
 import cn.nukkit.event.inventory.InventoryMoveItemEvent;
@@ -84,7 +83,7 @@ public class SalesListener implements Listener {
             }
             Item ei = event.getItem();
 
-            if(ei.equals(SalesMainClass.CUSTOM_ITEMS.get("discount")) && !player.isSneaking()){
+            if(ei.equals(RegisterItemServices.CUSTOM_ITEMS.get("discount")) && !player.isSneaking()){
                 //使用空白优惠券
                 event.setCancelled();
                 if(!ei.hasCompoundTag()){
@@ -100,9 +99,9 @@ public class SalesListener implements Listener {
                 return;
             }
 
-            if(!ei.equals(SalesMainClass.CUSTOM_ITEMS.get("ct")) &&
+            if(!ei.equals(RegisterItemServices.CUSTOM_ITEMS.get("ct")) &&
                     !(ei instanceof ISaleItem)&&
-                    !ei.equals(SalesMainClass.CUSTOM_ITEMS.get("pipe_wrench"))
+                    !ei.equals(RegisterItemServices.CUSTOM_ITEMS.get("pipe_wrench"))
             && !ei.equals(new ItemHopper()) && !ei.equals(new ItemMinecartHopper())){
                 event.setCancelled();
             }else{
@@ -402,7 +401,7 @@ public class SalesListener implements Listener {
             return;
         }
 
-        if(block.getId() == main.iBarrier.getBid()){
+        if(block.getId() == main.services.iBarrier.getBid()){
             SalesEntity entity1 = getEntityByPos(event.getBlock());
             if(entity1 != null){
                 if(event.getPlayer().isOp()){

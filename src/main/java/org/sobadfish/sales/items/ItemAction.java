@@ -9,6 +9,7 @@ import cn.nukkit.level.Sound;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.TextFormat;
+import org.sobadfish.sales.RegisterItemServices;
 import org.sobadfish.sales.SalesListener;
 import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.config.SaleSkinConfig;
@@ -64,11 +65,11 @@ public class ItemAction {
                 SaleSkinConfig saleSkinConfig = SalesMainClass.ENTITY_SKIN.get(salesEntity.salesData.skinmodel);
                 String name = "ct_sale_v"+(saleSkinConfig.config.meta+1);
 
-                if(!SalesMainClass.CUSTOM_ITEMS.containsKey(name)){
+                if(!RegisterItemServices.CUSTOM_ITEMS.containsKey(name)){
                     name = "ct_sale_v1";
                 }
 
-                Item sitem = SalesMainClass.CUSTOM_ITEMS.get(name);
+                Item sitem = RegisterItemServices.CUSTOM_ITEMS.get(name);
                 sitem.setCount(1);
                 //sitem.setDamage(saleSkinConfig.config.meta);
                 String nm = "&r&e"+salesEntity.master+" 的售货机";
@@ -152,7 +153,7 @@ public class ItemAction {
                 if(entity != null){
                     level.addSound(block, Sound.MOB_ZOMBIE_WOODBREAK);
                     SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE, salesData);
-                    Item cc = SalesMainClass.CUSTOM_ITEMS.get("ct").clone();
+                    Item cc = RegisterItemServices.CUSTOM_ITEMS.get("ct").clone();
                     player.getInventory().setItemInHand(cc);
                 }else{
                     SalesMainClass.sendMessageToObject("&c生成失败！ 请保证周围没有其他方块",player);

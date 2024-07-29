@@ -27,6 +27,7 @@ import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.network.protocol.AddItemEntityPacket;
 import cn.nukkit.network.protocol.RemoveEntityPacket;
 import cn.nukkit.utils.TextFormat;
+import org.sobadfish.sales.RegisterItemServices;
 import org.sobadfish.sales.SalesListener;
 import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.config.SaleSettingConfig;
@@ -727,7 +728,7 @@ public class SalesEntity extends EntityHuman {
 
             for (Position sp : psconfig) {
                 String pps = asLocation(sp);
-                position.getLevel().setBlock(sp, (Block) SalesMainClass.INSTANCE.iBarrier, false, false);
+                position.getLevel().setBlock(sp, (Block) SalesMainClass.INSTANCE.services.iBarrier, false, false);
                 BlockEntity.createBlockEntity(SalesBlockEntity.ENTITY_TYPE, pos.getChunk(),
                         BlockEntity.getDefaultCompound(sp, SalesBlockEntity.ENTITY_TYPE), sales);
                 if (!SalesListener.cacheEntitys.containsKey(pps)) {
@@ -783,7 +784,7 @@ public class SalesEntity extends EntityHuman {
     public static boolean hasBlockByPositionList(List<Position> positions){
         for (Position ps : positions) {
             Block block = ps.level.getBlock(ps);
-            if (block.getId() != 0 && block.getId() != SalesMainClass.INSTANCE.iBarrier.getBid()) {
+            if (block.getId() != 0 && block.getId() != SalesMainClass.INSTANCE.services.iBarrier.getBid()) {
                 return true;
             }
 
@@ -880,10 +881,10 @@ public class SalesEntity extends EntityHuman {
         Item drop = salesData.asPlaceItem();
         if(drop.getId() == 0) {
             String name = "sale_v" + (saleSettingConfig.meta + 1);
-            if (!SalesMainClass.CUSTOM_ITEMS.containsKey(name)) {
+            if (!RegisterItemServices.CUSTOM_ITEMS.containsKey(name)) {
                 name = "sale_v1";
             }
-            Item item = SalesMainClass.CUSTOM_ITEMS.get(name);
+            Item item = RegisterItemServices.CUSTOM_ITEMS.get(name);
             item.setCustomName(TextFormat.colorize('&', "&r&l&e售货机"));
 
             item.setLore(TextFormat.colorize('&', "&r&7\n放置即可生成"));

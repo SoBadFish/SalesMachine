@@ -3,7 +3,7 @@ package org.sobadfish.sales.panel.button;
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.TextFormat;
-import org.sobadfish.sales.SalesMainClass;
+import org.sobadfish.sales.RegisterItemServices;
 import org.sobadfish.sales.panel.lib.ISalePanel;
 
 /**
@@ -19,7 +19,7 @@ public class WallPageItem extends BasePlayPanelItemInstance{
 
     @Override
     public Item getItem() {
-        return SalesMainClass.CUSTOM_ITEMS.get("wall");
+        return RegisterItemServices.CUSTOM_ITEMS.get("wall");
     }
 
     @Override

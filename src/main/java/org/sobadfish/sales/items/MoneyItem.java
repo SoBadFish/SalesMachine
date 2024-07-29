@@ -4,6 +4,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.TextFormat;
+import org.sobadfish.sales.RegisterItemServices;
 import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.economy.IMoney;
 
@@ -23,7 +24,7 @@ public class MoneyItem {
 
 
     public Item getItem(String loadMoney){
-        Item item = SalesMainClass.CUSTOM_ITEMS.get("money");
+        Item item = RegisterItemServices.CUSTOM_ITEMS.get("money");
         IMoney iMoney = SalesMainClass.getMoneyCoreByName(loadMoney);
         if(iMoney == null){
             iMoney = SalesMainClass.getMoneyCoreByName(SalesMainClass.getFirstMoney());

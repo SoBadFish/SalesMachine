@@ -6,6 +6,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.level.Sound;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
+import org.sobadfish.sales.RegisterItemServices;
 import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.Utils;
 import org.sobadfish.sales.config.ItemData;
@@ -287,7 +288,7 @@ public class SaleItem {
      * */
     public Item getDiscountItem(Player player, SalesEntity sales,Item saleItem){
         for (Item item: player.getInventory().getContents().values()){
-            Class<?> iv = SalesMainClass.CUSTOM_ITEMS.get("discount").getClass();
+            Class<?> iv = RegisterItemServices.CUSTOM_ITEMS.get("discount").getClass();
             if(item.getClass() == iv){
 
                 if(item.hasCompoundTag()){

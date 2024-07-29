@@ -12,6 +12,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
     <distributionManagement>
@@ -32,16 +34,7 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-        <repository>
-            <id>opencollab-repo-snapshot</id>
-            <url>https://repo.opencollab.dev/maven-snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
+
 <!--        <repository>-->
 <!--            <id>repo-lanink-cn</id>-->
 <!--            <url>https://repo.lanink.cn/</url>-->
@@ -59,6 +52,7 @@
             <version>MOT-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+
 
         <dependency>
             <groupId>org.xerial</groupId>

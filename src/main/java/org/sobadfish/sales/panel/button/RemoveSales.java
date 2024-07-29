@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.TextFormat;
+import org.sobadfish.sales.RegisterItemServices;
 import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.config.SaleSkinConfig;
 import org.sobadfish.sales.panel.lib.ChestPanel;
@@ -25,7 +26,7 @@ public class RemoveSales extends BasePlayPanelItemInstance{
 
     @Override
     public Item getItem() {
-        return SalesMainClass.CUSTOM_ITEMS.get("remove");
+        return RegisterItemServices.CUSTOM_ITEMS.get("remove");
     }
 
     @Override
