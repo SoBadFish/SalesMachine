@@ -420,7 +420,7 @@ public class SqliteHelper {
 
     private String classTypeAsSql(Field type){
         if(type.getType() == int.class ){
-            return "integer";
+            return "integer default 0";
         }
         if(type.getType() == float.class || type.getType() == double.class){
             return type.getType().getName();

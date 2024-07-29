@@ -48,6 +48,7 @@ public class SalesData {
 
     public String itemjson;
 
+
     //皮肤模型名称
     public String skinmodel = "";
 

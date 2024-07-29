@@ -1,5 +1,6 @@
 package org.sobadfish.sales.economy.core;
 
+
 import net.player.api.Point;
 import org.sobadfish.sales.economy.IMoney;
 
