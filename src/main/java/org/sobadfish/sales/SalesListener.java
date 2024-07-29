@@ -222,27 +222,33 @@ public class SalesListener implements Listener {
             }
             //TODO 自定义物品的放置
             //TODO 放置物品
-            if(SalesMainClass.LOAD_CUSTOM){
-                if(item.hasCompoundTag() && item.getNamedTag().contains("saleskey")){
-                    ISaleItem it;
-                    int meta = 0;
-                    if(item instanceof ISaleItem){
-                        it = ((ISaleItem)item);
-                        meta = it.getSaleMeta();
-                    }
-                    if(SalesEntity.spawnToAll(block.getSide(event.getFace()),player.getDirection(),player.getName(),null,meta) != null){
-                        if (player.isSurvival() || player.isAdventure()) {
-                            Item item2 = player.getInventory().getItemInHand();
-                            item2.setCount(item2.getCount() - 1);
-                            player.getInventory().setItemInHand(item2);
+//            if(SalesMainClass.LOAD_CUSTOM){
+            if(item.hasCompoundTag() && item.getNamedTag().contains("saleskey")
+                    && item.getNamedTag().contains("salesmeta")
+            ){
+                event.setCancelled();
+//                ISaleItem it;
+                String skinModel = item.getNamedTag().getString("salesmeta");
+//                if(item instanceof ISaleItem){
+//                    it = ((ISaleItem)item);
+//                    meta = it.getSaleMeta();
+//                }
+                if(SalesEntity.spawnToAll(block.getSide(event.getFace()),player.getDirection(),player.getName(),null,skinModel,item) != null){
+                    if (player.isSurvival() || player.isAdventure()) {
+                        Item item2 = player.getInventory().getItemInHand();
+                        item2.setCount(item2.getCount() - 1);
+                        player.getInventory().setItemInHand(item2);
 
-                        }
-                    }else{
-                        SalesMainClass.sendMessageToObject("&c生成失败！ 请保证周围没有其他方块",player);
                     }
-
+                }else{
+                    SalesMainClass.sendMessageToObject("&c生成失败！ 请保证周围没有其他方块",player);
                 }
+
             }
+
+//            }
+
+
 
         }
 
@@ -287,7 +293,7 @@ public class SalesListener implements Listener {
                                 SalesMainClass.INSTANCE.sqliteHelper.set(SalesMainClass.DB_TABLE,"location",data.location,data);
                             }
                             if(!cacheEntitys.containsKey(data.location)){
-                                if(SalesEntity.spawnToAll(data.asPosition(), BlockFace.valueOf(data.bf.toUpperCase()),data.master,data, true,false,-1) == null){
+                                if(SalesEntity.spawnToAll(data.asPosition(), BlockFace.valueOf(data.bf.toUpperCase()),data.master,data, true,false,null,null) == null){
                                     SalesMainClass.sendMessageToConsole("&c加载 位置: ("+data.location+") "+" 售货机失败!");
                                 }
 
@@ -295,7 +301,7 @@ public class SalesListener implements Listener {
                                 //重新生成一下，防止不显示
                                 SalesEntity et = cacheEntitys.get(data.location);
                                 et.close();
-                                if(SalesEntity.spawnToAll(data.asPosition(), BlockFace.valueOf(data.bf.toUpperCase()),data.master,data, true,false,-1) == null){
+                                if(SalesEntity.spawnToAll(data.asPosition(), BlockFace.valueOf(data.bf.toUpperCase()),data.master,data, true,false,null,null) == null){
                                     SalesMainClass.sendMessageToConsole("&c加载 位置: ("+data.location+") "+" 售货机失败!");
                                 }
                             }

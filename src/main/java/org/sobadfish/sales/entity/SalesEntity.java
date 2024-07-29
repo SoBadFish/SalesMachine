@@ -56,6 +56,8 @@ public class SalesEntity extends EntityHuman {
 
     public ListTag<CompoundTag> loadItems;
 
+
+
     public Map<String, ChestPanel> clickPlayers = new LinkedHashMap<>();
 
     public SalesData salesData;
@@ -627,15 +629,15 @@ public class SalesEntity extends EntityHuman {
 //        level.save(true);
     }
 
-    public static SalesEntity spawnToAll(Position position, BlockFace bf, String master, SalesData data) {
-        return spawnToAll(position, bf, master, data, false, true,-1);
+    public static SalesEntity spawnToAll(Position position, BlockFace bf, String master, SalesData data,Item handItem) {
+        return spawnToAll(position, bf, master, data, false, true,null,handItem);
     }
 
-    public static SalesEntity spawnToAll(Position position, BlockFace bf, String master, SalesData data,int meta) {
-        return spawnToAll(position, bf, master, data, false, true,meta);
+    public static SalesEntity spawnToAll(Position position, BlockFace bf, String master, SalesData data,String skin,Item handItem) {
+        return spawnToAll(position, bf, master, data, false, true,skin,handItem);
     }
 
-    public static SalesEntity spawnToAll(Position position, BlockFace bf, String master, SalesData data, boolean ignoreBlocks, boolean init,int meta) {
+    public static SalesEntity spawnToAll(Position position, BlockFace bf, String master, SalesData data, boolean ignoreBlocks, boolean init,String skin,Item handItem) {
         if (bf == null) {
             bf = BlockFace.EAST;
         }
@@ -657,7 +659,7 @@ public class SalesEntity extends EntityHuman {
         }
         String modelName = new ArrayList<>(SalesMainClass.ENTITY_SKIN.keySet()).get(0);
         SaleSkinConfig saleSkinConfig = null;
-        if(meta == -1){
+        if(skin == null){
             if (data != null && data.skinmodel != null) {
                 String smd = data.skinmodel;
                 if (SalesMainClass.ENTITY_SKIN.containsKey(smd)) {
@@ -666,12 +668,16 @@ public class SalesEntity extends EntityHuman {
             }
             saleSkinConfig = SalesMainClass.ENTITY_SKIN.get(modelName);
         }else{
-            for(SaleSkinConfig sc: SalesMainClass.ENTITY_SKIN.values()){
-                if(sc.config.meta == meta){
-                    saleSkinConfig = sc;
-                    modelName = sc.modelName;
-                    break;
-                }
+//            for(SaleSkinConfig sc: SalesMainClass.ENTITY_SKIN.values()){
+//                if(sc.config.meta == meta){
+//                    saleSkinConfig = sc;
+//                    modelName = sc.modelName;
+//                    break;
+//                }
+//            }
+            if ( SalesMainClass.ENTITY_SKIN.containsKey(skin)){
+                saleSkinConfig =  SalesMainClass.ENTITY_SKIN.get(skin);
+                modelName = skin;
             }
 
         }
@@ -698,22 +704,24 @@ public class SalesEntity extends EntityHuman {
         }
 
         if (!hasBlock) {
-            Skin skin = saleSkinConfig.skinLinkedHashMap.get(bf);
+            Skin skinV2 = saleSkinConfig.skinLinkedHashMap.get(bf);
 
             CompoundTag tag = EntityHuman.getDefaultNBT(pos);
             tag.putString(SALE_MASTER_TAG, master);
             tag.putCompound("Skin", new CompoundTag()
-                    .putByteArray("Data", skin.getSkinData().data)
-                    .putString("ModelId", skin.getSkinId())
+                    .putByteArray("Data", skinV2.getSkinData().data)
+                    .putString("ModelId", skinV2.getSkinId())
             );
             ListTag<CompoundTag> tagListTag = new ListTag<>();
             if (data != null) {
                 tagListTag = data.asItemSlots();
 
             }
+
+//            Item placeItem =
             SalesEntity sales = new SalesEntity(position.getChunk(), tag, bf, master, saleSkinConfig.config, tagListTag);
 
-            sales.setSkin(skin);
+            sales.setSkin(skinV2);
             sales.spawnToAll();
 
 
@@ -742,6 +750,9 @@ public class SalesEntity extends EntityHuman {
                 data.uuid = UUID.randomUUID().toString();
                 data.bf = bf.getName();
                 data.skinmodel = modelName;
+                if(handItem != null){
+                    data.setPlaceItem(handItem);
+                }
                 data.customname = master + " 的售货机";
                 if (SalesMainClass.INSTANCE.sqliteHelper.hasData(SalesMainClass.DB_TABLE, "location", ps)) {
                     SalesMainClass.INSTANCE.sqliteHelper.set(SalesMainClass.DB_TABLE, "location", ps, data);
@@ -751,6 +762,9 @@ public class SalesEntity extends EntityHuman {
 
 
             }else{
+                if(handItem != null){
+                    data.setPlaceItem(handItem);
+                }
                 if(data.world == null || "".equalsIgnoreCase(data.world)){
                     data.world = position.level.getFolderName();
                 }
@@ -797,7 +811,7 @@ public class SalesEntity extends EntityHuman {
 
                 SalesEntity.spawnToAll(oldSd.asPosition(),
                         BlockFace.valueOf(oldSd.bf.toUpperCase()), oldSd.master, oldSd,
-                        true, true,-1);
+                        true, true,null,null);
                 return true;
             }
         }
@@ -863,18 +877,23 @@ public class SalesEntity extends EntityHuman {
 
 
     public Item getShaleItem(){
-        String name = "sale_v"+(saleSettingConfig.meta+1);
-        if(!SalesMainClass.CUSTOM_ITEMS.containsKey(name)){
-            name = "sale_v1";
-        }
-        Item item = SalesMainClass.CUSTOM_ITEMS.get(name);
-        item.setCustomName(TextFormat.colorize('&',"&r&l&e售货机"));
+        Item drop = salesData.asPlaceItem();
+        if(drop.getId() == 0) {
+            String name = "sale_v" + (saleSettingConfig.meta + 1);
+            if (!SalesMainClass.CUSTOM_ITEMS.containsKey(name)) {
+                name = "sale_v1";
+            }
+            Item item = SalesMainClass.CUSTOM_ITEMS.get(name);
+            item.setCustomName(TextFormat.colorize('&', "&r&l&e售货机"));
 
-        item.setLore(TextFormat.colorize('&',"&r&7\n放置即可生成"));
-        CompoundTag compoundTag = item.getNamedTag();
-        compoundTag.putBoolean("saleskey",true);
-        item.addEnchantment(Enchantment.getEnchantment(0).setLevel(1));
-        return item;
+            item.setLore(TextFormat.colorize('&', "&r&7\n放置即可生成"));
+            CompoundTag compoundTag = item.getNamedTag();
+            compoundTag.putBoolean("saleskey", true);
+            item.addEnchantment(Enchantment.getEnchantment(0).setLevel(1));
+            return item;
+        }else{
+            return drop;
+        }
     }
 
 

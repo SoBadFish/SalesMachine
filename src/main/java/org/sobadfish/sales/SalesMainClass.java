@@ -478,6 +478,12 @@ public class SalesMainClass extends PluginBase {
                     sendMessageToObject("&a/sa give [数量] [玩家(可不填)]  &7给予玩家售货机物品 （放置即可）",sender);
                     sendMessageToObject("&a/sa q [玩家（可不填）]  &7查询玩家售货机坐标信息",sender);
                     sendMessageToObject("&a/sa d <折扣> [玩家（可不填）]  &7给予玩家一个通用优惠券",sender);
+                    sendMessageToObject("&a/sa b [模型]  &7将手持物品绑定售货机模型 &c(无法绑定售货机/使用后消耗)",sender);
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for(SaleSkinConfig saleSkinConfig: ENTITY_SKIN.values()){
+                        stringBuilder.append(saleSkinConfig.modelName).append(",");
+                    }
+                    sendMessageToObject("&a模型列表:&r "+stringBuilder,sender);
                     break;
                 case "give":
                     int count = 1;
@@ -573,6 +579,38 @@ public class SalesMainClass extends PluginBase {
                         sendMessageToObject("&c玩家 "+master+" 不在线",sender);
                     }
 
+                    break;
+                case "b":
+                    if(args.length > 1) {
+                        String model = args[1];
+                        if(ENTITY_SKIN.containsKey(model)){
+                            if(sender instanceof Player){
+                                Item hand = ((Player) sender).getInventory().getItemInHand();
+                                if(hand.getId() == 0){
+                                    sendMessageToObject("&c请不要手持空气",sender);
+                                }else{
+                                    if(hand instanceof ISaleItem){
+                                        sendMessageToObject("&c请不要绑定已存在的售货机",sender);
+                                    }else{
+                                        CompoundTag tag = hand.getNamedTag();
+                                        if(tag == null){
+                                            tag = new CompoundTag();
+                                        }
+                                        tag.putBoolean("saleskey",true);
+                                        tag.putString("salesmeta",model);
+                                        hand.setNamedTag(tag);
+                                        ((Player) sender).getInventory().setItemInHand(hand);
+                                        sendMessageToObject("&a绑定成功！",sender);
+                                    }
+                                }
+                            }else{
+                                sendMessageToObject("&c请不要在控制台执行此指令",sender);
+                            }
+
+                        }else{
+                            sendMessageToObject("&c不存在 "+model+" 模型",sender);
+                        }
+                    }
                     break;
                 default:
                     sendMessageToObject("&c未知指令 请执行/sa help 查看帮助",sender);

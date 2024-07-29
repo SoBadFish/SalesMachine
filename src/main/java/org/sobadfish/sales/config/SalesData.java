@@ -1,6 +1,7 @@
 package org.sobadfish.sales.config;
 
 import cn.nukkit.Server;
+import cn.nukkit.item.Item;
 import cn.nukkit.level.Position;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
@@ -37,6 +38,8 @@ public class SalesData {
 
     public String master;
 
+    public String placeitem;
+
     public String customname;
 
     public int width = 1;
@@ -54,12 +57,14 @@ public class SalesData {
         tag.putInt("chunkx",chunkx);
         tag.putInt("chunkz",chunkz);
         tag.putInt("width",width);
+
         tag.putInt("height",height);
 
 
         tag.putString("location",location);
         tag.putString("world",world);
         tag.putString("bf",bf);
+        tag.putString("placeitem",placeitem);
 
         if(world == null || "".equalsIgnoreCase(world)){
             world = location.split(":")[3];
@@ -111,6 +116,9 @@ public class SalesData {
         }else{
             salesData.uuid = UUID.randomUUID().toString();
         }
+        if(tag.contains("placeitem")){
+            salesData.placeitem =  tag.getString("placeitem");
+        }
 
 
         salesData.master = tag.getString("master");
@@ -141,6 +149,26 @@ public class SalesData {
         return list;
     }
 
+    public void setPlaceItem(Item item){
+        String s = "";
+        try {
+            s = Base64.getEncoder().encodeToString(NBTIO.write(NBTIO.putItemHelper(item)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        this.placeitem = s;
+    }
+
+    public Item asPlaceItem(){
+        if(placeitem != null && !placeitem.isEmpty() && !"null".equalsIgnoreCase(placeitem)){
+            try {
+                return NBTIO.getItemHelper(NBTIO.read(Base64.getDecoder().decode(placeitem)));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return new Item(0);
+    }
 
     public void saveItemSlots(ListTag<CompoundTag> list){
         List<String> strings = new ArrayList<>();

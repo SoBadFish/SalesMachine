@@ -37,6 +37,6 @@ public abstract class BaseSaleItem extends ItemCustom implements ISaleItem {
 
     @Override
     public boolean onActivate(Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-       return ItemAction.onSalePlace(block,player,getSaleMeta());
+       return ItemAction.onSalePlace(this,block,player,getSaleMeta());
     }
 }

@@ -28,17 +28,28 @@ public class ItemAction {
     /**
      * 放置售货机
      * */
-    public static boolean onSalePlace(Block block,Player player,int meta){
-        if(SalesEntity.spawnToAll(block,player.getDirection(),player.getName(),null,meta) != null){
-            if (player.isSurvival() || player.isAdventure()) {
-                Item item = player.getInventory().getItemInHand();
-                item.setCount(item.getCount() - 1);
-                player.getInventory().setItemInHand(item);
+    public static boolean onSalePlace(Item handItem,Block block, Player player, int meta){
+        if(!handItem.hasCompoundTag() || !handItem.getNamedTag().contains("salesmeta")){
+            String sm = null;
+            for(SaleSkinConfig saleSkinConfig: SalesMainClass.ENTITY_SKIN.values()){
+                if(saleSkinConfig.config.meta == meta){
+                    sm = saleSkinConfig.modelName;
+                }
             }
-            return true;
+
+            if(SalesEntity.spawnToAll(block,player.getDirection(),player.getName(),null,sm,handItem) != null){
+                if (player.isSurvival() || player.isAdventure()) {
+                    Item item = player.getInventory().getItemInHand();
+                    item.setCount(item.getCount() - 1);
+                    player.getInventory().setItemInHand(item);
+                }
+                return true;
+            }
+            SalesMainClass.sendMessageToObject("&c生成失败！ 请保证周围没有其他方块",player);
+            return false;
         }
-        SalesMainClass.sendMessageToObject("&c生成失败！ 请保证周围没有其他方块",player);
         return false;
+
     }
 
     public static boolean onCtActivate(Item i, Player player, Block target) {
@@ -49,6 +60,7 @@ public class ItemAction {
         SalesEntity salesEntity = SalesListener.getEntityByPos(target);
         if(salesEntity != null){
             if(player.isOp() || salesEntity.master.equalsIgnoreCase(player.getName())){
+
                 SaleSkinConfig saleSkinConfig = SalesMainClass.ENTITY_SKIN.get(salesEntity.salesData.skinmodel);
                 String name = "ct_sale_v"+(saleSkinConfig.config.meta+1);
 
@@ -121,7 +133,7 @@ public class ItemAction {
             //这段代码防止 win10 右键放置多次触发
             if(tag.contains("lock")){
                 long lockTime = tag.getLong("lock");
-                if(System.currentTimeMillis() - lockTime < 700){
+                if(System.currentTimeMillis() - lockTime < 1000){
                     return false;
                 }
             }
@@ -136,7 +148,7 @@ public class ItemAction {
                 salesData.bf = player.getDirection().getName();
                 salesData.location = SalesEntity.asLocation(block);
                 SalesEntity entity = SalesEntity.spawnToAll(salesData.asPosition(),
-                        BlockFace.valueOf(salesData.bf.toUpperCase()), salesData.master, salesData,false,true,-1);
+                        BlockFace.valueOf(salesData.bf.toUpperCase()), salesData.master, salesData,false,true,null,null);
                 if(entity != null){
                     level.addSound(block, Sound.MOB_ZOMBIE_WOODBREAK);
                     SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE, salesData);
