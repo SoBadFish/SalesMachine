@@ -40,7 +40,6 @@ public class ItemAction {
      * */
     public static boolean onChestPlace(Item handItem,Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz){
         BlockChest blockChest = new BlockChest();
-        blockChest.setComponents(block);
         BlockPlaceEvent event = new BlockPlaceEvent(player,blockChest,block,target,handItem);
         Server.getInstance().getPluginManager().callEvent(event);
         if(event.isCancelled()){
@@ -53,9 +52,9 @@ public class ItemAction {
 
         for(int side = 2; side <= 5; ++side) {
             if ((blockChest.getDamage() != 4 && blockChest.getDamage() != 5 || side != 4 && side != 5) && (blockChest.getDamage() != 3 && blockChest.getDamage() != 2 || side != 2 && side != 3)) {
-                Block c = blockChest.getSide(BlockFace.fromIndex(side));
+                Block c = block.getSide(BlockFace.fromIndex(side));
                 if (c instanceof BlockChest && c.getDamage() == blockChest.getDamage()) {
-                    BlockEntity blockEntity = blockChest.getLevel().getBlockEntity(c);
+                    BlockEntity blockEntity = block.getLevel().getBlockEntity(c);
                     if (blockEntity instanceof BlockEntityChest && !((BlockEntityChest)blockEntity).isPaired()) {
                         chest = (BlockEntityChest)blockEntity;
                         break;
