@@ -15,7 +15,12 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
-
+    <distributionManagement>
+        <repository>
+            <id>maven-repo</id>
+            <url>file:/www/wwwroot/repo.lanink.cn</url>
+        </repository>
+    </distributionManagement>
 
 
     <repositories>
