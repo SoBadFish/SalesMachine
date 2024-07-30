@@ -107,41 +107,42 @@ public class ItemAction {
 
     public static boolean onCtActivate(Item i, Player player, Block target,BlockFace face) {
 
-        //箱子
-        PlayerInteractEvent event = new PlayerInteractEvent(player,i,target,face);
-        Server.getInstance().getPluginManager().callEvent(event);
-        if(event.isCancelled()){
-            return false;
-        }
-        //把箱子搬起来
-        if(target instanceof BlockChest){
-            BlockEntity blockEntityChest = target.level.getBlockEntity(target);
-            if(blockEntityChest instanceof BlockEntityChest){
-                ((BlockEntityChest) blockEntityChest).unpair();
-                CompoundTag ctm = i.getNamedTag();
-                if(ctm == null){
-                    ctm = new CompoundTag();
-                }
-                Inventory inventory = ((BlockEntityChest) blockEntityChest).getInventory();
-                ListTag<CompoundTag> cl = new ListTag<>("Items");
-                for(int index = 0; index < inventory.getSize(); ++index) {
-                    cl.add(index, NBTIO.putItemHelper(inventory.getItem(index), index));
-                }
-//     
-                ctm.putList(cl);
-                Item sitem = RegisterItemServices.CUSTOM_ITEMS.get("ct_chest");
-                sitem.setNamedTag(ctm);
-
-                player.getInventory().removeItem(i);
-                player.getInventory().setItemInHand(sitem);
-                target.level.setBlock(target,new BlockAir());
-
-                return true;
+        if(SalesMainClass.usedCtChest) {
+            //箱子
+            PlayerInteractEvent event = new PlayerInteractEvent(player, i, target, face);
+            Server.getInstance().getPluginManager().callEvent(event);
+            if (event.isCancelled()) {
+                return false;
             }
+            //把箱子搬起来
+            if (target instanceof BlockChest) {
+                BlockEntity blockEntityChest = target.level.getBlockEntity(target);
+                if (blockEntityChest instanceof BlockEntityChest) {
+                    ((BlockEntityChest) blockEntityChest).unpair();
+                    CompoundTag ctm = i.getNamedTag();
+                    if (ctm == null) {
+                        ctm = new CompoundTag();
+                    }
+                    Inventory inventory = ((BlockEntityChest) blockEntityChest).getInventory();
+                    ListTag<CompoundTag> cl = new ListTag<>("Items");
+                    for (int index = 0; index < inventory.getSize(); ++index) {
+                        cl.add(index, NBTIO.putItemHelper(inventory.getItem(index), index));
+                    }
+//     
+                    ctm.putList(cl);
+                    Item sitem = RegisterItemServices.CUSTOM_ITEMS.get("ct_chest");
+                    sitem.setNamedTag(ctm);
 
-            return false;
+                    player.getInventory().removeItem(i);
+                    player.getInventory().setItemInHand(sitem);
+                    target.level.setBlock(target, new BlockAir());
+
+                    return true;
+                }
+
+                return false;
+            }
         }
-
         //编写拿取的逻辑
         if(player.isSneaking()){
             return false;

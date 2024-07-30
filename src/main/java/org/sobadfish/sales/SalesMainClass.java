@@ -60,6 +60,7 @@ public class SalesMainClass extends PluginBase {
 
 
 
+    public static boolean usedCtChest = true;
 
 
     public static List<String> banWorlds = new ArrayList<>();
@@ -237,11 +238,12 @@ public class SalesMainClass extends PluginBase {
     }
 
 
-    //加载坐标点
+    //加载配置
     private void loadConfig() {
         banWorlds = getConfig().getStringList("ban-world");
         OnlyUserAdminCore = getConfig().getStringList("only-use-admin-money-core");
         canGiveMoneyItem = getConfig().getBoolean("can-give-money-item",true);
+        usedCtChest = getConfig().getBoolean("used-ct-chest",true);
     }
 
 
