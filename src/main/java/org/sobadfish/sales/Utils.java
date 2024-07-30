@@ -2,18 +2,10 @@ package org.sobadfish.sales;
 
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.item.EntityFirework;
-import cn.nukkit.item.ItemFirework;
-import cn.nukkit.level.Level;
+
 import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
-import cn.nukkit.nbt.NBTIO;
-import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.nbt.tag.DoubleTag;
-import cn.nukkit.nbt.tag.FloatTag;
-import cn.nukkit.nbt.tag.ListTag;
-import cn.nukkit.utils.DyeColor;
-import cn.nukkit.utils.TextFormat;
+
 
 import java.util.*;
 
@@ -77,46 +69,6 @@ public class Utils {
     }
 
 
-    /**
-     * 放烟花
-     */
-    public static void spawnFirework(Position position) {
-
-        Level level = position.getLevel();
-        ItemFirework item = new ItemFirework();
-        CompoundTag tag = new CompoundTag();
-        Random random = new Random();
-        CompoundTag ex = new CompoundTag();
-        ex.putByteArray("FireworkColor", new byte[]{
-                (byte) DyeColor.values()[random.nextInt(ItemFirework.FireworkExplosion.ExplosionType.values().length)].getDyeData()
-        });
-        ex.putByteArray("FireworkFade", new byte[0]);
-        ex.putBoolean("FireworkFlicker", random.nextBoolean());
-        ex.putBoolean("FireworkTrail", random.nextBoolean());
-        ex.putByte("FireworkType", ItemFirework.FireworkExplosion.ExplosionType.values()
-                [random.nextInt(ItemFirework.FireworkExplosion.ExplosionType.values().length)].ordinal());
-        tag.putCompound("Fireworks", (new CompoundTag("Fireworks")).putList(new ListTag<CompoundTag>("Explosions").add(ex)).putByte("Flight", 1));
-        item.setNamedTag(tag);
-        CompoundTag nbt = new CompoundTag();
-        nbt.putList(new ListTag<DoubleTag>("Pos")
-                .add(new DoubleTag("", position.x + 0.5D))
-                .add(new DoubleTag("", position.y + 0.5D))
-                .add(new DoubleTag("", position.z + 0.5D))
-        );
-        nbt.putList(new ListTag<DoubleTag>("Motion")
-                .add(new DoubleTag("", 0.0D))
-                .add(new DoubleTag("", 0.0D))
-                .add(new DoubleTag("", 0.0D))
-        );
-        nbt.putList(new ListTag<FloatTag>("Rotation")
-                .add(new FloatTag("", 0.0F))
-                .add(new FloatTag("", 0.0F))
-
-        );
-        nbt.putCompound("FireworkItem", NBTIO.putItemHelper(item));
-        EntityFirework entity = new EntityFirework(level.getChunk((int) position.x >> 4, (int) position.z >> 4), nbt);
-        entity.spawnToAll();
-    }
 
 
 
@@ -213,17 +165,13 @@ public class Utils {
         int other = size - l;
         StringBuilder ls = new StringBuilder();
         if(l > 0){
-            for(int i = 0;i < l;i++){
-                ls.append(hasDataChar);
-            }
+            ls.append(String.valueOf(hasDataChar).repeat(l));
         }
         StringBuilder others = new StringBuilder();
         if(other > 0){
-            for(int i = 0;i < other;i++){
-                others.append(noDataChar);
-            }
+            others.append(String.valueOf(noDataChar).repeat(other));
         }
-        return TextFormat.colorize('&',ls +others.toString());
+        return ls +others.toString().replace('&','§');
     }
 
     /**

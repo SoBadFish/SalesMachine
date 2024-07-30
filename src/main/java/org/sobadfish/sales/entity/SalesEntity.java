@@ -784,7 +784,7 @@ public class SalesEntity extends EntityHuman {
     public static boolean hasBlockByPositionList(List<Position> positions){
         for (Position ps : positions) {
             Block block = ps.level.getBlock(ps);
-            if (block.getId() != 0 && block.getId() != SalesMainClass.INSTANCE.services.iBarrier.getBid()) {
+            if (block.getId() != 0 && block.getId() != SalesMainClass.INSTANCE.services.iBarrier.getId()) {
                 return true;
             }
 

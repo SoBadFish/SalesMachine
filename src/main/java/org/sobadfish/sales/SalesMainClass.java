@@ -2,6 +2,8 @@ package org.sobadfish.sales;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.block.Block;
+import cn.nukkit.block.BlockAir;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
@@ -11,11 +13,13 @@ import cn.nukkit.entity.data.Skin;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.level.Level;
+
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Config;
+
 import cn.nukkit.utils.TextFormat;
 import cn.nukkit.utils.Utils;
 import com.google.gson.Gson;
@@ -77,12 +81,12 @@ public class SalesMainClass extends PluginBase {
 
     public static boolean canGiveMoneyItem = true;
 
-    public static String CORE_NAME = "";
+    public static String CORE_NAME = "PowerNukkitX";
 
     /**
      * 注册物品服务
      * */
-    public RegisterItemServices services = new RegisterItemServices();
+    public RegisterItemServices services = new RegisterItemServices(this);
 
     public LinkedHashMap<String, ItemData> itemInfoData = new LinkedHashMap<>();
 
@@ -93,9 +97,8 @@ public class SalesMainClass extends PluginBase {
     public void onLoad() {
         INSTANCE = this;
         //提前注册好
-        BlockEntity.registerBlockEntity(SalesEntity.SalesBlockEntity.ENTITY_TYPE,SalesEntity.SalesBlockEntity.class);
-        Entity.registerEntity(SalesEntity.ENTITY_TYPE,SalesEntity.class);
-        checkServer();
+//        BlockEntity.registerBlockEntity(SalesEntity.SalesBlockEntity.ENTITY_TYPE,SalesEntity.SalesBlockEntity.class);
+//        Entity.registerEntity(SalesEntity.ENTITY_TYPE,SalesEntity.class);
         services.setCoreName(CORE_NAME);
         services.registerItem();
     }
@@ -398,8 +401,8 @@ public class SalesMainClass extends PluginBase {
                     p = Server.getInstance().getPlayer(master);
                     if(p != null){
                         Item item =RegisterItemServices.CUSTOM_ITEMS.get("discount");
-                        item.setCustomName(TextFormat.colorize('&',"&r&e&l通用优惠券 ("+zks+"折)"));
-                        item.setLore(TextFormat.colorize('&',"\n&r&7 可以用作所有的售货机!"));
+                        item.setCustomName("&r&e&l通用优惠券 ("+zks+"折)".replace('&','§'));
+                        item.setLore("\n&r&7 可以用作所有的售货机!".replace('&','§'));
                         item.addEnchantment(Enchantment.getEnchantment(0));
                         CompoundTag tag = item.getNamedTag();
                         tag.putString(CustomSaleDiscountItem.USE_TAG,"all");
@@ -420,7 +423,7 @@ public class SalesMainClass extends PluginBase {
                         if(ENTITY_SKIN.containsKey(model)){
                             if(sender instanceof Player){
                                 Item hand = ((Player) sender).getInventory().getItemInHand();
-                                if(hand.getId() == 0){
+                                if(hand.getId() == new BlockAir().getId()){
                                     sendMessageToObject("&c请不要手持空气",sender);
                                 }else{
                                     if(hand instanceof ISaleItem){
@@ -623,35 +626,7 @@ public class SalesMainClass extends PluginBase {
 
     }
 
-    private void checkServer(){
-        boolean ver = false;
-        //双核心兼容
-        CORE_NAME = "Nukkit";
-        try {
-            Class<?> c = Class.forName("cn.nukkit.Nukkit");
-            c.getField("NUKKIT_PM1E");
-            ver = true;
-            CORE_NAME = "Nukkit PM1E";
 
-
-        } catch (ClassNotFoundException | NoSuchFieldException ignore) { }
-        try {
-            Class<?> c = Class.forName("cn.nukkit.Nukkit");
-            CORE_NAME = c.getField("NUKKIT").get(c).toString();
-
-            ver = true;
-
-        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException ignore) {
-        }
-
-
-        AbstractFakeInventory.IS_PM1E = ver;
-        if(ver){
-            Server.getInstance().enableExperimentMode = true;
-            Server.getInstance().forceResources = true;
-        }
-        sendMessageToConsole("&e当前核心为 "+CORE_NAME);
-    }
 
     @Override
     public void onDisable() {

@@ -16,14 +16,27 @@
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
-    <distributionManagement>
-        <repository>
-            <id>maven-repo</id>
-            <url>file:/www/wwwroot/repo.lanink.cn</url>
-        </repository>
-    </distributionManagement>
+
 
     <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2/</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://www.jitpack.io</url>
+        </repository>
+
+        <repository>
+            <id>opencollab-repository-maven-releases</id>
+            <name>Opencollab Repository releases</name>
+            <url>https://repo.opencollab.dev/maven-releases</url>
+        </repository>
+        <repository>
+            <id>opencollab-repository-maven-snapshots</id>
+            <url>https://repo.opencollab.dev/maven-snapshots</url>
+        </repository>
         <repository>
             <id>opencollab-repo-release</id>
             <url>https://repo.opencollab.dev/maven-releases/</url>
@@ -47,11 +60,13 @@
     </repositories>
     <dependencies>
         <dependency>
-            <groupId>cn.nukkit</groupId>
-            <artifactId>Nukkit</artifactId>
-            <version>MOT-SNAPSHOT</version>
+            <groupId>cn.powernukkitx</groupId>
+            <artifactId>powernukkitx</artifactId>
+            <version>1.20.40-r1</version>
             <scope>provided</scope>
+<!--            <systemPath>${project.basedir}/lib/powernukkitx.jar</systemPath>-->
         </dependency>
+
 
 
         <dependency>
@@ -60,13 +75,7 @@
             <version>3.34.0</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>cn.lanink</groupId>
-            <artifactId>CustomItemAPI</artifactId>
-            <version>1.0.7-PM1E-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath> ${project.basedir}/lib/CustomItemAPI-1.0.7-PM1E-SNAPSHOT.jar</systemPath>
-        </dependency>
+
         <dependency>
             <groupId>me.onebone</groupId>
             <artifactId>economyapi</artifactId>
@@ -98,7 +107,7 @@
 
     </dependencies>
     <build>
-        <finalName>${project.artifactId}_v${project.version}</finalName>
+        <finalName>${project.artifactId}_v${project.version}-PNX</finalName>
         <plugins>
 
             <plugin>

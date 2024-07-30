@@ -280,7 +280,7 @@ public class SaleItem {
      * 是否为收购模式
      * */
     public boolean isAcquisition(){
-        return tag.contains("sales_exchange") && tag.getBoolean("sales_exchange",false);
+        return tag.contains("sales_exchange") && tag.getBoolean("sales_exchange");
     }
 
     /**

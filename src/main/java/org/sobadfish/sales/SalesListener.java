@@ -394,14 +394,14 @@ public class SalesListener implements Listener {
     }
 
 
-    @EventHandler(ignoreCancelled = true,priority = EventPriority.MONITOR)
+    @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event){
         Block block = event.getBlock();
         if(event.isCancelled()){
             return;
         }
 
-        if(block.getId() == main.services.iBarrier.getBid()){
+        if(block.getId() == main.services.iBarrier.getId()){
             SalesEntity entity1 = getEntityByPos(event.getBlock());
             if(entity1 != null){
                 if(event.getPlayer().isOp()){
