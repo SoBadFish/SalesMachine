@@ -15,7 +15,7 @@ import cn.nukkit.math.BlockFace;
 public abstract class BaseCtSaleItem extends ItemCustom {
 
     public BaseCtSaleItem(String id, String textureName) {
-        super(id, "售货机搬运器", textureName);
+        super(id, "搬运器", textureName);
     }
 
 

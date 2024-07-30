@@ -15,6 +15,7 @@
 		"sale_item_v4":{
 			"textures": "textures/items/sale_item_v4.png"
 		},
+
 		"sale_item_v5":{
 			"textures": "textures/items/sale_item_v5.png"
 		},
@@ -35,6 +36,9 @@
 		},
 		"ct_iron_sale_v1": {
 			"textures": "textures/items/ct_iron_sale_v1.png"
+		},
+		"ct_iron_chest": {
+			"textures": "textures/items/ct_iron_chest.png"
 		},
 		"ct_iron_sale_v2": {
 			"textures": "textures/items/ct_iron_sale_v2.png"

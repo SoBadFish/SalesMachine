@@ -2,8 +2,10 @@ package org.sobadfish.sales;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
+import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.entity.data.Skin;
 import cn.nukkit.item.Item;
@@ -88,9 +90,10 @@ public class SalesMainClass extends PluginBase {
 
     @Override
     public void onLoad() {
+        INSTANCE = this;
         //提前注册好
-//        BlockEntity.registerBlockEntity(SalesEntity.SalesBlockEntity.ENTITY_TYPE,SalesEntity.SalesBlockEntity.class);
-//        Entity.registerEntity(SalesEntity.ENTITY_TYPE,SalesEntity.class);
+        BlockEntity.registerBlockEntity(SalesEntity.SalesBlockEntity.ENTITY_TYPE,SalesEntity.SalesBlockEntity.class);
+        Entity.registerEntity(SalesEntity.ENTITY_TYPE,SalesEntity.class);
         checkServer();
         services.setCoreName(CORE_NAME);
         services.registerItem();
@@ -98,7 +101,7 @@ public class SalesMainClass extends PluginBase {
 
     @Override
     public void onEnable() {
-        INSTANCE = this;
+
         sendMessageToConsole("&a正在加载售货机插件");
         //检查是否支持自定义物品
         boolean load = true;
@@ -219,6 +222,7 @@ public class SalesMainClass extends PluginBase {
     private void loadMoneyCore() {
         if(isEnableMoneyCore(MoneyType.EconomyAPI)){
             registerMoneyCore("economyapi",EconomyMoney.class);
+
         }
         if(isEnableMoneyCore(MoneyType.Money)){
             registerMoneyCore("Money", MoneyCoreMoney.class);
@@ -227,6 +231,9 @@ public class SalesMainClass extends PluginBase {
             registerMoneyCore("playerPoints", PlayerPointsMoney.class);
         }
 
+        if(LOAD_MONEY.size() == 0){
+            sendMessageToConsole("&c无任何经济系统!");
+        }
     }
 
 

@@ -5,11 +5,12 @@ api:
   - 1.0.14
 author: Sobadfish
 
-depend:
-  - EconomyAPI
 
 softdepend:
   - CustomItemAPI
+  - EconomyAPI
+  - Money
+  - playerPoints
 
 load: STARTUP
 

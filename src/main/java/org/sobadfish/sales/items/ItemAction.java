@@ -1,13 +1,23 @@
 package org.sobadfish.sales.items;
 
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.block.Block;
+import cn.nukkit.block.BlockAir;
+import cn.nukkit.block.BlockChest;
+import cn.nukkit.blockentity.BlockEntity;
+import cn.nukkit.blockentity.BlockEntityChest;
+import cn.nukkit.event.block.BlockPlaceEvent;
+import cn.nukkit.event.player.PlayerInteractEvent;
+import cn.nukkit.inventory.Inventory;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Sound;
 import cn.nukkit.math.BlockFace;
+import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
+import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.utils.TextFormat;
 import org.sobadfish.sales.RegisterItemServices;
 import org.sobadfish.sales.SalesListener;
@@ -25,6 +35,48 @@ import java.util.List;
  */
 public class ItemAction {
 
+    /**
+     * 放置箱子..
+     * */
+    public static boolean onChestPlace(Item handItem,Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz){
+        BlockChest blockChest = new BlockChest();
+        blockChest.setComponents(block);
+        BlockPlaceEvent event = new BlockPlaceEvent(player,blockChest,block,target,handItem);
+        Server.getInstance().getPluginManager().callEvent(event);
+        if(event.isCancelled()){
+            return false;
+        }
+        int[] faces = new int[]{2, 5, 3, 4};
+
+        BlockEntityChest chest = null;
+        blockChest.setDamage(faces[player.getDirection().getHorizontalIndex()]);
+
+        for(int side = 2; side <= 5; ++side) {
+            if ((blockChest.getDamage() != 4 && blockChest.getDamage() != 5 || side != 4 && side != 5) && (blockChest.getDamage() != 3 && blockChest.getDamage() != 2 || side != 2 && side != 3)) {
+                Block c = blockChest.getSide(BlockFace.fromIndex(side));
+                if (c instanceof BlockChest && c.getDamage() == blockChest.getDamage()) {
+                    BlockEntity blockEntity = blockChest.getLevel().getBlockEntity(c);
+                    if (blockEntity instanceof BlockEntityChest && !((BlockEntityChest)blockEntity).isPaired()) {
+                        chest = (BlockEntityChest)blockEntity;
+                        break;
+                    }
+                }
+            }
+        }
+        level.setBlock(block, blockChest, true, true);
+        CompoundTag nbt = (new CompoundTag("")).putList(handItem.getNamedTag().getList("Items")).putString("id", "Chest").putInt("x", (int)block.x).putInt("y", (int)block.y).putInt("z", (int)block.z);
+
+        BlockEntityChest blockEntity = (BlockEntityChest)BlockEntity.createBlockEntity("Chest", block.getChunk(), nbt, new Object[0]);
+        if (chest != null) {
+            chest.pairWith(blockEntity);
+            blockEntity.pairWith(chest);
+        }
+        Item cc = RegisterItemServices.CUSTOM_ITEMS.get("ct").clone();
+        player.getInventory().setItemInHand(cc);
+        level.addSound(block, Sound.MOB_ZOMBIE_WOODBREAK);
+
+        return true;
+    }
 
     /**
      * 放置售货机
@@ -53,11 +105,49 @@ public class ItemAction {
 
     }
 
-    public static boolean onCtActivate(Item i, Player player, Block target) {
+    public static boolean onCtActivate(Item i, Player player, Block target,BlockFace face) {
+
+        //箱子
+        PlayerInteractEvent event = new PlayerInteractEvent(player,i,target,face);
+        Server.getInstance().getPluginManager().callEvent(event);
+        if(event.isCancelled()){
+            return false;
+        }
+        //把箱子搬起来
+        if(target instanceof BlockChest){
+            BlockEntity blockEntityChest = target.level.getBlockEntity(target);
+            if(blockEntityChest instanceof BlockEntityChest){
+                ((BlockEntityChest) blockEntityChest).unpair();
+                CompoundTag ctm = i.getNamedTag();
+                if(ctm == null){
+                    ctm = new CompoundTag();
+                }
+                Inventory inventory = ((BlockEntityChest) blockEntityChest).getInventory();
+                ListTag<CompoundTag> cl = new ListTag<>("Items");
+                for(int index = 0; index < inventory.getSize(); ++index) {
+                    cl.add(index, NBTIO.putItemHelper(inventory.getItem(index), index));
+                }
+//     
+                ctm.putList(cl);
+                Item sitem = RegisterItemServices.CUSTOM_ITEMS.get("ct_chest");
+                sitem.setNamedTag(ctm);
+
+                player.getInventory().removeItem(i);
+                player.getInventory().setItemInHand(sitem);
+                target.level.setBlock(target,new BlockAir());
+
+                return true;
+            }
+
+            return false;
+        }
+
         //编写拿取的逻辑
         if(player.isSneaking()){
             return false;
         }
+
+
         SalesEntity salesEntity = SalesListener.getEntityByPos(target);
         if(salesEntity != null){
             if(player.isOp() || salesEntity.master.equalsIgnoreCase(player.getName())){
@@ -87,7 +177,6 @@ public class ItemAction {
                 sitem.setCompoundTag(compoundTag);
                 //i.setCount(i.getCount() - 1);
 
-
                 player.getInventory().removeItem(i);
                 player.getInventory().setItemInHand(sitem);
             }
@@ -97,6 +186,8 @@ public class ItemAction {
 
         return true;
     }
+
+
 
     public static boolean onSaleModelChange(Item item,Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz){
         if(player.isSneaking()){

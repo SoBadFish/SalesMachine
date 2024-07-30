@@ -9,13 +9,14 @@ import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
 
 /**
+ * 彩蛋功能 搬箱器
  * @author Sobadfish
- * @date 2024/3/30
+ * @date 2024/7/29
  */
-public class CustomCtItem extends ItemCustom  {
+public class CtChestItem extends ItemCustom {
 
-    public CustomCtItem() {
-        super("minecraft:ct_iron", "搬运器", "ct_iron");
+    public CtChestItem() {
+        super("minecraft:ct_iron_chest", "搬运器", "ct_iron_chest");
     }
 
 
@@ -40,7 +41,8 @@ public class CustomCtItem extends ItemCustom  {
 
     @Override
     public boolean onActivate(Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-       return ItemAction.onCtActivate(this,player,target,face);
+//        return ItemAction.onCtActivate(this,player,target);
+        return ItemAction.onChestPlace(this,level,player,block,target,face,fx,fy,fz);
 
 
     }

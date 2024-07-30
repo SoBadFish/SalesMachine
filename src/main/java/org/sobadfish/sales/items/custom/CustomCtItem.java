@@ -14,7 +14,7 @@ import org.sobadfish.sales.items.ItemAction;
 public class CustomCtItem extends ItemCustom {
 
     public CustomCtItem() {
-        super(1996,0,1, "售货机搬运器", "ct_iron");
+        super(1996,0,1, "搬运器", "ct_iron");
     }
 
     @Override
@@ -32,7 +32,7 @@ public class CustomCtItem extends ItemCustom {
 
     @Override
     public boolean onActivate(Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        return ItemAction.onCtActivate(this,player,target);
+        return ItemAction.onCtActivate(this,player,target,face);
     }
 
 

@@ -8,19 +8,18 @@ import cn.nukkit.math.BlockFace;
 import org.sobadfish.sales.items.ItemAction;
 
 /**
+ * 彩蛋功能 搬箱器
  * @author Sobadfish
- * @date 2024/5/10
+ * @date 2024/7/29
  */
-public class BaseCtSaleItem extends ItemCustom {
+public class CtChestItem extends ItemCustom {
 
-    public BaseCtSaleItem(int id,String textureName) {
-        super(id,0,1, "搬运器", textureName);
+    public CtChestItem() {
+        super(2015, 0,1,"搬运器", "ct_iron_chest");
     }
 
-    @Override
-    public int getMaxStackSize() {
-        return 1;
-    }
+
+
 
     @Override
     public boolean canBeActivated() {
@@ -28,9 +27,11 @@ public class BaseCtSaleItem extends ItemCustom {
     }
 
 
-
     @Override
     public boolean onActivate(Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        return ItemAction.onSaleActivate(this,level,player,block);
+        return ItemAction.onChestPlace(this,level,player,block,target,face,fx,fy,fz);
     }
+
+
+
 }

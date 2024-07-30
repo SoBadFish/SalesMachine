@@ -96,6 +96,7 @@ public class RegisterItemServices {
             CustomItemAPI.getInstance().registerCustomItem(2012, org.sobadfish.sales.items.custom.ct.CustomV4CtSaleItem.class);
             CustomItemAPI.getInstance().registerCustomItem(2013, org.sobadfish.sales.items.custom.ct.CustomV5CtSaleItem.class);
             CustomItemAPI.getInstance().registerCustomItem(2014, org.sobadfish.sales.items.custom.ct.CustomV6CtSaleItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(2015, org.sobadfish.sales.items.custom.CtChestItem.class);
 
 
             CUSTOM_ITEMS.put("sale_v1",new  org.sobadfish.sales.items.custom.sales.CustomV1SaleItem());
@@ -111,6 +112,7 @@ public class RegisterItemServices {
             CUSTOM_ITEMS.put("ct_sale_v4",new org.sobadfish.sales.items.custom.ct.CustomV4CtSaleItem());
             CUSTOM_ITEMS.put("ct_sale_v5",new org.sobadfish.sales.items.custom.ct.CustomV5CtSaleItem());
             CUSTOM_ITEMS.put("ct_sale_v6",new org.sobadfish.sales.items.custom.ct.CustomV6CtSaleItem());
+            CUSTOM_ITEMS.put("ct_chest",new org.sobadfish.sales.items.custom.CtChestItem());
 
 
             CUSTOM_ITEMS.put("setting",new org.sobadfish.sales.items.custom.CustomSaleSettingItem());
@@ -140,6 +142,8 @@ public class RegisterItemServices {
             Item.registerCustomItem(CustomSaleMoneyItem.class);
 
             Item.registerCustomItem(CustomCtItem.class);
+
+
             Item.registerCustomItem(CustomV1CtSaleItem.class,false);
             Item.registerCustomItem(CustomV2CtSaleItem.class,false);
             Item.registerCustomItem(CustomV3CtSaleItem.class,false);
@@ -147,6 +151,8 @@ public class RegisterItemServices {
             Item.registerCustomItem(CustomV5CtSaleItem.class,false);
             Item.registerCustomItem(CustomV6CtSaleItem.class,false);
             Item.registerCustomItem(CustomWrench.class);
+
+            Item.registerCustomItem(CtChestItem.class,false);
 
             Item.registerCustomItem(CustomSalePanelLeftItem.class,false);
             Item.registerCustomItem(CustomSalePanelRightItem.class,false);
@@ -178,6 +184,7 @@ public class RegisterItemServices {
             CUSTOM_ITEMS.put("right",new CustomSalePanelRightItem());
             CUSTOM_ITEMS.put("discount",new CustomSaleDiscountItem());
             CUSTOM_ITEMS.put("wall",new CustomSalePanelWallItem());
+            CUSTOM_ITEMS.put("ct_chest",new CtChestItem());
         }
 
 //        Item.removeCreativeItem(CUSTOM_ITEMS.get("ct_sale"));

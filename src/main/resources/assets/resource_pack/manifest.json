@@ -2,9 +2,9 @@
 	"format_version":2,
 	"header":
 	{
-		"uuid":"e3630693-263c-4cc2-8037-314d0c8f514e",
+		"uuid":"cc5b715e-297b-4a58-9cea-8a4ddca9fc09",
 		"name":"§l§aSale §eItems §b专属材质",
-		"version":[0,0,9],
+		"version":[0,0,10],
 		"min_engine_version":[1,18,0],
 		"description":"售货机专属物品材质"
 		
@@ -12,8 +12,8 @@
 	"modules":[
 	{
 		"description":"售货机自定义物品",
-		"version":[0,0,9],
-		"uuid":"b29e4486-86a0-4b63-853d-49cb8f92f897",
+		"version":[0,0,10],
+		"uuid":"5820e3f5-f577-41cd-b3d4-99be7a1c5651",
 		"type":"resources"
 	}]
 }

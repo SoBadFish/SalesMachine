@@ -2,7 +2,7 @@
 ban-world: []
 
 # 只允许OP使用的经济核心
-# 目前装载 economyapi，Money，playerPoints
+# 目前支持 economyapi，Money，playerPoints
 only-use-admin-money-core: []
 
 #是否直接给予金币物品
