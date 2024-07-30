@@ -7,8 +7,8 @@ import cn.nukkit.block.BlockAir;
 import cn.nukkit.block.BlockChest;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntityChest;
+import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
-import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.inventory.Inventory;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.enchantment.Enchantment;
@@ -108,7 +108,7 @@ public class ItemAction {
 
         if(SalesMainClass.usedCtChest) {
             //箱子
-            PlayerInteractEvent event = new PlayerInteractEvent(player, i, target, face);
+            BlockBreakEvent event = new BlockBreakEvent(player,target, i, null, false);
             Server.getInstance().getPluginManager().callEvent(event);
             if (event.isCancelled()) {
                 return false;
