@@ -250,7 +250,7 @@ public class SalesEntity extends EntityHuman {
         }
 
 
-        if (items.size() >= InventoryType.CHEST.getDefaultSize() - 3) {
+        if (items.size() >= InventoryType.DOUBLE_CHEST.getDefaultSize() - 8) {
             return false;
         }
         if (item.saleItem.getId() == 0) {
