@@ -225,7 +225,7 @@ public class SalesMainClass extends PluginBase {
 
     private void loadMoneyCore() {
         if(usedCoin){
-            registerMoneyCore("sale:coin", CoinMoney.class);
+            registerMoneyCore("硬币交换", CoinMoney.class);
         }
         if(isEnableMoneyCore(MoneyType.EconomyAPI)){
             registerMoneyCore("economyapi",EconomyMoney.class);
@@ -239,7 +239,7 @@ public class SalesMainClass extends PluginBase {
         }
 
         if(LOAD_MONEY.size() == 0){
-            registerMoneyCore("sale:coin", CoinMoney.class);
+            registerMoneyCore("硬币交换", CoinMoney.class);
             sendMessageToConsole("&c无任何经济系统! 强制启用默认经济!");
         }
     }
