@@ -107,14 +107,14 @@ public class ItemAction {
     public static boolean onCtActivate(Item i, Player player, Block target,BlockFace face) {
 
         if(SalesMainClass.usedCtChest) {
-            //箱子
-            BlockBreakEvent event = new BlockBreakEvent(player,target, i, null, false);
-            Server.getInstance().getPluginManager().callEvent(event);
-            if (event.isCancelled()) {
-                return false;
-            }
             //把箱子搬起来
             if (target instanceof BlockChest) {
+                //箱子
+                BlockBreakEvent event = new BlockBreakEvent(player,target, i, null, false);
+                Server.getInstance().getPluginManager().callEvent(event);
+                if (event.isCancelled()) {
+                    return false;
+                }
                 BlockEntity blockEntityChest = target.level.getBlockEntity(target);
                 if (blockEntityChest instanceof BlockEntityChest) {
                     ((BlockEntityChest) blockEntityChest).unpair();
