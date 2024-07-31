@@ -90,7 +90,7 @@ public class PanelItem extends BasePlayPanelItemInstance{
         boolean v = false;
         List<String> vl = new ArrayList<>();
         //TODO 价格
-        SaleItem.ZkMoney zkMoney = showItem.getMoneyStr();
+        SaleItem.ZkMoney zkMoney = showItem.getMoneyStr(im);
 
         if(showItem.isAcquisition()){
             vl.add(format("&r&7库存: &a"+(getStockStr())));
@@ -99,7 +99,7 @@ public class PanelItem extends BasePlayPanelItemInstance{
 
         }else{
             vl.add(format("&r&7库存: &a"+(getStockStr())));
-            vl.add(format("&r&7价格: "+zkMoney.msg));
+            vl.add(format("&r&7价格: "+zkMoney.msg ));
         }
 //
         if(showItem.tag.contains("limitCount") ){

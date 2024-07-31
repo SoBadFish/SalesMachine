@@ -400,7 +400,7 @@ public class SaleItem {
         return upsLimit;
     }
 
-    public ZkMoney getMoneyStr(){
+    public ZkMoney getMoneyStr(IMoney iMoney){
         double mm = money;
         String db2 = String.format("%.2f",mm);
         if(mm > 0 && tag.contains("zk")){
@@ -417,7 +417,7 @@ public class SaleItem {
 
         ZkMoney zkMoney = new ZkMoney();
         zkMoney.money = mm;
-        zkMoney.msg = moneyStr;
+        zkMoney.msg = moneyStr+" "+ iMoney.displayName();
         return zkMoney;
 
     }

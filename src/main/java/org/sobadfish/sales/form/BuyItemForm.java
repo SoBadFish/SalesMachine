@@ -76,7 +76,7 @@ public class BuyItemForm extends AbstractSaleForm{
             }
 
             stringBuilder.append("&7可用优惠券: &l&a").append(disCount).append("\n\n");
-            SaleItem.ZkMoney zkMoney = salesItem.getMoneyStr();
+            SaleItem.ZkMoney zkMoney = salesItem.getMoneyStr(iMoney);
             stringBuilder.append("&7价格: &l&a").append(zkMoney.msg).append("\n");
 
         }else{
