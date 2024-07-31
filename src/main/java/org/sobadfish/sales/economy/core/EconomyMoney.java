@@ -2,6 +2,7 @@ package org.sobadfish.sales.economy.core;
 
 import me.onebone.economyapi.EconomyAPI;
 import org.sobadfish.sales.economy.IMoney;
+import org.sobadfish.sales.entity.SalesEntity;
 
 /**
  * 经济核心实现接口
@@ -17,12 +18,12 @@ public class EconomyMoney implements IMoney {
     }
 
     @Override
-    public boolean reduceMoney(String player, double money) {
+    public boolean reduceMoney(String player, double money, SalesEntity sales) {
         return EconomyAPI.getInstance().reduceMoney(player, money, true) == 1;
     }
 
     @Override
-    public boolean addMoney(String player, double money) {
+    public boolean addMoney(String player, double money, SalesEntity sales) {
         return EconomyAPI.getInstance().addMoney(player, money, true) == 1;
     }
 

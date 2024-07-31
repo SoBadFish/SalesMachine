@@ -3,6 +3,7 @@ package org.sobadfish.sales.economy.core;
 
 import net.player.api.Point;
 import org.sobadfish.sales.economy.IMoney;
+import org.sobadfish.sales.entity.SalesEntity;
 
 /**
  * @author Sobadfish
@@ -15,12 +16,12 @@ public class PlayerPointsMoney implements IMoney {
     }
 
     @Override
-    public boolean reduceMoney(String player, double money) {
+    public boolean reduceMoney(String player, double money, SalesEntity sales) {
         return Point.reducePoint(player, money);
     }
 
     @Override
-    public boolean addMoney(String player, double money) {
+    public boolean addMoney(String player, double money, SalesEntity sales) {
         Point.addPoint(player, money);
         return true;
     }

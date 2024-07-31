@@ -5,6 +5,8 @@ import cn.nukkit.Server;
 import cn.nukkit.item.Item;
 import org.sobadfish.sales.RegisterItemServices;
 import org.sobadfish.sales.economy.IMoney;
+import org.sobadfish.sales.entity.SalesEntity;
+import org.sobadfish.sales.items.SaleItem;
 
 /**
  * @author Sobadfish
@@ -18,7 +20,7 @@ public class CoinMoney implements IMoney {
     }
 
     @Override
-    public boolean reduceMoney(String player, double money) {
+    public boolean reduceMoney(String player, double money, SalesEntity sales) {
         int count = (int) Math.ceil(money);
         Player pl = Server.getInstance().getPlayer(player);
         if(pl == null || count <= 0){
@@ -35,14 +37,27 @@ public class CoinMoney implements IMoney {
     }
 
     @Override
-    public boolean addMoney(String player, double money) {
+    public boolean addMoney(String player, double money, SalesEntity sales) {
         int count = (int) Math.ceil(money);
         Player pl = Server.getInstance().getPlayer(player);
-        if(pl == null || count <= 0){
+        Item coin = RegisterItemServices.CUSTOM_ITEMS.get("sale_coin").clone();
+
+        if(count <= 0){
             return false;
         }
-        Item coin = RegisterItemServices.CUSTOM_ITEMS.get("sale_coin").clone();
+        if(pl== null){
+            //玩家离线 判断是否为店主 店主就扔到售货机..
+            if(sales.master.equalsIgnoreCase(player)){
+                //添加硬币到私有库存
+                sales.addItem(new SaleItem(coin,count,0,false),true);
+                return true;
+            }else{
+                return false;
+            }
+
+        }
         coin.setCount(count);
+
         Item[] items = pl.getInventory().addItem(coin);
         if(items.length > 0){
             for (Item item: items) {

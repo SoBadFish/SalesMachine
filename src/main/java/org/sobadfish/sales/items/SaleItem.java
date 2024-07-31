@@ -23,6 +23,8 @@ public class SaleItem {
 
     public String loadMoney;
 
+    public boolean visable;
+
     public int stack;
 
     public boolean isRemove;
@@ -32,9 +34,10 @@ public class SaleItem {
 
     public double money;
 
-    public SaleItem(CompoundTag tag,Item saleItem, int stack, double money){
+    public SaleItem(CompoundTag tag,Item saleItem, int stack, double money,boolean visable){
         this.tag = tag;
         this.saleItem = saleItem;
+        this.visable = visable;
         this.stack = stack;
         this.money = money;
         if(tag.contains("loadMoney")){
@@ -45,6 +48,14 @@ public class SaleItem {
             this.loadMoney = firstName;
         }
 
+    }
+
+    public void setVisable(boolean visable) {
+        this.visable = visable;
+    }
+
+    public boolean isVisable() {
+        return visable;
     }
 
     public String getItemName(){
@@ -63,6 +74,14 @@ public class SaleItem {
     public SaleItem(Item saleItem, int stack, double money){
         this.saleItem = saleItem;
         this.stack = stack;
+        this.money = money;
+        this.loadMoney = SalesMainClass.getFirstMoney();
+    }
+
+    public SaleItem(Item saleItem, int stack, double money,boolean visable){
+        this.saleItem = saleItem;
+        this.stack = stack;
+        this.visable = visable;
         this.money = money;
         this.loadMoney = SalesMainClass.getFirstMoney();
     }
@@ -111,7 +130,7 @@ public class SaleItem {
                     if(count >= saleItem.getCount() * buyCount){
                         if(chunkLimit(player,buyCount)){
                             if(!passMoney){
-                                if(!iMoney.reduceMoney(sales.master,money * buyCount)){
+                                if(!iMoney.reduceMoney(sales.master,money * buyCount,sales)){
                                     SalesMainClass.sendMessageToObject("&c交易失败！ 无法扣除用户: "+sales.master+" 的 "+iMoney.displayName(),player);
                                     return false;
                                 }
@@ -119,13 +138,13 @@ public class SaleItem {
                             if (SalesMainClass.canGiveMoneyItem) {
                                 player.getInventory().addItem(new MoneyItem(money * buyCount).getItem(loadMoney));
                             } else {
-                                if (iMoney.addMoney(player.getName(), money * buyCount)) {
+                                if (iMoney.addMoney(player.getName(), money * buyCount,sales)) {
                                     SalesMainClass.sendMessageToObject("&a出售成功! 获得 &r" + iMoney.displayName() + "* " +
                                             String.format("%.2f", money * buyCount) + "!", player);
                                 } else {
                                     SalesMainClass.sendMessageToObject("&c交易失败! 原因: 经济核心异常", player);
                                     //还钱..
-                                    iMoney.addMoney(sales.master,money * buyCount);
+                                    iMoney.addMoney(sales.master,money * buyCount,sales);
 
                                     return false;
                                 }
@@ -138,7 +157,7 @@ public class SaleItem {
                                 //特殊情况交易失败..
                                 SalesMainClass.sendMessageToObject("&c交易失败! 原因: 背包物品不足", player);
                                 //还钱..
-                                iMoney.addMoney(sales.master,money * buyCount);
+                                iMoney.addMoney(sales.master,money * buyCount,sales);
                                 return false;
                             }
                             player.getInventory().removeItem(sclon);
@@ -207,7 +226,7 @@ public class SaleItem {
                         }
 
                         if(iMoney.myMoney(player.getName()) >= rmoney){
-                            if(!iMoney.reduceMoney(player.getName(),rmoney)){
+                            if(!iMoney.reduceMoney(player.getName(),rmoney,sales)){
                                 SalesMainClass.sendMessageToObject("&c交易失败! ",player);
                                 return false;
                             }else{
@@ -220,7 +239,7 @@ public class SaleItem {
 
 
                             }
-                            if(!iMoney.addMoney(sales.master,money * buyCount)){
+                            if(!iMoney.addMoney(sales.master,money * buyCount,sales)){
                                 SalesMainClass.sendMessageToObject("&c交易失败!",player);
                                 return false;
                             }

@@ -102,7 +102,8 @@ public class SalesEntity extends EntityHuman {
                 Item item = NBTIO.getItemHelper(compoundTag.getCompound("item"));
                 int stack = compoundTag.getInt("stack");
                 double money = compoundTag.getDouble("money");
-                items.add(new SaleItem(compoundTag, item, stack, money));
+                boolean visable = compoundTag.getBoolean("visable",true);
+                items.add(new SaleItem(compoundTag, item, stack, money,visable));
 
             }
         }
@@ -218,6 +219,7 @@ public class SalesEntity extends EntityHuman {
         return addItem(saleItem, true);
     }
 
+
     public boolean addItem(SaleItem item, boolean updateInv) {
 
         ListTag<CompoundTag> cl = loadItems;
@@ -258,6 +260,7 @@ public class SalesEntity extends EntityHuman {
         CompoundTag ct = item.tag;
         ct.putCompound("item", NBTIO.putItemHelper(item.saleItem));
 
+        ct.putBoolean("visable",item.visable);
         ct.putString("loadMoney", item.loadMoney);
         ct.putInt("stack", item.stack);
         ct.putDouble("money", item.money);

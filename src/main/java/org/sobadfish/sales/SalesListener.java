@@ -206,8 +206,10 @@ public class SalesListener implements Listener {
                     SalesMainClass.sendMessageToObject("&c经济核心 "+mn+" 未装载!",player);
                     return;
                 }
-                if(!iMoney.addMoney(player.getName(),money)){
+                if(!iMoney.addMoney(player.getName(),money,entity1)){
                     SalesMainClass.sendMessageToObject("&c交易失败!",player);
+
+
                     return;
                 }
                 item.setCount(item.getCount() - item.getCount());

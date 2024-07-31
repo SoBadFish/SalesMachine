@@ -2,6 +2,7 @@ package org.sobadfish.sales.economy.core;
 
 import money.Money;
 import org.sobadfish.sales.economy.IMoney;
+import org.sobadfish.sales.entity.SalesEntity;
 
 /**
  * @author Sobadfish
@@ -14,7 +15,7 @@ public class MoneyCoreMoney implements IMoney {
     }
 
     @Override
-    public boolean reduceMoney(String player, double money) {
+    public boolean reduceMoney(String player, double money, SalesEntity sales) {
         if(Money.getInstance().getPlayers().contains(player)){
             return Money.getInstance().reduceMoney(player, (float) money);
         }
@@ -22,7 +23,7 @@ public class MoneyCoreMoney implements IMoney {
     }
 
     @Override
-    public boolean addMoney(String player, double money) {
+    public boolean addMoney(String player, double money, SalesEntity sales) {
         if(Money.getInstance().getPlayers().contains(player)){
             return Money.getInstance().addMoney(player, (float) money);
 
