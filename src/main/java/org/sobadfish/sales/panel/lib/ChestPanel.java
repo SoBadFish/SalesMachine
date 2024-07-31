@@ -18,7 +18,7 @@ import java.util.Map;
  * @author Sobadfish
  * @date 2023/11/18
  */
-public class ChestPanel extends ChestFakeInventory implements InventoryHolder,ISalePanel {
+public class ChestPanel extends DoubleChestFakeInventory implements InventoryHolder,ISalePanel {
 
     public long id;
 
@@ -33,7 +33,7 @@ public class ChestPanel extends ChestFakeInventory implements InventoryHolder,IS
     private Map<Integer, BasePlayPanelItemInstance> panel = new LinkedHashMap<>();
 
     public ChestPanel(Player player, InventoryHolder holder, String name) {
-        super(InventoryType.CHEST,holder,name);
+        super(holder,name);
         this.player = player;
         this.setName(name);
     }

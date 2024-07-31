@@ -103,6 +103,7 @@ public class SellItemForm extends AbstractSaleForm{
         }
 
 
+
         if(sales.addItem(saleItem,true)){
             SalesMainClass.sendMessageToObject("&a添加成功!",player);
             player.getInventory().removeItem(cl);
