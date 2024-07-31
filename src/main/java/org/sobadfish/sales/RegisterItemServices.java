@@ -97,7 +97,7 @@ public class RegisterItemServices {
             CustomItemAPI.getInstance().registerCustomItem(2013, org.sobadfish.sales.items.custom.ct.CustomV5CtSaleItem.class);
             CustomItemAPI.getInstance().registerCustomItem(2014, org.sobadfish.sales.items.custom.ct.CustomV6CtSaleItem.class);
             CustomItemAPI.getInstance().registerCustomItem(2015, org.sobadfish.sales.items.custom.CtChestItem.class);
-
+            CustomItemAPI.getInstance().registerCustomItem(2016, org.sobadfish.sales.items.custom.CoinItem.class);
 
             CUSTOM_ITEMS.put("sale_v1",new  org.sobadfish.sales.items.custom.sales.CustomV1SaleItem());
             CUSTOM_ITEMS.put("sale_v2",new  org.sobadfish.sales.items.custom.sales.CustomV2SaleItem());
@@ -119,6 +119,7 @@ public class RegisterItemServices {
             CUSTOM_ITEMS.put("remove",new org.sobadfish.sales.items.custom.CustomSaleRemoveItem());
             CUSTOM_ITEMS.put("money",new org.sobadfish.sales.items.custom.CustomSaleMoneyItem());
             CUSTOM_ITEMS.put("ct",new org.sobadfish.sales.items.custom.CustomCtItem());
+            CUSTOM_ITEMS.put("sale_coin",new org.sobadfish.sales.items.custom.CoinItem());
 
             CUSTOM_ITEMS.put("pipe_wrench",new org.sobadfish.sales.items.custom.CustomWrench());
 
@@ -142,6 +143,8 @@ public class RegisterItemServices {
             Item.registerCustomItem(CustomSaleMoneyItem.class);
 
             Item.registerCustomItem(CustomCtItem.class);
+
+            Item.registerCustomItem(CoinItem.class);
 
 
             Item.registerCustomItem(CustomV1CtSaleItem.class,false);
@@ -179,6 +182,8 @@ public class RegisterItemServices {
             CUSTOM_ITEMS.put("money",new CustomSaleMoneyItem());
             CUSTOM_ITEMS.put("ct",new CustomCtItem());
             CUSTOM_ITEMS.put("pipe_wrench",new CustomWrench());
+
+            CUSTOM_ITEMS.put("sale_coin",new CoinItem());
 
             CUSTOM_ITEMS.put("left",new CustomSalePanelLeftItem());
             CUSTOM_ITEMS.put("right",new CustomSalePanelRightItem());

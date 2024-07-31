@@ -1,6 +1,9 @@
 #阻止放置售货机的世界
 ban-world: []
 
+# 使用自带的硬币系统
+used-coin: true
+
 # 允许搬运器搬箱子..
 used-ct-chest: true
 

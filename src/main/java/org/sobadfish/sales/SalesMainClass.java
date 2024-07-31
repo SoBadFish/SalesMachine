@@ -26,6 +26,7 @@ import org.sobadfish.sales.config.SaleSkinConfig;
 import org.sobadfish.sales.config.SalesData;
 import org.sobadfish.sales.db.SqliteHelper;
 import org.sobadfish.sales.economy.IMoney;
+import org.sobadfish.sales.economy.core.CoinMoney;
 import org.sobadfish.sales.economy.core.EconomyMoney;
 import org.sobadfish.sales.economy.core.MoneyCoreMoney;
 import org.sobadfish.sales.economy.core.PlayerPointsMoney;
@@ -78,6 +79,8 @@ public class SalesMainClass extends PluginBase {
     public static boolean canGiveMoneyItem = true;
 
     public static String CORE_NAME = "";
+
+    public static boolean usedCoin = true;
 
     /**
      * 注册物品服务
@@ -221,6 +224,9 @@ public class SalesMainClass extends PluginBase {
     }
 
     private void loadMoneyCore() {
+        if(usedCoin){
+            registerMoneyCore("sale:coin", CoinMoney.class);
+        }
         if(isEnableMoneyCore(MoneyType.EconomyAPI)){
             registerMoneyCore("economyapi",EconomyMoney.class);
 
@@ -233,7 +239,8 @@ public class SalesMainClass extends PluginBase {
         }
 
         if(LOAD_MONEY.size() == 0){
-            sendMessageToConsole("&c无任何经济系统!");
+            registerMoneyCore("sale:coin", CoinMoney.class);
+            sendMessageToConsole("&c无任何经济系统! 强制启用默认经济!");
         }
     }
 
@@ -244,6 +251,8 @@ public class SalesMainClass extends PluginBase {
         OnlyUserAdminCore = getConfig().getStringList("only-use-admin-money-core");
         canGiveMoneyItem = getConfig().getBoolean("can-give-money-item",true);
         usedCtChest = getConfig().getBoolean("used-ct-chest",true);
+        usedCoin = getConfig().getBoolean("used-coin",true);
+
     }
 
 
