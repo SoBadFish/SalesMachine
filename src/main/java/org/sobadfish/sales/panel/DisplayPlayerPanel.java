@@ -52,9 +52,9 @@ public class DisplayPlayerPanel implements InventoryHolder, IDisplayPanel {
 
         }
         if(player.isOp() || (sales.master != null && sales.master.equalsIgnoreCase(player.getName()))){
-            i = InventoryType.CHEST.getDefaultSize() - 1;
+            i = InventoryType.DOUBLE_CHEST.getDefaultSize() - 1;
             items.put(i,new RemoveSales());
-            i = InventoryType.CHEST.getDefaultSize() - 2;
+            i = InventoryType.DOUBLE_CHEST.getDefaultSize() - 2;
 
             items.put(i,new PanelInventoryButtonItem(sales));
             items.put(i - 1,new AdminSettingItem(sales));
