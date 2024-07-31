@@ -3,6 +3,9 @@
 	"texture_name":"atlas.items",
 	"texture_data":
 	{
+		"coin": {
+			"textures": "textures/items/coin.png"
+		},
 		"sale_item_v1":{
 			"textures": "textures/items/sale_item_v1.png"
 		},
