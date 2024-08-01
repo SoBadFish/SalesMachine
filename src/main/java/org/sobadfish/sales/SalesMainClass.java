@@ -78,6 +78,9 @@ public class SalesMainClass extends PluginBase {
 
     public static boolean canGiveMoneyItem = true;
 
+    //启用箱子锁
+    public static boolean enableCtKey = true;
+
     public static String CORE_NAME = "";
 
     public static boolean usedCoin = true;
@@ -253,6 +256,7 @@ public class SalesMainClass extends PluginBase {
         canGiveMoneyItem = getConfig().getBoolean("can-give-money-item",true);
         usedCtChest = getConfig().getBoolean("used-ct-chest",true);
         usedCoin = getConfig().getBoolean("used-coin",true);
+        enableCtKey = getConfig().getBoolean("enable-ct-key",true);
 
     }
 

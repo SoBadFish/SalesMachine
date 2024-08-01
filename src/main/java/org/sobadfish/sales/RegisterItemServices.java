@@ -98,6 +98,7 @@ public class RegisterItemServices {
             CustomItemAPI.getInstance().registerCustomItem(2014, org.sobadfish.sales.items.custom.ct.CustomV6CtSaleItem.class);
             CustomItemAPI.getInstance().registerCustomItem(2015, org.sobadfish.sales.items.custom.CtChestItem.class);
             CustomItemAPI.getInstance().registerCustomItem(2016, org.sobadfish.sales.items.custom.CoinItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(2017, org.sobadfish.sales.items.custom.CtKeyItem.class);
 
             CUSTOM_ITEMS.put("sale_v1",new  org.sobadfish.sales.items.custom.sales.CustomV1SaleItem());
             CUSTOM_ITEMS.put("sale_v2",new  org.sobadfish.sales.items.custom.sales.CustomV2SaleItem());
@@ -113,6 +114,7 @@ public class RegisterItemServices {
             CUSTOM_ITEMS.put("ct_sale_v5",new org.sobadfish.sales.items.custom.ct.CustomV5CtSaleItem());
             CUSTOM_ITEMS.put("ct_sale_v6",new org.sobadfish.sales.items.custom.ct.CustomV6CtSaleItem());
             CUSTOM_ITEMS.put("ct_chest",new org.sobadfish.sales.items.custom.CtChestItem());
+            CUSTOM_ITEMS.put("ct_key",new org.sobadfish.sales.items.custom.CtKeyItem());
 
 
             CUSTOM_ITEMS.put("setting",new org.sobadfish.sales.items.custom.CustomSaleSettingItem());
@@ -145,6 +147,7 @@ public class RegisterItemServices {
             Item.registerCustomItem(CustomCtItem.class);
 
             Item.registerCustomItem(CoinItem.class);
+            Item.registerCustomItem(CtKeyItem.class);
 
 
             Item.registerCustomItem(CustomV1CtSaleItem.class,false);
@@ -190,6 +193,7 @@ public class RegisterItemServices {
             CUSTOM_ITEMS.put("discount",new CustomSaleDiscountItem());
             CUSTOM_ITEMS.put("wall",new CustomSalePanelWallItem());
             CUSTOM_ITEMS.put("ct_chest",new CtChestItem());
+            CUSTOM_ITEMS.put("ct_key",new CtKeyItem());
         }
 
 //        Item.removeCreativeItem(CUSTOM_ITEMS.get("ct_sale"));
@@ -224,6 +228,14 @@ public class RegisterItemServices {
             SalesMainClass.sendMessageToConsole("&a成功注册 &r"+SalesMainClass.CORE_NAME+" &a核心合成配方");
 
 
+        }
+        if(SalesMainClass.enableCtKey){
+            //钥匙合成
+            Map<Character, Item> ingredients = new HashMap<>();
+            ingredients.put('A', Item.get(Item.GOLD_INGOT));
+            ShapedRecipe result = new ShapedRecipe(CUSTOM_ITEMS.get("ct_key"),new String[]{"AAA","A A"," A "},ingredients,new LinkedList<>());
+
+            registerRecipeMot(result);
         }
 
     }

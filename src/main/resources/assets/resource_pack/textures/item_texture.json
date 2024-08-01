@@ -6,6 +6,9 @@
 		"sale_coin": {
 			"textures": "textures/items/coin.png"
 		},
+		"ct_key": {
+			"textures": "textures/items/ct_key.png"
+		},
 		"sale_item_v1":{
 			"textures": "textures/items/sale_item_v1.png"
 		},

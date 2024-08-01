@@ -48,6 +48,8 @@ public class SalesData {
 
     public String itemjson;
 
+    public int lock = 0;
+
 
 
 
@@ -68,6 +70,7 @@ public class SalesData {
         tag.putString("world",world);
         tag.putString("bf",bf);
         tag.putString("placeitem",placeitem);
+        tag.putInt("lock",lock);
 
         if(world == null || "".equalsIgnoreCase(world)){
             world = location.split(":")[3];
@@ -124,7 +127,9 @@ public class SalesData {
             salesData.placeitem =  tag.getString("placeitem");
         }
 
-
+        if(tag.contains("lock")){
+            salesData.lock =  tag.getInt("lock");
+        }
         salesData.master = tag.getString("master");
         salesData.itemjson = tag.getString("itemjson");
 

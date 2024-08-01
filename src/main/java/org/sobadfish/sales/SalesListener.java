@@ -75,13 +75,31 @@ public class SalesListener implements Listener {
         }
         Player player = event.getPlayer();
 
-
-
         if(entity1 != null){
             if(entity1.finalClose){
                 return;
             }
             Item ei = event.getItem();
+            if(ei.equals(RegisterItemServices.CUSTOM_ITEMS.get("ct_key")) && !player.isSneaking()){
+                //使用钥匙锁
+                if(player.getName().equalsIgnoreCase(entity1.master) || player.isOp()){
+                    if(entity1.salesData.lock == 0){
+                        entity1.salesData.lock = 1;
+                        entity1.saveData();
+
+                    }else{
+                        entity1.salesData.lock = 0;
+                        entity1.saveData();
+                    }
+                    player.level.addSound(entity1,Sound.OPEN_WOODEN_DOOR);
+                    player.sendTip(TextFormat.colorize('&',"&a已"+(entity1.salesData.lock==1?"锁定":"解锁")));
+
+                }else{
+                    player.sendTip(TextFormat.colorize('&',"&c这不是你的售货机!"));
+                }
+
+                return;
+            }
 
             if(ei.equals(RegisterItemServices.CUSTOM_ITEMS.get("discount")) && !player.isSneaking()){
                 //使用空白优惠券
@@ -131,66 +149,61 @@ public class SalesListener implements Listener {
                     if(entity1.finalClose){
                         return;
                     }
-                        /*if(SellItemForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
+                    if(!player.isOp() && !player.getName().equalsIgnoreCase(entity1.master) && entity1.salesData.lock == 1){
+                        player.sendTip(TextFormat.colorize('&',"&c这个售货机被锁上了"));
+                        return;
+                    }
+
+                    if(player.isSneaking()){
+                        //看看点击的朝向是不是实体朝向
+                        if(ei instanceof ISaleItem){
+                            SalesMainClass.sendMessageToObject("&c禁止套娃！",player);
                             return;
                         }
-                        if(AdminForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
-                            return;
-                        }*/
 
-                        if(player.isSneaking()){
-                            //看看点击的朝向是不是实体朝向
-                            if(ei instanceof ISaleItem){
-                                SalesMainClass.sendMessageToObject("&c禁止套娃！",player);
+
+                        if(event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
+                            if(player.getHorizontalFacing() != entity1.blockFace){
+                                return;
+                            }
+                            if(player.isOp() || (entity1.master != null && entity1.master.equalsIgnoreCase(player.getName()))){
+                                if(player.getInventory().getItemInHand().getId() == 0){
+                                    return;
+                                }
+
+                                SellItemForm sellItemForm = new SellItemForm(entity1,player.getInventory().getItemInHand());
+                                sellItemForm.display(player);
+                            }
+                        }
+                    }else{
+                        if(
+//                                    event.getAction() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK ||
+                                event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
+
+                            if(entity1.clickInvPlayers.size() > 0){
+                                SalesMainClass.sendMessageToObject("&c售货机正在被编辑",player);
                                 return;
                             }
 
-
-                            if(event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
-                                if(player.getHorizontalFacing() != entity1.blockFace){
-                                    return;
-                                }
-                                if(player.isOp() || (entity1.master != null && entity1.master.equalsIgnoreCase(player.getName()))){
-                                    if(player.getInventory().getItemInHand().getId() == 0){
-                                        return;
-                                    }
-
-                                    SellItemForm sellItemForm = new SellItemForm(entity1,player.getInventory().getItemInHand());
-                                    sellItemForm.display(player);
-                                }
-                            }
-                        }else{
-                            if(
-//                                    event.getAction() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK ||
-                                    event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
-
-                                if(entity1.clickInvPlayers.size() > 0){
-                                    SalesMainClass.sendMessageToObject("&c售货机正在被编辑",player);
-                                    return;
-                                }
-
-                                DisplayPlayerPanel displayPlayerPanel = new DisplayPlayerPanel(entity1);
-                                displayPlayerPanel.open(player);
-                                chestPanelLinkedHashMap.put(player.getName(),displayPlayerPanel);
-
-                            }
+                            DisplayPlayerPanel displayPlayerPanel = new DisplayPlayerPanel(entity1);
+                            displayPlayerPanel.open(player);
+                            chestPanelLinkedHashMap.put(player.getName(),displayPlayerPanel);
 
                         }
 
                     }
 
+                }
 
             },5);
             return;
         }
-
         if(!event.isCancelled()){
             //使用金币
             Item item = event.getItem();
             if(item == null){
                 return;
             }
-
             if(item.hasCompoundTag() && item.getNamedTag().contains(MoneyItem.TAG)){
                 if(player.isSneaking()){
                     return;
@@ -208,17 +221,13 @@ public class SalesListener implements Listener {
                 }
                 if(!iMoney.addMoney(player.getName(),money,null)){
                     SalesMainClass.sendMessageToObject("&c交易失败!",player);
-
-
                     return;
                 }
                 item.setCount(item.getCount() - item.getCount());
                 player.getInventory().setItemInHand(item);
 
-
                 player.level.addSound(player, Sound.ARMOR_EQUIP_IRON);
                 SalesMainClass.sendMessageToObject("&r获得"+iMoney.displayName()+" x &e"+money,player);
-
 
             }
             //TODO 自定义物品的放置
@@ -228,12 +237,8 @@ public class SalesListener implements Listener {
                     && item.getNamedTag().contains("salesmeta")
             ){
                 event.setCancelled();
-//                ISaleItem it;
                 String skinModel = item.getNamedTag().getString("salesmeta");
-//                if(item instanceof ISaleItem){
-//                    it = ((ISaleItem)item);
-//                    meta = it.getSaleMeta();
-//                }
+
                 if(SalesEntity.spawnToAll(block.getSide(event.getFace()),player.getDirection(),player.getName(),null,skinModel,item) != null){
                     if (player.isSurvival() || player.isAdventure()) {
                         Item item2 = player.getInventory().getItemInHand();
@@ -246,10 +251,6 @@ public class SalesListener implements Listener {
                 }
 
             }
-
-//            }
-
-
 
         }
 
