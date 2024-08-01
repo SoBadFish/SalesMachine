@@ -37,6 +37,7 @@ public class RemoveSales extends BasePlayPanelItemInstance{
         }else{
             ((ChestPanel)inventory).onClose(player);
             Item item =  ((ChestPanel)inventory).sales.getShaleItem();
+            item.setCount(1);
             SaleSkinConfig saleSkinConfig = SalesMainClass.ENTITY_SKIN.get(((ChestPanel)inventory).sales.salesData.skinmodel);
             item.setDamage(saleSkinConfig.config.meta);
             ((ChestPanel)inventory).sales.level.dropItem(((ChestPanel)inventory).sales,item);
