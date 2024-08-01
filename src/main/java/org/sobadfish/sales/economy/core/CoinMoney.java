@@ -62,12 +62,15 @@ public class CoinMoney implements IMoney, IItemMoney {
         if(count <= 0){
             return false;
         }
-        //判断是否为店主 店主就扔到售货机..
-        if(sales.master.equalsIgnoreCase(player)){
-            //添加硬币到私有库存
-            sales.addItem(new SaleItem(coin,count,0,false),true);
-            return true;
+        if(sales != null){
+            //判断是否为店主 店主就扔到售货机..
+            if(sales.master.equalsIgnoreCase(player)){
+                //添加硬币到私有库存
+                sales.addItem(new SaleItem(coin,count,0,false),true);
+                return true;
+            }
         }
+
 
         if(pl== null){
            return false;

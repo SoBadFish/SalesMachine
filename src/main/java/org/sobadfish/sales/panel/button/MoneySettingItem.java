@@ -35,7 +35,7 @@ public class MoneySettingItem  extends BasePlayPanelItemInstance{
     @Override
     public Item getItem() {
 
-        return RegisterItemServices.CUSTOM_ITEMS.get("money");
+        return RegisterItemServices.CUSTOM_ITEMS.get("money").clone();
     }
 
     @Override

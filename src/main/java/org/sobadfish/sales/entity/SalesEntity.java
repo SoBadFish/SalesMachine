@@ -264,7 +264,7 @@ public class SalesEntity extends EntityHuman {
                 }
                 saleItem.stack += item.stack;
                 updateInventory(updateInv);
-
+                salesData.saveItemSlots(loadItems);
                 saveData();
                 return true;
             }
@@ -279,7 +279,7 @@ public class SalesEntity extends EntityHuman {
             return false;
         }
         //TODO 如果经济是 自定义货币 且 本身不是货币
-        if(!item.visable){
+        if(item.visable){
             IMoney iMoney = SalesMainClass.getLoadMoney().get(item.loadMoney);
             if(iMoney instanceof IItemMoney){
                 boolean exists = false;
@@ -291,7 +291,7 @@ public class SalesEntity extends EntityHuman {
                 }
                 if(!exists){
                     //递归添加经济物品
-                    addItem(new SaleItem(((IItemMoney) iMoney).getMoneyItem(),0,0,false),true);
+                    addItem(new SaleItem(((IItemMoney) iMoney).getMoneyItem(),0,item.loadMoney,0,false),true);
                 }
             }
         }
@@ -310,7 +310,8 @@ public class SalesEntity extends EntityHuman {
 
         removePacketsAll();
         updateInventory(updateInv);
-//        saveData();
+        salesData.saveItemSlots(loadItems);
+        saveData();
 
         return true;
     }

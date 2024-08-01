@@ -10,6 +10,7 @@ import org.sobadfish.sales.RegisterItemServices;
 import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.Utils;
 import org.sobadfish.sales.config.ItemData;
+import org.sobadfish.sales.economy.IItemMoney;
 import org.sobadfish.sales.economy.IMoney;
 import org.sobadfish.sales.entity.SalesEntity;
 
@@ -23,7 +24,7 @@ public class SaleItem {
 
     public String loadMoney;
 
-    public boolean visable;
+    public boolean visable = true;
 
     public int stack;
 
@@ -93,6 +94,14 @@ public class SaleItem {
         this.loadMoney = loadMoney;
     }
 
+    public SaleItem(Item saleItem, int stack,String loadMoney, double money,boolean visable){
+        this.saleItem = saleItem;
+        this.stack = stack;
+        this.money = money;
+        this.loadMoney = loadMoney;
+        this.visable = visable;
+    }
+
     //购买消耗此物品
     public boolean toBuyItem(SalesEntity sales, Player player, boolean useDiscount, int buyCount){
         IMoney iMoney = SalesMainClass.getMoneyCoreByName(loadMoney);
@@ -135,7 +144,7 @@ public class SaleItem {
                                     return false;
                                 }
                             }
-                            if (SalesMainClass.canGiveMoneyItem) {
+                            if (SalesMainClass.canGiveMoneyItem && !(iMoney instanceof IItemMoney)) {
                                 player.getInventory().addItem(new MoneyItem(money * buyCount).getItem(loadMoney));
                             } else {
                                 if (iMoney.addMoney(player.getName(), money * buyCount,sales)) {
@@ -149,6 +158,7 @@ public class SaleItem {
                                     return false;
                                 }
                             }
+
                             stack += saleItem.getCount() * buyCount;
                             Item sclon = saleItem.clone();
                             sclon.setCount(sclon.getCount() * buyCount);
@@ -161,14 +171,18 @@ public class SaleItem {
                                 return false;
                             }
                             player.getInventory().removeItem(sclon);
-//                                sales.addItem(this,true);
-//                                SalesMainClass.sendMessageToObject("&a交易成功", player);
+
+
+                            SalesMainClass.sendMessageToObject("&a交易成功 你出售了 &7"+count2+" 件物品", player);
+                            tag.putInt("stack",stack);
+                            sales.salesData.saveItemSlots(sales.loadItems);
+                            sales.saveData();
                             return true;
 
                         }
 
                     }else{
-                        SalesMainClass.sendMessageToObject("&c购买失败! 物品不足!",player);
+                        SalesMainClass.sendMessageToObject("&c出售失败! 物品不足!",player);
                         return false;
                     }
 
@@ -180,6 +194,11 @@ public class SaleItem {
                     Item clnn = saleItem.clone();
                     clnn.setCount(clnn.getCount() * buyCount);
                     player.getInventory().addItem(clnn);
+
+
+                    if(!isNoReduce()){
+                        sales.removeItem(player.getName(),this,saleItem.getCount() * buyCount,true);
+                    }
 
                 }else{
                     if(chunkLimit(player,buyCount)){
