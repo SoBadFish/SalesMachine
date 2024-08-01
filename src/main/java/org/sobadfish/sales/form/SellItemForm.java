@@ -42,7 +42,7 @@ public class SellItemForm extends AbstractSaleForm{
         custom.addElement(new ElementLabel(TextFormat.colorize('&',
                 "&l物品: &r&a"+getItemName()+
                         "&r\n&l数量: &r&a"+item.getCount()+"\n")));
-        custom.addElement(new ElementSlider("请选择商品的数量",0,item.getCount(),1,0));
+        custom.addElement(new ElementSlider("请选择商品的数量",0,item.getCount(),1,Math.min(1,item.getCount())));
         custom.addElement(new ElementInput("请输入价格 若不填则默认为 0 ","商品的价格"));
         sv = new ArrayList<>();
         for(Map.Entry<String,IMoney> entry: SalesMainClass.getLoadMoney().entrySet()){
