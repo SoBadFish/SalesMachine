@@ -33,7 +33,7 @@
 * 使用模型切换器可以直接更改模型
 
 ###  📄DownLoad
-[下载](https://motci.cn/job/SalesMachine_Project/job/SalesMachine/)
+[下载](https://motci.cn/job/SalesMachine_Project/)
 
 ### 👀Display
 
