@@ -179,6 +179,38 @@ public class SalesEntity extends EntityHuman {
     }
 
     /**
+     * 向售货机钱罐添加物品
+     * @param moneyItem 自定义货币
+     * @param count 数量
+     * */
+    public boolean addCoinMoney(Item moneyItem,int count){
+        //添加硬币到私有库存
+        Item clone = moneyItem.clone();
+        clone.setCount(1);
+        return addItem(new SaleItem(clone,count,0,false),true);
+    }
+
+    /**
+     * 向售货机钱罐移除物品
+     * @param moneyItem 自定义货币
+     * @param count 数量
+     * */
+    public boolean reduceCoinMoney(Item moneyItem,int count){
+        //添加硬币到私有库存
+        Item clone = moneyItem.clone();
+        clone.setCount(1);
+        //售货机主人的
+        SaleItem item = getCoinSaleItem(clone);
+        if(item.stack >= count){
+            removeItem(null,item,count,true);
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
+    /**
      * 计算库存数量
      * */
     public ItemStack getItemInventoryByItem(Item item) {

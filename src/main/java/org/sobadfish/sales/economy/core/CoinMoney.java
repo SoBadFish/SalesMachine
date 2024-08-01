@@ -28,15 +28,10 @@ public class CoinMoney implements IMoney, IItemMoney {
             return false;
         }
         if(player.equalsIgnoreCase(sales.master)){
-            //售货机主人的
-            SaleItem item = sales.getCoinSaleItem(coin);
-            if(item.stack >= count){
-                sales.removeItem(player,item,count,true);
-                return true;
-            }else{
-                return false;
-            }
+            //移除 售货机主人的
+            return sales.reduceCoinMoney(coin,count);
         }
+        //移除自身
         int myCoin = (int) myMoney(player,sales);
 
         Player pl = Server.getInstance().getPlayer(player);
@@ -66,11 +61,9 @@ public class CoinMoney implements IMoney, IItemMoney {
             //判断是否为店主 店主就扔到售货机..
             if(sales.master.equalsIgnoreCase(player)){
                 //添加硬币到私有库存
-                sales.addItem(new SaleItem(coin,count,0,false),true);
-                return true;
+                return sales.addCoinMoney(coin,count);
             }
         }
-
 
         if(pl== null){
            return false;
