@@ -45,7 +45,7 @@ public class PanelInventoryButtonItem extends BasePlayPanelItemInstance{
             LinkedHashMap<Integer,BasePlayPanelItemInstance> items = new LinkedHashMap<>();
             int i = 0;
             for(SaleItem item: sales.items){
-                if(item.visable){
+                if(!item.visable){
                     continue;
                 }
                 items.put(i++, new PanelSettingItem(item,true));

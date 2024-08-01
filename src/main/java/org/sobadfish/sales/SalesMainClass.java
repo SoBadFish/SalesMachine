@@ -125,13 +125,14 @@ public class SalesMainClass extends PluginBase {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        //加载配置
+        loadConfig();
         //加载经济核心
         loadMoneyCore();
 
         saveDefaultConfig();
         services.config = getConfig();
-        //加载配置
-        loadConfig();
+
 
         //加载物品属性
         sendMessageToConsole("&e 正在加载 &r物品数据信息");
@@ -301,12 +302,11 @@ public class SalesMainClass extends PluginBase {
                 IMoney my = money.getDeclaredConstructor().newInstance();
                 LOAD_MONEY.put(moneyName, my);
                 sendMessageToConsole("&a装载经济核心: &r"+moneyName);
-                return;
             }catch (Exception e){
                 e.printStackTrace();
             }
         }
-        throw new IllegalStateException("当前经济核心已存在！");
+//        throw new IllegalStateException("当前经济核心已存在！");
 
     }
 

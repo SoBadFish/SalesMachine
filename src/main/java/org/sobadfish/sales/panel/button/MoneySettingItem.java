@@ -48,9 +48,8 @@ public class MoneySettingItem  extends BasePlayPanelItemInstance{
             int i = 0;
             for(SaleItem item: sales.items){
                 if(!item.visable){
-                    continue;
+                    items.put(i++, new PanelSettingItem(item,true));
                 }
-                items.put(i++, new PanelSettingItem(item,true));
             }
             ((ChestPanel)inventory).setPanel(items);
         }
