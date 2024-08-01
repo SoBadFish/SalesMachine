@@ -27,7 +27,7 @@ public class PlayerPointsMoney implements IMoney {
     }
 
     @Override
-    public double myMoney(String player) {
+    public double myMoney(String player, SalesEntity sales) {
         return Point.myPoint(player);
     }
 }

@@ -45,6 +45,6 @@ public interface IMoney {
      * @param player 玩家
      * @return 玩家的金钱数量
      * */
-    double myMoney(String player);
+    double myMoney(String player, SalesEntity sales);
 
 }

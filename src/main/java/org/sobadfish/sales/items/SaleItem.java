@@ -120,7 +120,7 @@ public class SaleItem {
                 }else{
                     boolean passMoney = isNoReduce();
                     if(!passMoney){
-                        if(iMoney.myMoney(sales.master) < money * buyCount){
+                        if(iMoney.myMoney(sales.master,sales) < money * buyCount){
                             SalesMainClass.sendMessageToObject("&c店主没有足够的!"+iMoney.displayName(),player);
                             return false;
                         }
@@ -225,7 +225,7 @@ public class SaleItem {
                             rmoney -= del;
                         }
 
-                        if(iMoney.myMoney(player.getName()) >= rmoney){
+                        if(iMoney.myMoney(player.getName(),sales) >= rmoney){
                             if(!iMoney.reduceMoney(player.getName(),rmoney,sales)){
                                 SalesMainClass.sendMessageToObject("&c交易失败! ",player);
                                 return false;
@@ -239,9 +239,12 @@ public class SaleItem {
 
 
                             }
-                            if(!iMoney.addMoney(sales.master,money * buyCount,sales)){
-                                SalesMainClass.sendMessageToObject("&c交易失败!",player);
-                                return false;
+                            //无限库存不会增加金钱..
+                            if(!isNoReduce()) {
+                                if (!iMoney.addMoney(sales.master, money * buyCount, sales)) {
+                                    SalesMainClass.sendMessageToObject("&c交易失败!", player);
+                                    return false;
+                                }
                             }
                             Item cln = saleItem.clone();
                             cln.setCount(cln.getCount() * buyCount);

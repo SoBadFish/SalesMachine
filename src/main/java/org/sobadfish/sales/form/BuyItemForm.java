@@ -59,7 +59,7 @@ public class BuyItemForm extends AbstractSaleForm{
 
         int disCount = 0;
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("&e").append(iMoney.displayName()).append(" &r: ").append(String.format("%.2f",iMoney.myMoney(player.getName()))).append("\n\n");
+        stringBuilder.append("&e").append(iMoney.displayName()).append(" &r: ").append(String.format("%.2f",iMoney.myMoney(player.getName(),salesEntity))).append("\n\n");
         stringBuilder.append("&7售货机名称: &r: ").append(salesEntity.salesData.customname).append("\n\n");
         stringBuilder.append("&7售货机坐标: &r: ").append(salesEntity.salesData.location).append("\n");
         stringBuilder.append("&7售货机主人: &r: ").append(salesEntity.master).append("\n\n");

@@ -32,7 +32,7 @@ public class MoneyCoreMoney implements IMoney {
     }
 
     @Override
-    public double myMoney(String player) {
+    public double myMoney(String player, SalesEntity sales) {
         if(Money.getInstance().getPlayers().contains(player)){
             return Money.getInstance().getMoney(player);
         }

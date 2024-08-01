@@ -2,9 +2,9 @@ package org.sobadfish.sales.panel.button;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
-import cn.nukkit.block.BlockChest;
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.TextFormat;
+import org.sobadfish.sales.RegisterItemServices;
 import org.sobadfish.sales.SalesMainClass;
 import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.items.SaleItem;
@@ -15,14 +15,15 @@ import java.util.LinkedHashMap;
 
 /**
  * @author Sobadfish
- * @date 2024/4/6
+ * @date 2024/8/1
  */
-public class PanelInventoryButtonItem extends BasePlayPanelItemInstance{
+public class MoneySettingItem  extends BasePlayPanelItemInstance{
+
     public int click = 0;
 
     public SalesEntity sales;
 
-    public PanelInventoryButtonItem(SalesEntity sales){
+    public MoneySettingItem(SalesEntity sales){
         this.sales = sales;
     }
 
@@ -33,7 +34,8 @@ public class PanelInventoryButtonItem extends BasePlayPanelItemInstance{
 
     @Override
     public Item getItem() {
-        return new BlockChest().toItem();
+
+        return RegisterItemServices.CUSTOM_ITEMS.get("money");
     }
 
     @Override
@@ -45,25 +47,21 @@ public class PanelInventoryButtonItem extends BasePlayPanelItemInstance{
             LinkedHashMap<Integer,BasePlayPanelItemInstance> items = new LinkedHashMap<>();
             int i = 0;
             for(SaleItem item: sales.items){
-                if(item.visable){
+                if(!item.visable){
                     continue;
                 }
                 items.put(i++, new PanelSettingItem(item,true));
-
             }
             ((ChestPanel)inventory).setPanel(items);
-
         }
     }
 
     @Override
     public Item getPanelItem(Player info, int index) {
         Item item = getItem();
-        item.setCustomName(TextFormat.colorize('&',"&r&l&e库存"));
-        item.setLore(TextFormat.colorize('&',"&r&7&l\n查看库存"));
+        item.setCustomName(TextFormat.colorize('&',"&r&e钱罐"));
+        item.setLore(TextFormat.colorize('&',"&r&7用于存储收购获得的物品货币\n&r&7也可用作消耗&c(仅限物品货币)"));
         item.setNamedTag(item.getNamedTag().putInt("index",index));
         return item;
-
     }
-
 }

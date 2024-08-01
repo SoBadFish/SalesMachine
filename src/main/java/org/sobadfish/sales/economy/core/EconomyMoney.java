@@ -28,7 +28,7 @@ public class EconomyMoney implements IMoney {
     }
 
     @Override
-    public double myMoney(String player) {
+    public double myMoney(String player, SalesEntity sales) {
         return EconomyAPI.getInstance().myMoney(player) ;
     }
 }

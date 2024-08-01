@@ -34,6 +34,8 @@ import org.sobadfish.sales.config.SaleSettingConfig;
 import org.sobadfish.sales.config.SaleSkinConfig;
 import org.sobadfish.sales.config.SalesData;
 import org.sobadfish.sales.db.SqlData;
+import org.sobadfish.sales.economy.IItemMoney;
+import org.sobadfish.sales.economy.IMoney;
 import org.sobadfish.sales.items.SaleItem;
 import org.sobadfish.sales.panel.lib.ChestPanel;
 import org.sobadfish.sales.panel.lib.DoubleChestPanel;
@@ -130,6 +132,8 @@ public class SalesEntity extends EntityHuman {
                 if (count == 0 && master.equalsIgnoreCase(playerName)) {
                     cl.remove(tg);
                     items.remove(saleItem);
+
+
                     break;
                 } else {
 
@@ -143,6 +147,8 @@ public class SalesEntity extends EntityHuman {
                         saleItem.stack = 0;
                         cl.remove(tg);
                         items.remove(saleItem);
+
+
                         break;
                     }
                 }
@@ -152,8 +158,24 @@ public class SalesEntity extends EntityHuman {
         }
         updateInventory(updateInv);
 //        //重新写入
-//        salesData.saveItemSlots(loadItems);
-//        saveData();
+        salesData.saveItemSlots(loadItems);
+        saveData();
+    }
+
+
+    /**
+     * 获取对应的货币库存
+     * @param item 自定义货币
+     * */
+    public SaleItem getCoinSaleItem(Item item){
+        for (SaleItem saleItem: items){
+            if(!saleItem.visable){
+                if(saleItem.saleItem.equals(item,true,true)){
+                    return saleItem;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -255,6 +277,23 @@ public class SalesEntity extends EntityHuman {
         }
         if (item.saleItem.getId() == 0) {
             return false;
+        }
+        //TODO 如果经济是 自定义货币 且 本身不是货币
+        if(!item.visable){
+            IMoney iMoney = SalesMainClass.getLoadMoney().get(item.loadMoney);
+            if(iMoney instanceof IItemMoney){
+                boolean exists = false;
+                for (SaleItem saleItem : items) {
+                    if (saleItem.saleItem.equals(((IItemMoney) iMoney).getMoneyItem(), true, true)) {
+                        exists = true;
+                        break;
+                    }
+                }
+                if(!exists){
+                    //递归添加经济物品
+                    addItem(new SaleItem(((IItemMoney) iMoney).getMoneyItem(),0,0,false),true);
+                }
+            }
         }
 
         CompoundTag ct = item.tag;
@@ -439,13 +478,21 @@ public class SalesEntity extends EntityHuman {
                 size = saleSettingConfig.floatItemPos.get(blockFace).size();
             }
 
-            for (int i = 0; i < Math.min(items.size(), size); i++) {
+            List<SaleItem> nItems = new ArrayList<>();
+            for(SaleItem item : items){
+                if(!item.visable){
+                    continue;
+                }
+                nItems.add(item);
+            }
+
+            for (int i = 0; i < Math.min(nItems.size(), size); i++) {
                 long eid = (long) ((int) this.x + new Random().nextDouble() + (int) this.z + new Random().nextDouble()) + new Random().nextLong();
                 Position ps = asPosition(i);
                 if (ps == null) {
                     continue;
                 }
-                ipacket.add(i, getEntityTag(ps, items.get(i).saleItem, eid));
+                ipacket.add(i, getEntityTag(ps, nItems.get(i).saleItem, eid));
             }
             onlinePlayers.addAll(level.getPlayers().values());
             for (AddItemEntityPacket dataPacket : ipacket) {
