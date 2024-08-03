@@ -173,7 +173,7 @@ public class SaleItem {
                             player.getInventory().removeItem(sclon);
 
 
-                            SalesMainClass.sendMessageToObject("&a交易成功 你出售了 &7"+count2+" 件物品", player);
+                            SalesMainClass.sendMessageToObject("&a交易成功 你出售了 &7"+sclon.getCount()+" 件物品", player);
                             tag.putInt("stack",stack);
                             sales.salesData.saveItemSlots(sales.loadItems);
                             sales.saveData();
