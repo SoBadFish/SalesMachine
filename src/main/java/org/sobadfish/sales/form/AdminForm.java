@@ -48,14 +48,12 @@ public class AdminForm extends AbstractSaleForm {
         custom.addElement(new ElementToggle("是否为收购", sales.tag.contains("sales_exchange") && sales.tag.getBoolean("sales_exchange")));
         custom.addElement(new ElementInput("商品价格","商品的价格 出售/回收",dm));
         custom.addElement(new ElementInput("商品折扣","设置商品的折扣 -1则不打折",zk));
-
-
         if(player.isOp()){
             custom.addElement(new ElementToggle("是否不消耗库存",b));
-            custom.addElement(new ElementToggle("移除"));
+
             custom.addElement(new ElementInput("更改数量",sales.stack+""));
         }
-
+        custom.addElement(new ElementToggle("移除"));
 
 
         return custom;
@@ -79,9 +77,10 @@ public class AdminForm extends AbstractSaleForm {
             hour = -1;
         }
         int count = sales.stack;
+        remove = responseCustom.getToggleResponse(6);
         if(player.isOp()){
             b = responseCustom.getToggleResponse(5);
-            remove = responseCustom.getToggleResponse(6);
+
             String tx =  responseCustom.getInputResponse(7);
             int reset = count;
             try {
@@ -96,10 +95,16 @@ public class AdminForm extends AbstractSaleForm {
 
         }
         if(remove){
+            if(salesEntity.hasItem(sales.saleItem) && sales.stack > 0 &&!player.isOp()){
+                SalesMainClass.sendMessageToObject("&c当前库存下存在物品 请清空库存后移除",player);
+                return;
+            }
             sales.isRemove = true;
             salesEntity.removeItem(player.getName(),sales,0,true);
             salesEntity.salesData.saveItemSlots(salesEntity.loadItems);
             salesEntity.saveData();
+
+
         }else{
             sales.tag.putBoolean("sales_exchange",responseCustom.getToggleResponse(2));
             sales.tag.putBoolean("noreduce",b);

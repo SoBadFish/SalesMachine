@@ -112,6 +112,8 @@ public class SalesEntity extends EntityHuman {
 
     }
 
+
+
     /**
      * 减少物品
      *
