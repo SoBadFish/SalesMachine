@@ -461,6 +461,16 @@ public class SalesEntity extends EntityHuman {
 
     public List<Player> onlinePlayers = new ArrayList<>();
 
+    public boolean equalsItemStr(String str) {
+        for (SaleItem item : items) {
+            if(item.saleItem.getNamespaceId().contains(str) || item.getItemName().contains(str)
+            || item.saleItem.getCustomName().contains(str) ){
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public void removePackets(Player player) {
         for (AddItemEntityPacket dataPacket : new ArrayList<>(ipacket)) {

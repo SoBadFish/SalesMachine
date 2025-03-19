@@ -49,6 +49,7 @@ public class AdminForm extends AbstractSaleForm {
         custom.addElement(new ElementInput("商品价格","商品的价格 出售/回收",dm));
         custom.addElement(new ElementInput("商品折扣","设置商品的折扣 -1则不打折",zk));
         custom.addElement(new ElementToggle("移除"));
+
         if(player.isOp()){
             custom.addElement(new ElementToggle("是否不消耗库存",b));
 
@@ -78,6 +79,8 @@ public class AdminForm extends AbstractSaleForm {
             hour = -1;
         }
         int count = sales.stack;
+
+
         remove = responseCustom.getToggleResponse(5);
         if(player.isOp()){
             b = responseCustom.getToggleResponse(6);

@@ -99,6 +99,9 @@ public class RegisterItemServices {
             CustomItemAPI.getInstance().registerCustomItem(2015, org.sobadfish.sales.items.custom.CtChestItem.class);
             CustomItemAPI.getInstance().registerCustomItem(2016, org.sobadfish.sales.items.custom.CoinItem.class);
             CustomItemAPI.getInstance().registerCustomItem(2017, org.sobadfish.sales.items.custom.CtKeyItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(2018, org.sobadfish.sales.items.custom.CustomSalePhoneItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(2019, org.sobadfish.sales.items.custom.CustomSaleNetItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(2020, org.sobadfish.sales.items.custom.CustomSaleDefSettingItem.class);
 
             CUSTOM_ITEMS.put("sale_v1",new  org.sobadfish.sales.items.custom.sales.CustomV1SaleItem());
             CUSTOM_ITEMS.put("sale_v2",new  org.sobadfish.sales.items.custom.sales.CustomV2SaleItem());
@@ -130,6 +133,11 @@ public class RegisterItemServices {
             CUSTOM_ITEMS.put("discount",new org.sobadfish.sales.items.custom.CustomSaleDiscountItem());
 
             CUSTOM_ITEMS.put("wall",new org.sobadfish.sales.items.custom.CustomSalePanelWallItem());
+
+            CUSTOM_ITEMS.put("phone",new org.sobadfish.sales.items.custom.CustomSalePhoneItem());
+
+            CUSTOM_ITEMS.put("netxk",new org.sobadfish.sales.items.custom.CustomSaleNetItem());
+            CUSTOM_ITEMS.put("defsetting",new org.sobadfish.sales.items.custom.CustomSaleDefSettingItem());
 
         }else{
             Item.registerCustomItem(CustomV1SaleItem.class);
@@ -165,6 +173,9 @@ public class RegisterItemServices {
             Item.registerCustomItem(CustomSaleDiscountItem.class);
 
             Item.registerCustomItem(CustomSalePanelWallItem.class,false);
+            Item.registerCustomItem(CustomSalePhoneItem.class,true);
+            Item.registerCustomItem(CustomSaleNetItem.class,true);
+            Item.registerCustomItem(CustomSaleDefSettingItem.class,false);
 
             CUSTOM_ITEMS.put("sale_v1",new CustomV1SaleItem());
             CUSTOM_ITEMS.put("sale_v2",new CustomV2SaleItem());
@@ -194,6 +205,10 @@ public class RegisterItemServices {
             CUSTOM_ITEMS.put("wall",new CustomSalePanelWallItem());
             CUSTOM_ITEMS.put("ct_chest",new CtChestItem());
             CUSTOM_ITEMS.put("ct_key",new CtKeyItem());
+            CUSTOM_ITEMS.put("phone",new CustomSalePhoneItem());
+
+            CUSTOM_ITEMS.put("netxk",new CustomSaleNetItem());
+            CUSTOM_ITEMS.put("defsetting",new CustomSaleDefSettingItem());
         }
 
 //        Item.removeCreativeItem(CUSTOM_ITEMS.get("ct_sale"));

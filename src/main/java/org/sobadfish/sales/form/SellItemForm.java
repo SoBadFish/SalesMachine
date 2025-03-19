@@ -67,6 +67,9 @@ public class SellItemForm extends AbstractSaleForm{
     @Override
     public void onListener(Player player, FormResponse response){
         FormResponseCustom responseCustom = (FormResponseCustom) response;
+        if(responseCustom.getResponses().size() < 3){
+            return;
+        }
         int stack = (int) responseCustom.getSliderResponse(1);
         if(stack == 0){
             SalesMainClass.sendMessageToObject("&c数量必须大于0!",player);

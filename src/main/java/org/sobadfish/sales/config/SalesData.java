@@ -50,7 +50,11 @@ public class SalesData {
 
     public int lock = 0;
 
+    //网店许可
+    public int net = 0;
 
+    //网店介绍
+    public String netinfo = "";
 
 
     //皮肤模型名称
@@ -69,6 +73,8 @@ public class SalesData {
         tag.putString("location",location);
         tag.putString("world",world);
         tag.putString("bf",bf);
+        tag.putInt("net",net);
+        tag.putString("netinfo",netinfo);
         tag.putString("placeitem",placeitem);
         tag.putInt("lock",lock);
 
@@ -126,7 +132,12 @@ public class SalesData {
         if(tag.contains("placeitem")){
             salesData.placeitem =  tag.getString("placeitem");
         }
-
+        if(tag.contains("netinfo")){
+            salesData.netinfo =  tag.getString("netinfo");
+        }
+        if(tag.contains("net")){
+            salesData.net =  tag.getInt("net");
+        }
         if(tag.contains("lock")){
             salesData.lock =  tag.getInt("lock");
         }

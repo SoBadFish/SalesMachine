@@ -75,6 +75,15 @@
 		},
 		"sale_discount": {
 			"textures":"textures/items/discount.png"
+		},
+		"sale_phone": {
+			"textures":"textures/items/phone.png"
+		},
+		"sale_netxk": {
+			"textures":"textures/items/netxk.png"
+		},
+		"sale_def_setting": {
+			"textures":"textures/items/sale_def_setting.png"
 		}
 	}
 }

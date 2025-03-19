@@ -35,6 +35,7 @@ import org.sobadfish.sales.economy.IMoney;
 import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.form.AbstractSaleForm;
 import org.sobadfish.sales.form.DiscountForm;
+import org.sobadfish.sales.form.PhoneForm;
 import org.sobadfish.sales.form.SellItemForm;
 import org.sobadfish.sales.items.ISaleItem;
 import org.sobadfish.sales.items.MoneyItem;
@@ -113,10 +114,8 @@ public class SalesListener implements Listener {
                         SalesMainClass.sendMessageToObject("&c这不是你的售货机!",player);
                     }
                 }
-
                 return;
             }
-
             if(!ei.equals(RegisterItemServices.CUSTOM_ITEMS.get("ct")) &&
                     !(ei instanceof ISaleItem)&&
                     !ei.equals(RegisterItemServices.CUSTOM_ITEMS.get("pipe_wrench"))
@@ -127,7 +126,6 @@ public class SalesListener implements Listener {
                     return;
                 }
             }
-
             if(ei instanceof ItemNameTag){
                 event.setCancelled();
                 if(ei.hasCustomName()){
@@ -138,11 +136,8 @@ public class SalesListener implements Listener {
                     cll.setCount(1);
                     player.getInventory().removeItem(cll);
                 }
-
                 return;
             }
-
-
             Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE, new Runnable() {
                 @Override
                 public void run() {
@@ -161,7 +156,6 @@ public class SalesListener implements Listener {
                             return;
                         }
 
-
                         if(event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
                             if(player.getHorizontalFacing() != entity1.blockFace){
                                 return;
@@ -176,10 +170,7 @@ public class SalesListener implements Listener {
                             }
                         }
                     }else{
-                        if(
-//                                    event.getAction() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK ||
-                                event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
-
+                        if(event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
                             if(entity1.clickInvPlayers.size() > 0){
                                 SalesMainClass.sendMessageToObject("&c售货机正在被编辑",player);
                                 return;
@@ -250,6 +241,16 @@ public class SalesListener implements Listener {
                     SalesMainClass.sendMessageToObject("&c生成失败！ 请保证周围没有其他方块",player);
                 }
 
+            }
+            //使用手机
+            if(item.equals(RegisterItemServices.CUSTOM_ITEMS.get("phone"))){
+                if(event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+                    if (!player.isSneaking()) {
+                        event.setCancelled();
+                        PhoneForm phoneForm = new PhoneForm();
+                        phoneForm.display(player);
+                    }
+                }
             }
 
         }
@@ -375,8 +376,8 @@ public class SalesListener implements Listener {
         }
         if(AbstractSaleForm.DISPLAY_FROM.containsKey(event.getPlayer().getName())){
             AbstractSaleForm form = AbstractSaleForm.DISPLAY_FROM.get(event.getPlayer().getName());
-            if(form.getId() == event.getFormID()){
-                form.onListener(event.getPlayer(),event.getResponse());
+            if(form.getId() == event.getFormID()) {
+                form.onListener(event.getPlayer(), event.getResponse());
             }
         }
     }

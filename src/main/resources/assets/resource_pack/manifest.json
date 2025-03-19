@@ -4,7 +4,7 @@
 	{
 		"uuid":"07f9efc2-1a83-4084-88b1-bb20af4a6eb4",
 		"name":"§l§aSale §eItems §b专属材质",
-		"version":[0,0,13],
+		"version":[0,0,15],
 		"min_engine_version":[1,18,0],
 		"description":"售货机专属物品材质"
 		
@@ -12,7 +12,7 @@
 	"modules":[
 	{
 		"description":"售货机自定义物品",
-		"version":[0,0,13],
+		"version":[0,0,15],
 		"uuid":"bb2084f1-ba8a-4f12-9fa6-ce81899a7901",
 		"type":"resources"
 	}]

@@ -32,7 +32,7 @@ public abstract class AbstractSaleForm {
 
     public void display(Player player){
         FormWindow formWindow = getForm(player);
-        player.showFormWindow(formWindow,getId());
+        player.showFormWindow(formWindow,id);
         DISPLAY_FROM.put(player.getName(),this);
     }
 
