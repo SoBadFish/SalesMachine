@@ -212,6 +212,8 @@ public class SalesMainClass extends PluginBase {
         return null;
     }
 
+
+
     public static String getFirstMoney(){
         return new ArrayList<>(LOAD_MONEY.keySet()).get(0);
     }

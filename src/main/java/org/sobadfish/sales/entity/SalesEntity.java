@@ -464,7 +464,9 @@ public class SalesEntity extends EntityHuman {
     public boolean equalsItemStr(String str) {
         for (SaleItem item : items) {
             if(item.saleItem.getNamespaceId().contains(str) || item.getItemName().contains(str)
-            || item.saleItem.getCustomName().contains(str) ){
+            || item.saleItem.getCustomName().contains(str)
+                    || SalesMainClass.INSTANCE.getItemDataByItem(item.saleItem).nameChinese.contains(str)
+            ){
                 return true;
             }
         }
