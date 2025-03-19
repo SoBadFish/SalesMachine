@@ -73,7 +73,9 @@ public class PhoneForm extends AbstractSaleForm{
             if(netInfo == null || "".equals(netInfo)){
                 netInfo = "暂无介绍";
             }
-            simple.addButton(new ElementButton(entity.master+" 的小店\n"+netInfo,new ElementButtonImageData("path","textures/ui/Friend2")));
+            simple.addButton(new ElementButton(entity.salesData.customname.substring(0,Math.min(entity.salesData.customname.length(),10))+"... "
+                    +TextFormat.colorize('&',"&r"+entity.salesData.master)
+                    +"\n"+netInfo,new ElementButtonImageData("path","textures/ui/Friend2")));
         }
         return simple;
 

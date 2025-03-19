@@ -30,6 +30,7 @@ import cn.nukkit.utils.TextFormat;
 import org.sobadfish.sales.RegisterItemServices;
 import org.sobadfish.sales.SalesListener;
 import org.sobadfish.sales.SalesMainClass;
+import org.sobadfish.sales.config.ItemData;
 import org.sobadfish.sales.config.SaleSettingConfig;
 import org.sobadfish.sales.config.SaleSkinConfig;
 import org.sobadfish.sales.config.SalesData;
@@ -462,15 +463,33 @@ public class SalesEntity extends EntityHuman {
     public List<Player> onlinePlayers = new ArrayList<>();
 
     public boolean equalsItemStr(String str) {
-        for (SaleItem item : items) {
-            if(item.saleItem.getNamespaceId().contains(str) || item.getItemName().contains(str)
-            || item.saleItem.getCustomName().contains(str)
-                    || SalesMainClass.INSTANCE.getItemDataByItem(item.saleItem).nameChinese.contains(str)
-            ){
-                return true;
-            }
+        if (str == null || str.isEmpty()) { // 过滤无效查询
+            return false;
         }
-        return false;
+
+        return items.stream().anyMatch(item -> {
+            Item saleItem = item.saleItem;
+
+            // 提取可能多次访问的字段，减少重复调用
+            String namespaceId = saleItem.getNamespaceId();
+            String itemName = item.getItemName();
+            String customName = saleItem.getCustomName();
+
+            // 合并数据源查询
+            ItemData data = SalesMainClass.INSTANCE.getItemDataByItem(saleItem);
+            String chineseName = (data != null) ? data.nameChinese : null;
+
+            // 带空指针检查的字符串匹配
+            return containsSafe(namespaceId, str)
+                    || containsSafe(itemName, str)
+                    || containsSafe(customName, str)
+                    || containsSafe(chineseName, str);
+        });
+    }
+
+    // 辅助方法避免重复的 null 检查逻辑
+    private boolean containsSafe(String source, String target) {
+        return source != null && source.contains(target);
     }
 
 
