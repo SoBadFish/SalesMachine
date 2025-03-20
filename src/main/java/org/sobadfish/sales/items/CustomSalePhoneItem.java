@@ -17,7 +17,7 @@ public class CustomSalePhoneItem extends ItemCustomTool implements ItemDurable {
 
     @Override
     public CustomItemDefinition getDefinition() {
-        return CustomItemDefinition.customBuilder(this, ItemCreativeCategory.ITEMS).allowOffHand(true).build();
+        return CustomItemDefinition.toolBuilder(this, ItemCreativeCategory.ITEMS).allowOffHand(true).build();
     }
 
     @Override

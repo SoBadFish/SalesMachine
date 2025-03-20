@@ -387,7 +387,6 @@ public class SalesMainClass extends PluginBase {
                     }
                     if(p != null){
                         Item item =  RegisterItemServices.CUSTOM_ITEMS.get("phone");
-                        item.setLore(TextFormat.colorize('&',"\n&r&9耐久 &e"+item.getDamage()+" &r/&7 "+item.getMaxDurability()));
                         item.setCount(count);
                         p.getInventory().addItem(item);
                         sendMessageToObject("&b 你获得了 &e 手机 * &a"+count,sender);
