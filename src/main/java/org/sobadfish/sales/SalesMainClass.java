@@ -329,6 +329,7 @@ public class SalesMainClass extends PluginBase {
                     sendMessageToObject("&a/sa q [玩家（可不填）]  &7查询玩家售货机坐标信息",sender);
                     sendMessageToObject("&a/sa d <折扣> [玩家（可不填）]  &7给予玩家一个通用优惠券",sender);
                     sendMessageToObject("&a/sa b [模型]  &7将手持物品绑定售货机模型 &c(无法绑定售货机/使用后消耗)",sender);
+                    sendMessageToObject("&a/sa load  &7查看当前加载的售货机",sender);
                     StringBuilder stringBuilder = new StringBuilder();
                     for(SaleSkinConfig saleSkinConfig: ENTITY_SKIN.values()){
                         stringBuilder.append(saleSkinConfig.modelName).append(",");
@@ -489,6 +490,13 @@ public class SalesMainClass extends PluginBase {
                             sendMessageToObject("&c不存在 "+model+" 模型",sender);
                         }
                     }
+                    break;
+                case "load":
+                    sendMessageToObject("&e当前服务器已加载 &a"+SalesListener.cacheEntitys.size()+" &e台售货机",sender);
+                    for(SalesEntity salesEntity: SalesListener.cacheEntitys.values()){
+                        sendMessageToObject("&a"+salesEntity.salesData.customname+" &7("+salesEntity.salesData.location+")"+"区块: "+salesEntity.salesData.chunkx+","+salesEntity.salesData.chunkz,sender);
+                    }
+
                     break;
                 default:
                     sendMessageToObject("&c未知指令 请执行/sa help 查看帮助",sender);

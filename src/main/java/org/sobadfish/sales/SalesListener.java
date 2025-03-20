@@ -275,6 +275,7 @@ public class SalesListener implements Listener {
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent event){
         //加载区间下的所有 实体
+//        SalesMainClass.sendMessageToConsole("区块加载: ("+event.getChunk().getX()+":"+ (event.getChunk().getZ())+")");
         if( SalesMainClass.INSTANCE.sqliteHelper != null){
             List<SalesData> salesData = SalesMainClass.INSTANCE.sqliteHelper.getDataByString(SalesMainClass.DB_TABLE,
                     "chunkx = ? and chunkz = ?",new String[]{
@@ -297,16 +298,22 @@ public class SalesListener implements Listener {
                             }
                             if(!cacheEntitys.containsKey(data.location)){
                                 if(SalesEntity.spawnToAll(data.asPosition(), BlockFace.valueOf(data.bf.toUpperCase()),data.master,data, true,false,null,null) == null){
-                                    SalesMainClass.sendMessageToConsole("&c加载 位置: ("+data.location+") "+" 售货机失败!");
+                                    SalesMainClass.sendMessageToConsole("&c加载 位置: ("+data.location+") "+"区块: "+data.chunkx+","+data.chunkz+" 售货机失败!");
                                 }
+//                                else{
+//                                    SalesMainClass.sendMessageToConsole("&a成功加载 &7位置: ("+data.location+") "+"区块: "+data.chunkx+","+data.chunkz+" &a的售货机!");
+//                                }
 
                             }else{
                                 //重新生成一下，防止不显示
                                 SalesEntity et = cacheEntitys.get(data.location);
                                 et.close();
                                 if(SalesEntity.spawnToAll(data.asPosition(), BlockFace.valueOf(data.bf.toUpperCase()),data.master,data, true,false,null,null) == null){
-                                    SalesMainClass.sendMessageToConsole("&c加载 位置: ("+data.location+") "+" 售货机失败!");
+                                    SalesMainClass.sendMessageToConsole("&c重新加载 位置: ("+data.location+") "+"区块: "+data.chunkx+","+data.chunkz+" 售货机失败!");
                                 }
+//                                else {
+//                                    SalesMainClass.sendMessageToConsole("&a已重新加载 &7位置: ("+data.location+") "+"区块: "+data.chunkx+","+data.chunkz+" &a的售货机!");
+//                                }
                             }
                         }
 
@@ -346,10 +353,15 @@ public class SalesListener implements Listener {
     @EventHandler
     public void onChunkUnLoad(ChunkUnloadEvent event){
         //卸载区间下的所有 实体
+//        SalesMainClass.sendMessageToConsole("&c区块卸载: 清理位置 &7("+event.getChunk().getX()+":"+ (event.getChunk().getZ())+") "+"&c 的售货机!");
         for(Entity e: event.getChunk().getEntities().values()){
             if(e instanceof SalesEntity){
+                event.setCancelled();
+                break;
+
+//                SalesMainClass.sendMessageToConsole("&c区块卸载: 移除位置&7 ("+((SalesEntity) e).salesData.location+") "+"区块: "+ ((SalesEntity) e).salesData.chunkx+","+ ((SalesEntity) e).salesData.chunkz+"&c 的售货机!");
                 //顺便移除缓存
-                e.close();
+//                e.close();
             }
         }
     }

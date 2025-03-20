@@ -644,6 +644,13 @@ public class SalesEntity extends EntityHuman {
                 }
             }
 
+            //TODO 检查缓存实体是否有残留
+            for(SalesEntity salesEntity : SalesListener.cacheEntitys.values()){
+                if(salesEntity.equals(this)){
+                    SalesListener.cacheEntitys.remove(asLocation(salesEntity));
+                }
+            }
+
             if (!finalClose) {
                 salesData.saveItemSlots(loadItems);
                 saveData();
