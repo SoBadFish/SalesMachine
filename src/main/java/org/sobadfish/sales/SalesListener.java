@@ -243,13 +243,15 @@ public class SalesListener implements Listener {
 
             }
             //使用手机
-            if(item.equals(RegisterItemServices.CUSTOM_ITEMS.get("phone"))){
+            if(item.equals(RegisterItemServices.CUSTOM_ITEMS.get("phone"),false,false)){
                 if(event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+                    item.setDamage(item.getDamage() + 1);
+                    player.getInventory().setItemInHand(item);
                     if (!player.isSneaking()) {
-                        event.setCancelled();
                         PhoneForm phoneForm = new PhoneForm();
                         phoneForm.display(player);
                     }
+
                 }
             }
 

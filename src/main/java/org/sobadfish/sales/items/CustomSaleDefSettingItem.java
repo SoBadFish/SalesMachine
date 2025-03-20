@@ -2,7 +2,7 @@ package org.sobadfish.sales.items;
 
 import cn.nukkit.item.customitem.CustomItemDefinition;
 import cn.nukkit.item.customitem.ItemCustom;
-import cn.nukkit.network.protocol.types.inventory.creative.CreativeItemCategory;
+import cn.nukkit.item.customitem.data.ItemCreativeCategory;
 
 /**
  * @author Sobadfish
@@ -15,7 +15,7 @@ public class CustomSaleDefSettingItem extends ItemCustom {
 
     @Override
     public CustomItemDefinition getDefinition() {
-        return CustomItemDefinition.customBuilder(this, CreativeItemCategory.ITEMS).build();
+        return CustomItemDefinition.customBuilder(this, ItemCreativeCategory.ITEMS).build();
     }
 
 

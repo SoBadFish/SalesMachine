@@ -173,7 +173,7 @@ public class RegisterItemServices {
             Item.registerCustomItem(CustomSaleDiscountItem.class);
 
             Item.registerCustomItem(CustomSalePanelWallItem.class,false);
-            Item.registerCustomItem(CustomSalePhoneItem.class,true);
+            Item.registerCustomItem(CustomSalePhoneItem.class);
             Item.registerCustomItem(CustomSaleNetItem.class,true);
             Item.registerCustomItem(CustomSaleDefSettingItem.class,false);
 

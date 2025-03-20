@@ -473,6 +473,8 @@ public class SalesEntity extends EntityHuman {
             // 提取可能多次访问的字段，减少重复调用
             String namespaceId = saleItem.getNamespaceId();
             String itemName = item.getItemName();
+            String itemDefName = saleItem.getName();
+            String itemDisplayName = saleItem.getDisplayName();
             String customName = saleItem.getCustomName();
 
             // 合并数据源查询
@@ -483,7 +485,9 @@ public class SalesEntity extends EntityHuman {
             return containsSafe(namespaceId, str)
                     || containsSafe(itemName, str)
                     || containsSafe(customName, str)
-                    || containsSafe(chineseName, str);
+                    || containsSafe(chineseName, str)
+                    || containsSafe(itemDefName, str)
+                    || containsSafe(itemDisplayName, str);
         });
     }
 

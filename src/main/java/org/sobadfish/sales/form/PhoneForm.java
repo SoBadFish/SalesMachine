@@ -64,7 +64,7 @@ public class PhoneForm extends AbstractSaleForm{
 
         str = "当前检索到"+displays.size()+"个网店";
         if(search != null){
-            str = "当前检索到"+displays.size()+"个网店 单页最多显示10个网店";
+            str = "当前检索到符合: “"+search+"” "+displays.size()+"个网店 单页最多显示10个网店";
         }
         FormWindowSimple simple = new FormWindowSimple("手机", str);
         simple.addButton(new ElementButton("搜索",new ElementButtonImageData("path","textures/ui/magnifyingGlass")));

@@ -37,11 +37,9 @@ import org.sobadfish.sales.panel.lib.AbstractFakeInventory;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -187,15 +185,16 @@ public class SalesMainClass extends PluginBase {
         saveResource("ItemInfoData.json",false);
         File file = new File(this.getDataFolder()+"/ItemInfoData.json");
         try {
-            FileReader r = new FileReader(file);
+            FileInputStream fis = new FileInputStream(file);
+            InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
             Gson gson = new Gson();
-            ArrayList<ItemData> itemData = gson.fromJson(r, new TypeToken<List<ItemData>>() {}.getType());
+            ArrayList<ItemData> itemData = gson.fromJson(isr, new TypeToken<List<ItemData>>() {}.getType());
             //装载到map
             for(ItemData data: itemData){
                 itemInfoData.put(data.id+":"+data.damage,data);
             }
 
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -206,6 +205,7 @@ public class SalesMainClass extends PluginBase {
 
     public ItemData getItemDataByItem(Item item){
         String str = item.getId()+":"+item.getDamage();
+
         if(itemInfoData.containsKey(str)){
             return itemInfoData.get(str);
         }

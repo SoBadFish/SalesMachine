@@ -9,6 +9,7 @@ import cn.nukkit.form.window.FormWindowCustom;
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.TextFormat;
 import org.sobadfish.sales.SalesMainClass;
+import org.sobadfish.sales.config.ItemData;
 import org.sobadfish.sales.economy.IMoney;
 import org.sobadfish.sales.entity.SalesEntity;
 import org.sobadfish.sales.items.SaleItem;
@@ -117,10 +118,17 @@ public class SellItemForm extends AbstractSaleForm{
     }
 
     private String getItemName(){
-        if(item.hasCustomName()){
-            return item.getCustomName()+"&7 (&r"+item.getId()+":"+item.getDamage()+"&7)";
+        ItemData itemData = SalesMainClass.INSTANCE.getItemDataByItem(item);
+        String name = item.getName();
+        if(itemData != null){
+            name = itemData.nameChinese;
         }
-        return item.getName()+"&7 (&r"+item.getId()+":"+item.getDamage()+"&7)";
+        if(item.hasCustomName()){
+            String id = item.getId()+":"+item.getDamage();
+            return item.getCustomName()+"&7 (&r"+id+"&7)";
+        }
+        return name+"&7 (&r"+item.getId()+":"+item.getDamage()+"&7)";
+
     }
 
 }
