@@ -245,8 +245,15 @@ public class SalesListener implements Listener {
             //使用手机
             if(item.equals(RegisterItemServices.CUSTOM_ITEMS.get("phone"),false,false)){
                 if(event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
-                    item.setDamage(item.getDamage() + 1);
-                    player.getInventory().setItemInHand(item);
+                    if (item.getDamage() + 1 >= item.getMaxDurability()){
+                        player.level.addSound(player, Sound.BLOCK_ITEMFRAME_BREAK);
+                        player.getInventory().removeItem(player.getInventory().getItemInHand());
+                    }else{
+                        item.setDamage(item.getDamage() + 1);
+                        item.setLore(TextFormat.colorize('&',"\n&r&9耐久 &e"+item.getDamage()+" &r/&7 "+item.getMaxDurability()));
+                        player.getInventory().setItemInHand(item);
+                    }
+
                     if (!player.isSneaking()) {
                         PhoneForm phoneForm = new PhoneForm();
                         phoneForm.display(player);

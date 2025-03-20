@@ -367,6 +367,7 @@ public class SalesMainClass extends PluginBase {
                     break;
                 case "phone":
                     count = 1;
+                    p = null;
                     if(sender instanceof Player){
                         p = (Player) sender;
                     }
@@ -384,10 +385,11 @@ public class SalesMainClass extends PluginBase {
                             return true;
                         }
                     }
-                    if(sender instanceof Player){
+                    if(p != null){
                         Item item =  RegisterItemServices.CUSTOM_ITEMS.get("phone");
+                        item.setLore(TextFormat.colorize('&',"\n&r&9耐久 &e"+item.getDamage()+" &r/&7 "+item.getMaxDurability()));
                         item.setCount(count);
-                        ((Player) sender).getInventory().addItem(item);
+                        p.getInventory().addItem(item);
                         sendMessageToObject("&b 你获得了 &e 手机 * &a"+count,sender);
                     }else{
                         sendMessageToObject("&c目标玩家为控制台!",sender);
