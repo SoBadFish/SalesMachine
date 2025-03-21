@@ -117,6 +117,21 @@ public class SalesListener implements Listener {
                 }
                 return;
             }
+            if(ei.equals(RegisterItemServices.CUSTOM_ITEMS.get("netxk")) && !player.isSneaking()){
+                //使用网店许可证
+                event.setCancelled();
+                if(player.isOp() || entity1.master.equalsIgnoreCase(player.getName())){
+                    entity1.salesData.netuse = 1;
+                    entity1.saveData();
+                    player.level.addSound(entity1,Sound.RANDOM_ORB);
+                    SalesMainClass.sendMessageToObject("&a恭喜 您的售货机已获得线上商店许可证!",player);
+                }else{
+                    SalesMainClass.sendMessageToObject("&c这不是你的售货机!",player);
+                }
+
+
+                return;
+            }
             if(!ei.equals(RegisterItemServices.CUSTOM_ITEMS.get("ct")) &&
                     !(ei instanceof ISaleItem)&&
                     !ei.equals(RegisterItemServices.CUSTOM_ITEMS.get("pipe_wrench"))

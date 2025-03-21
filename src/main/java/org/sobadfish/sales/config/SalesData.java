@@ -50,6 +50,7 @@ public class SalesData {
 
     public int lock = 0;
 
+    public int netuse = 0;
     //网店许可
     public int net = 0;
 
@@ -74,6 +75,7 @@ public class SalesData {
         tag.putString("world",world);
         tag.putString("bf",bf);
         tag.putInt("net",net);
+        tag.putInt("netuse",netuse);
         tag.putString("netinfo",netinfo);
         tag.putString("placeitem",placeitem);
         tag.putInt("lock",lock);
@@ -137,6 +139,9 @@ public class SalesData {
         }
         if(tag.contains("net")){
             salesData.net =  tag.getInt("net");
+        }
+        if(tag.contains("netuse")){
+            salesData.netuse =  tag.getInt("netuse");
         }
         if(tag.contains("lock")){
             salesData.lock =  tag.getInt("lock");

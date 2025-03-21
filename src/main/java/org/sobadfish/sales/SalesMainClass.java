@@ -314,6 +314,7 @@ public class SalesMainClass extends PluginBase {
                     sendMessageToObject("&a/sa phone [数量] [玩家(可不填)]  &7给予玩家一台手机",sender);
                     sendMessageToObject("&a/sa model [数量] [玩家(可不填)]  &7给予玩家一个模型转换器",sender);
                     sendMessageToObject("&a/sa move [数量] [玩家(可不填)]  &7给予玩家一个搬箱器",sender);
+                    sendMessageToObject("&a/sa net [数量] [玩家(可不填)]  &7给予玩家一个网店许可证",sender);
                     sendMessageToObject("&a/sa q [玩家（可不填）]  &7查询玩家售货机坐标信息",sender);
                     sendMessageToObject("&a/sa d <折扣> [玩家（可不填）]  &7给予玩家一个通用优惠券",sender);
                     sendMessageToObject("&a/sa b [模型]  &7将手持物品绑定售货机模型 &c(无法绑定售货机/使用后消耗)",sender);
@@ -325,121 +326,15 @@ public class SalesMainClass extends PluginBase {
                     sendMessageToObject("&a模型列表:&r "+stringBuilder,sender);
                     break;
                 case "give":
-                    int count = 1;
-                    Player p = null;
-                    if(sender instanceof Player){
-                        p = (Player) sender;
-                    }
-                    if(args.length > 1){
-                        try{
-                            count = Integer.parseInt(args[1]);
-                        }catch (Exception ignore){}
-
-                    }
-                    if(args.length > 2){
-                        String pl = args[2];
-                        p = Server.getInstance().getPlayer(pl);
-                        if(p == null){
-                            sendMessageToObject("&c玩家 "+pl+" 不在线",sender);
-                            return true;
-                        }
-                    }
-                    if(p != null){
-                        Item item =  RegisterItemServices.CUSTOM_ITEMS.get("sale_v1");
-                        item.setCount(count);
-                        p.getInventory().addItem(item);
-                        sendMessageToObject("&b 你获得了 &e 售货机 * &a"+count,p);
-                    }else{
-                        sendMessageToObject("&c目标玩家为控制台!",sender);
-                    }
-                    break;
+                    return handleItemGive(sender, args, "sale_v1", "售货机");
                 case "phone":
-                    count = 1;
-                    p = null;
-                    if(sender instanceof Player){
-                        p = (Player) sender;
-                    }
-                    if(args.length > 1){
-                        try{
-                            count = Integer.parseInt(args[1]);
-                        }catch (Exception ignore){}
-
-                    }
-                    if(args.length > 2){
-                        String pl = args[2];
-                        p = Server.getInstance().getPlayer(pl);
-                        if(p == null){
-                            sendMessageToObject("&c玩家 "+pl+" 不在线",sender);
-                            return true;
-                        }
-                    }
-                    if(p != null){
-                        Item item =  RegisterItemServices.CUSTOM_ITEMS.get("phone");
-                        item.setCount(count);
-                        p.getInventory().addItem(item);
-                        sendMessageToObject("&b 你获得了 &e 手机 * &a"+count,sender);
-                    }else{
-                        sendMessageToObject("&c目标玩家为控制台!",sender);
-                    }
-                    break;
+                    return handleItemGive(sender, args, "phone", "手机");
                 case "model":
-                    count = 1;
-                    p = null;
-                    if(sender instanceof Player){
-                        p = (Player) sender;
-                    }
-                    if(args.length > 1){
-                        try{
-                            count = Integer.parseInt(args[1]);
-                        }catch (Exception ignore){}
-
-                    }
-                    if(args.length > 2){
-                        String pl = args[2];
-                        p = Server.getInstance().getPlayer(pl);
-                        if(p == null){
-                            sendMessageToObject("&c玩家 "+pl+" 不在线",sender);
-                            return true;
-                        }
-                    }
-                    if(p != null){
-                        Item item =  RegisterItemServices.CUSTOM_ITEMS.get("pipe_wrench");
-                        item.setCount(count);
-                        p.getInventory().addItem(item);
-                        sendMessageToObject("&b 你获得了 &e 模型转换器 * &a"+count,sender);
-                    }else{
-                        sendMessageToObject("&c目标玩家为控制台!",sender);
-                    }
-                    break;
+                    return handleItemGive(sender, args, "pipe_wrench", "模型转换器");
                 case "move":
-                    count = 1;
-                    p = null;
-                    if(sender instanceof Player){
-                        p = (Player) sender;
-                    }
-                    if(args.length > 1){
-                        try{
-                            count = Integer.parseInt(args[1]);
-                        }catch (Exception ignore){}
-
-                    }
-                    if(args.length > 2){
-                        String pl = args[2];
-                        p = Server.getInstance().getPlayer(pl);
-                        if(p == null){
-                            sendMessageToObject("&c玩家 "+pl+" 不在线",sender);
-                            return true;
-                        }
-                    }
-                    if(p != null){
-                        Item item =  RegisterItemServices.CUSTOM_ITEMS.get("ct");
-                        item.setCount(count);
-                        p.getInventory().addItem(item);
-                        sendMessageToObject("&b 你获得了 &e 搬运器 * &a"+count,sender);
-                    }else{
-                        sendMessageToObject("&c目标玩家为控制台!",sender);
-                    }
-                    break;
+                    return handleItemGive(sender, args, "ct", "搬运器");
+                case "net":
+                    return handleItemGive(sender, args, "netxk", "网店许可证");
                 case "q":
                     if(args.length > 1){
                         String master = args[1];
@@ -479,6 +374,7 @@ public class SalesMainClass extends PluginBase {
 
                     break;
                 case "d":
+                    Player p = null;
                     String zks = args[1];
                     float zk = 0;
 
@@ -606,10 +502,38 @@ public class SalesMainClass extends PluginBase {
             SalesMainClass.sendMessageToConsole("加载模型 &e"+name);
             ENTITY_SKIN.put(name,new SaleSkinConfig(name,hashMap,loadSettingConfig(config,name)));
         }
+    }
 
+    private boolean handleItemGive(CommandSender sender, String[] args, String itemKey, String itemName) {
+        int count = 1;
+        Player p = sender instanceof Player ? (Player) sender : null;
+        if (args.length > 1) {
+            try {
+                count = Integer.parseInt(args[1]);
+            } catch (Exception ignore) {}
+        }
 
+        if (args.length > 2) {
+            p = Server.getInstance().getPlayer(args[2]);
+            if (p == null) {
+                sendMessageToObject("&c玩家 " + args[2] + " 不在线", sender);
+                return true;
+            }
+        }
 
-
+        if (p != null) {
+            Item item = RegisterItemServices.CUSTOM_ITEMS.get(itemKey);
+            if (item != null) {
+                item.setCount(count);
+                p.getInventory().addItem(item);
+                sendMessageToObject("&b 你获得了 &e " + itemName + " * &a" + count, p);
+            } else {
+                sendMessageToObject("&c物品不存在: " + itemKey, sender);
+            }
+        } else {
+            sendMessageToObject("&c目标玩家为控制台!", sender);
+        }
+        return true;
     }
 
     private SaleSettingConfig loadSettingConfig(Config config,String folder){
