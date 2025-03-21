@@ -135,9 +135,9 @@ public class SalesListener implements Listener {
 
                 return;
             }
-            if(!ei.equals(RegisterItemServices.CUSTOM_ITEMS.get("ct")) &&
+            if(!ei.equals(RegisterItemServices.CUSTOM_ITEMS.get("ct"),false) &&
                     !(ei instanceof ISaleItem)&&
-                    !ei.equals(RegisterItemServices.CUSTOM_ITEMS.get("pipe_wrench"))
+                    !ei.equals(RegisterItemServices.CUSTOM_ITEMS.get("pipe_wrench"),false)
             && !ei.equals(new ItemHopper()) && !ei.equals(new ItemMinecartHopper())){
                 event.setCancelled();
             }else{

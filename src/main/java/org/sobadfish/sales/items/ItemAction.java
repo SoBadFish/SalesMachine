@@ -228,6 +228,8 @@ public class ItemAction {
                         //添加粒子
                         level.addParticle(new ItemBreakParticle(player.add(0, player.getEyeY()),item));
                         level.addSound(player,Sound.RANDOM_BREAK);
+                    }else{
+                        player.getInventory().setItemInHand(item);
                     }
                 }
             }else{
