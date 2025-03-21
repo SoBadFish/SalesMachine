@@ -102,13 +102,15 @@ public class RegisterItemServices {
             CustomItemAPI.getInstance().registerCustomItem(2018, org.sobadfish.sales.items.custom.CustomSalePhoneItem.class);
             CustomItemAPI.getInstance().registerCustomItem(2019, org.sobadfish.sales.items.custom.CustomSaleNetItem.class);
             CustomItemAPI.getInstance().registerCustomItem(2020, org.sobadfish.sales.items.custom.CustomSaleDefSettingItem.class);
-
+            CustomItemAPI.getInstance().registerCustomItem(2021, org.sobadfish.sales.items.custom.ct.CustomV7CtSaleItem.class);
+            CustomItemAPI.getInstance().registerCustomItem(2022, org.sobadfish.sales.items.custom.sales.CustomV7SaleItem.class);
             CUSTOM_ITEMS.put("sale_v1",new  org.sobadfish.sales.items.custom.sales.CustomV1SaleItem());
             CUSTOM_ITEMS.put("sale_v2",new  org.sobadfish.sales.items.custom.sales.CustomV2SaleItem());
             CUSTOM_ITEMS.put("sale_v3",new  org.sobadfish.sales.items.custom.sales.CustomV3SaleItem());
             CUSTOM_ITEMS.put("sale_v4",new  org.sobadfish.sales.items.custom.sales.CustomV4SaleItem());
             CUSTOM_ITEMS.put("sale_v5",new  org.sobadfish.sales.items.custom.sales.CustomV5SaleItem());
             CUSTOM_ITEMS.put("sale_v6",new  org.sobadfish.sales.items.custom.sales.CustomV6SaleItem());
+            CUSTOM_ITEMS.put("sale_v7",new  org.sobadfish.sales.items.custom.sales.CustomV7SaleItem());
 
             CUSTOM_ITEMS.put("ct_sale_v1",new org.sobadfish.sales.items.custom.ct.CustomV1CtSaleItem());
             CUSTOM_ITEMS.put("ct_sale_v2",new org.sobadfish.sales.items.custom.ct.CustomV2CtSaleItem());
@@ -116,6 +118,7 @@ public class RegisterItemServices {
             CUSTOM_ITEMS.put("ct_sale_v4",new org.sobadfish.sales.items.custom.ct.CustomV4CtSaleItem());
             CUSTOM_ITEMS.put("ct_sale_v5",new org.sobadfish.sales.items.custom.ct.CustomV5CtSaleItem());
             CUSTOM_ITEMS.put("ct_sale_v6",new org.sobadfish.sales.items.custom.ct.CustomV6CtSaleItem());
+            CUSTOM_ITEMS.put("ct_sale_v7",new org.sobadfish.sales.items.custom.ct.CustomV7CtSaleItem());
             CUSTOM_ITEMS.put("ct_chest",new org.sobadfish.sales.items.custom.CtChestItem());
             CUSTOM_ITEMS.put("ct_key",new org.sobadfish.sales.items.custom.CtKeyItem());
 
@@ -146,6 +149,7 @@ public class RegisterItemServices {
             Item.registerCustomItem(CustomV4SaleItem.class);
             Item.registerCustomItem(CustomV5SaleItem.class);
             Item.registerCustomItem(CustomV6SaleItem.class);
+            Item.registerCustomItem(CustomV7SaleItem.class);
             //
 
             Item.registerCustomItem(CustomSaleSettingItem.class,false);
@@ -164,6 +168,7 @@ public class RegisterItemServices {
             Item.registerCustomItem(CustomV4CtSaleItem.class,false);
             Item.registerCustomItem(CustomV5CtSaleItem.class,false);
             Item.registerCustomItem(CustomV6CtSaleItem.class,false);
+            Item.registerCustomItem(CustomV7CtSaleItem.class,false);
             Item.registerCustomItem(CustomWrench.class);
 
             Item.registerCustomItem(CtChestItem.class,false);
@@ -183,6 +188,7 @@ public class RegisterItemServices {
             CUSTOM_ITEMS.put("sale_v4",new CustomV4SaleItem());
             CUSTOM_ITEMS.put("sale_v5",new CustomV5SaleItem());
             CUSTOM_ITEMS.put("sale_v6",new CustomV6SaleItem());
+            CUSTOM_ITEMS.put("sale_v7",new CustomV7SaleItem());
 
             CUSTOM_ITEMS.put("ct_sale_v1",new CustomV1CtSaleItem());
             CUSTOM_ITEMS.put("ct_sale_v2",new CustomV2CtSaleItem());
@@ -190,6 +196,7 @@ public class RegisterItemServices {
             CUSTOM_ITEMS.put("ct_sale_v4",new CustomV4CtSaleItem());
             CUSTOM_ITEMS.put("ct_sale_v5",new CustomV5CtSaleItem());
             CUSTOM_ITEMS.put("ct_sale_v6",new CustomV6CtSaleItem());
+            CUSTOM_ITEMS.put("ct_sale_v7",new CustomV7CtSaleItem());
 
             CUSTOM_ITEMS.put("setting",new CustomSaleSettingItem());
             CUSTOM_ITEMS.put("remove",new CustomSaleRemoveItem());

@@ -28,6 +28,10 @@
 		"sale_item_v6":{
 			"textures": "textures/items/sale_item_v6.png"
 		},
+
+		"sale_item_v7":{
+			"textures": "textures/items/sale_item_v7.png"
+		},
 		"sale_setting": {
 			"textures":"textures/items/sale_setting.png"
 		},
@@ -60,6 +64,9 @@
 		},
 		"ct_iron_sale_v6": {
 			"textures": "textures/items/ct_iron_sale_v6.png"
+		},
+		"ct_iron_sale_v7": {
+			"textures": "textures/items/ct_iron_sale_v7.png"
 		},
 		"pipe_wrench": {
 			"textures":"textures/items/pipe_wrench.png"
