@@ -20,7 +20,7 @@ public class CustomWrench  extends ItemCustomTool {
 
     @Override
     public CustomItemDefinition getDefinition() {
-        return CustomItemDefinition.customBuilder(this, ItemCreativeCategory.ITEMS).build();
+        return CustomItemDefinition.toolBuilder(this, ItemCreativeCategory.ITEMS).build();
     }
 
     @Override

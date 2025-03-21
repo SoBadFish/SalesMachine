@@ -275,6 +275,7 @@ public class ItemAction {
                         player.level.addSound(player,Sound.RANDOM_BREAK);
                     }else{
                         Item cc = RegisterItemServices.CUSTOM_ITEMS.get("ct").clone();
+                        cc.setDamage(item.getDamage());
                         player.getInventory().setItemInHand(cc);
                         level.addSound(block, Sound.MOB_ZOMBIE_WOODBREAK);
                     }
