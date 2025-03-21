@@ -90,7 +90,7 @@ public class SalesMainClass extends PluginBase {
 
     public LinkedHashMap<String, ItemData> itemInfoData = new LinkedHashMap<>();
 
-    public String[] lists = new String[]{"v1", "v2","v3","v4","v5","v6"};
+    public String[] lists = new String[]{"v1", "v2","v3","v4","v5","v6","v7"};
 
 
     @Override
