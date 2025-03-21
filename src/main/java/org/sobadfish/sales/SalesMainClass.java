@@ -144,9 +144,6 @@ public class SalesMainClass extends PluginBase {
             sendMessageToConsole("&r物品数据信息 &c加载失败!");
         }
 
-
-
-
         saveResource("data.db",false);
         try {
             sqliteHelper = new SqliteHelper(getDataFolder()+"/data.db");
@@ -161,20 +158,9 @@ public class SalesMainClass extends PluginBase {
         }
 
         chunkDb();
-
         initSkin();
-
-
         services.registerBlock();
-
-
-
-
-
-
         this.getServer().getPluginManager().registerEvents(new SalesListener(this),this);
-
-
         services.registerCraft();
         sendMessageToConsole("&a加载完成!");
 
@@ -326,6 +312,8 @@ public class SalesMainClass extends PluginBase {
                     sendMessageToObject("&a/sa help &7查看帮助",sender);
                     sendMessageToObject("&a/sa give [数量] [玩家(可不填)]  &7给予玩家售货机物品 （放置即可）",sender);
                     sendMessageToObject("&a/sa phone [数量] [玩家(可不填)]  &7给予玩家一台手机",sender);
+                    sendMessageToObject("&a/sa model [数量] [玩家(可不填)]  &7给予玩家一个模型转换器",sender);
+                    sendMessageToObject("&a/sa move [数量] [玩家(可不填)]  &7给予玩家一个搬箱器",sender);
                     sendMessageToObject("&a/sa q [玩家（可不填）]  &7查询玩家售货机坐标信息",sender);
                     sendMessageToObject("&a/sa d <折扣> [玩家（可不填）]  &7给予玩家一个通用优惠券",sender);
                     sendMessageToObject("&a/sa b [模型]  &7将手持物品绑定售货机模型 &c(无法绑定售货机/使用后消耗)",sender);
@@ -390,6 +378,64 @@ public class SalesMainClass extends PluginBase {
                         item.setCount(count);
                         p.getInventory().addItem(item);
                         sendMessageToObject("&b 你获得了 &e 手机 * &a"+count,sender);
+                    }else{
+                        sendMessageToObject("&c目标玩家为控制台!",sender);
+                    }
+                    break;
+                case "model":
+                    count = 1;
+                    p = null;
+                    if(sender instanceof Player){
+                        p = (Player) sender;
+                    }
+                    if(args.length > 1){
+                        try{
+                            count = Integer.parseInt(args[1]);
+                        }catch (Exception ignore){}
+
+                    }
+                    if(args.length > 2){
+                        String pl = args[2];
+                        p = Server.getInstance().getPlayer(pl);
+                        if(p == null){
+                            sendMessageToObject("&c玩家 "+pl+" 不在线",sender);
+                            return true;
+                        }
+                    }
+                    if(p != null){
+                        Item item =  RegisterItemServices.CUSTOM_ITEMS.get("pipe_wrench");
+                        item.setCount(count);
+                        p.getInventory().addItem(item);
+                        sendMessageToObject("&b 你获得了 &e 模型转换器 * &a"+count,sender);
+                    }else{
+                        sendMessageToObject("&c目标玩家为控制台!",sender);
+                    }
+                    break;
+                case "move":
+                    count = 1;
+                    p = null;
+                    if(sender instanceof Player){
+                        p = (Player) sender;
+                    }
+                    if(args.length > 1){
+                        try{
+                            count = Integer.parseInt(args[1]);
+                        }catch (Exception ignore){}
+
+                    }
+                    if(args.length > 2){
+                        String pl = args[2];
+                        p = Server.getInstance().getPlayer(pl);
+                        if(p == null){
+                            sendMessageToObject("&c玩家 "+pl+" 不在线",sender);
+                            return true;
+                        }
+                    }
+                    if(p != null){
+                        Item item =  RegisterItemServices.CUSTOM_ITEMS.get("ct");
+                        item.setCount(count);
+                        p.getInventory().addItem(item);
+                        sendMessageToObject("&b 你获得了 &e 搬运器 * &a"+count,sender);
                     }else{
                         sendMessageToObject("&c目标玩家为控制台!",sender);
                     }

@@ -1,5 +1,7 @@
 package org.sobadfish.sales.items;
 
+import cn.nukkit.block.Block;
+import cn.nukkit.entity.Entity;
 import cn.nukkit.item.ItemDurable;
 import cn.nukkit.item.customitem.CustomItemDefinition;
 import cn.nukkit.item.customitem.ItemCustomTool;
@@ -30,6 +32,15 @@ public class CustomSalePhoneItem extends ItemCustomTool implements ItemDurable {
         return 5;
     }
 
+    @Override
+    public boolean useOn(Block block) {
+        return true;
+    }
+
+    @Override
+    public boolean useOn(Entity entity) {
+        return true;
+    }
 
     @Override
     public boolean isTool() {

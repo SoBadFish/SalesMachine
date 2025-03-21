@@ -27,6 +27,7 @@ import cn.nukkit.item.ItemNameTag;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.Sound;
+import cn.nukkit.level.particle.ItemBreakParticle;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.TextFormat;
@@ -245,6 +246,12 @@ public class SalesListener implements Listener {
             //使用手机
             if(item.equals(RegisterItemServices.CUSTOM_ITEMS.get("phone"),false,false)){
                 if(event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+                    if(item.getDamage() >= item.getMaxDurability()){
+                        player.level.addParticle(new ItemBreakParticle(player,item));
+                        player.level.addSound(player,Sound.RANDOM_BREAK);
+                        player.getInventory().removeItem(item);
+                        return;
+                    }
                     item.setDamage(item.getDamage() + 1);
                     player.getInventory().setItemInHand(item);
                     if (!player.isSneaking()) {
