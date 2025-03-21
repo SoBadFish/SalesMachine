@@ -121,6 +121,7 @@ public class SalesListener implements Listener {
                 //使用网店许可证
                 event.setCancelled();
                 if(player.isOp() || entity1.master.equalsIgnoreCase(player.getName())){
+                    player.getInventory().removeItem(ei);
                     entity1.salesData.netuse = 1;
                     entity1.saveData();
                     player.level.addSound(entity1,Sound.RANDOM_ORB);
