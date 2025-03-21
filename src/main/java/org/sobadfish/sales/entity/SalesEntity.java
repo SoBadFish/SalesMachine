@@ -749,6 +749,11 @@ public class SalesEntity extends EntityHuman {
             cl.setCount(saleItem.stack);
             level.dropItem(this, cl);
         }
+        //网店许可证也能掉落
+        if(salesData.netuse == 1){
+            level.dropItem(this, RegisterItemServices.CUSTOM_ITEMS.get("netxk"));
+        }
+
         close();
         String as = asLocation(this);
         SalesMainClass.INSTANCE.sqliteHelper.remove(SalesMainClass.DB_TABLE, "location", as);
