@@ -3,7 +3,7 @@ package org.sobadfish.sales.items;
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.item.customitem.CustomItemDefinition;
-import cn.nukkit.item.customitem.ItemCustom;
+import cn.nukkit.item.customitem.ItemCustomTool;
 import cn.nukkit.item.customitem.data.ItemCreativeCategory;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
@@ -12,7 +12,7 @@ import cn.nukkit.math.BlockFace;
  * @author Sobadfish
  * @date 2024/3/30
  */
-public class CustomCtItem extends ItemCustom  {
+public class CustomCtItem extends ItemCustomTool {
 
     public CustomCtItem() {
         super("minecraft:ct_iron", "搬运器", "ct_iron");
@@ -21,7 +21,7 @@ public class CustomCtItem extends ItemCustom  {
 
     @Override
     public CustomItemDefinition getDefinition() {
-        return CustomItemDefinition.customBuilder(this, ItemCreativeCategory.ITEMS).build();
+        return CustomItemDefinition.toolBuilder(this, ItemCreativeCategory.ITEMS).build();
     }
 
     @Override
@@ -29,7 +29,10 @@ public class CustomCtItem extends ItemCustom  {
         return 1;
     }
 
-
+    @Override
+    public int getMaxDurability() {
+        return 20;
+    }
 
     @Override
     public boolean canBeActivated() {

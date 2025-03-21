@@ -3,7 +3,7 @@ package org.sobadfish.sales.items;
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.item.customitem.CustomItemDefinition;
-import cn.nukkit.item.customitem.ItemCustom;
+import cn.nukkit.item.customitem.ItemCustomTool;
 import cn.nukkit.item.customitem.data.ItemCreativeCategory;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
@@ -12,7 +12,7 @@ import cn.nukkit.math.BlockFace;
  * @author Sobadfish
  * @date 2024/5/10
  */
-public abstract class BaseCtSaleItem extends ItemCustom {
+public abstract class BaseCtSaleItem extends ItemCustomTool {
 
     public BaseCtSaleItem(String id, String textureName) {
         super(id, "搬运器", textureName);
@@ -21,12 +21,17 @@ public abstract class BaseCtSaleItem extends ItemCustom {
 
     @Override
     public CustomItemDefinition getDefinition() {
-        return CustomItemDefinition.customBuilder(this, ItemCreativeCategory.ITEMS).build();
+        return CustomItemDefinition.toolBuilder(this, ItemCreativeCategory.ITEMS).build();
     }
 
     @Override
     public int getMaxStackSize() {
         return 1;
+    }
+
+    @Override
+    public int getMaxDurability() {
+        return 20;
     }
 
     @Override

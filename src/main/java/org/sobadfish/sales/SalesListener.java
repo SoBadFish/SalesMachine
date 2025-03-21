@@ -265,7 +265,7 @@ public class SalesListener implements Listener {
             if(item.equals(RegisterItemServices.CUSTOM_ITEMS.get("phone"),false,false)){
                 if(event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
                     if(item.getDamage() >= item.getMaxDurability()){
-                        player.level.addParticle(new ItemBreakParticle(player,item));
+                        player.level.addParticle(new ItemBreakParticle(player.add(0, player.getEyeY()),item));
                         player.level.addSound(player,Sound.RANDOM_BREAK);
                         player.getInventory().removeItem(item);
                         return;

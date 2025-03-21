@@ -14,6 +14,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Sound;
+import cn.nukkit.level.particle.ItemBreakParticle;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
@@ -71,8 +72,19 @@ public class ItemAction {
             blockEntity.pairWith(chest);
         }
         Item cc = RegisterItemServices.CUSTOM_ITEMS.get("ct").clone();
-        player.getInventory().setItemInHand(cc);
-        level.addSound(block, Sound.MOB_ZOMBIE_WOODBREAK);
+        if(handItem.getDamage() > handItem.getMaxDurability()){
+            player.getInventory().removeItem(handItem);
+            //添加粒子
+            player.level.addParticle(new ItemBreakParticle(player.add(0, player.getEyeY()),handItem));
+            player.level.addSound(player,Sound.RANDOM_BREAK);
+        }else{
+            cc.setDamage(handItem.getDamage());
+            player.getInventory().setItemInHand(cc);
+            level.addSound(block, Sound.MOB_ZOMBIE_WOODBREAK);
+        }
+
+
+
 
         return true;
     }
@@ -129,7 +141,9 @@ public class ItemAction {
                     }
 //     
                     ctm.putList(cl);
+                    i.setDamage(i.getDamage() + 1);
                     Item sitem = RegisterItemServices.CUSTOM_ITEMS.get("ct_chest");
+                    sitem.setDamage(i.getDamage());
                     sitem.setNamedTag(ctm);
 
                     player.getInventory().removeItem(i);
@@ -160,6 +174,8 @@ public class ItemAction {
                 }
 
                 Item sitem = RegisterItemServices.CUSTOM_ITEMS.get(name);
+                i.setDamage(i.getDamage() + 1);
+                sitem.setDamage(i.getDamage());
                 sitem.setCount(1);
                 //sitem.setDamage(saleSkinConfig.config.meta);
                 String nm = "&r&e"+salesEntity.master+" 的售货机";
@@ -205,6 +221,14 @@ public class ItemAction {
                 }
                 if(!salesEntity.setModel(sk.get(index))){
                     SalesMainClass.sendMessageToObject("&c切换模型失败",player);
+                }else{
+                    item.setDamage(item.getDamage() + 1);
+                    if(item.getDamage() > item.getMaxDurability()){
+                        player.getInventory().removeItem(item);
+                        //添加粒子
+                        level.addParticle(new ItemBreakParticle(player.add(0, player.getEyeY()),item));
+                        level.addSound(player,Sound.RANDOM_BREAK);
+                    }
                 }
             }else{
                 SalesMainClass.sendMessageToObject("&c这不是你的售货机",player);
@@ -242,10 +266,21 @@ public class ItemAction {
                 SalesEntity entity = SalesEntity.spawnToAll(salesData.asPosition(),
                         BlockFace.valueOf(salesData.bf.toUpperCase()), salesData.master, salesData,false,true,null,null);
                 if(entity != null){
-                    level.addSound(block, Sound.MOB_ZOMBIE_WOODBREAK);
+
                     SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE, salesData);
-                    Item cc = RegisterItemServices.CUSTOM_ITEMS.get("ct").clone();
-                    player.getInventory().setItemInHand(cc);
+                    if(item.getDamage() >= item.getMaxDurability()){
+                        player.getInventory().removeItem(item);
+                        //添加粒子
+                        player.level.addParticle(new ItemBreakParticle(player.add(0, player.getEyeY()),item));
+                        player.level.addSound(player,Sound.RANDOM_BREAK);
+                    }else{
+                        Item cc = RegisterItemServices.CUSTOM_ITEMS.get("ct").clone();
+                        player.getInventory().setItemInHand(cc);
+                        level.addSound(block, Sound.MOB_ZOMBIE_WOODBREAK);
+                    }
+
+
+
                 }else{
                     SalesMainClass.sendMessageToObject("&c生成失败！ 请保证周围没有其他方块",player);
                 }
