@@ -72,7 +72,7 @@ public class ItemAction {
             blockEntity.pairWith(chest);
         }
         Item cc = RegisterItemServices.CUSTOM_ITEMS.get("ct").clone();
-        if(handItem.getDamage() > handItem.getMaxDurability()){
+        if(handItem.getDamage() >= handItem.getMaxDurability()){
             player.getInventory().removeItem(handItem);
             //添加粒子
             player.level.addParticle(new ItemBreakParticle(player.add(0, player.getEyeY()),handItem));
@@ -223,7 +223,7 @@ public class ItemAction {
                     SalesMainClass.sendMessageToObject("&c切换模型失败",player);
                 }else{
                     item.setDamage(item.getDamage() + 1);
-                    if(item.getDamage() > item.getMaxDurability()){
+                    if(item.getDamage() >= item.getMaxDurability()){
                         player.getInventory().removeItem(item);
                         //添加粒子
                         level.addParticle(new ItemBreakParticle(player.add(0, player.getEyeY()),item));
