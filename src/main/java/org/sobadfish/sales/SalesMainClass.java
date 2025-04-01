@@ -336,7 +336,7 @@ public class SalesMainClass extends PluginBase {
                 case "net":
                     return handleItemGive(sender, args, "netxk", "网店许可证");
                 case "coin":
-                    return handleItemGive(sender, args, "coin", "硬币");
+                    return handleItemGive(sender, args, "money", "硬币");
                 case "q":
                     if(args.length > 1){
                         String master = args[1];
