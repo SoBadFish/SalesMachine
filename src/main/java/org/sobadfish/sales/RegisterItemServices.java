@@ -217,6 +217,23 @@ public class RegisterItemServices {
             CUSTOM_ITEMS.put("netxk",new CustomSaleNetItem());
             CUSTOM_ITEMS.put("defsetting",new CustomSaleDefSettingItem());
         }
+        //将物品注册到创造背包
+        Item.addCreativeItem(CUSTOM_ITEMS.get("sale_v1"));
+        Item.addCreativeItem(CUSTOM_ITEMS.get("sale_v2"));
+        Item.addCreativeItem(CUSTOM_ITEMS.get("sale_v3"));
+        Item.addCreativeItem(CUSTOM_ITEMS.get("sale_v4"));
+        Item.addCreativeItem(CUSTOM_ITEMS.get("sale_v5"));
+        Item.addCreativeItem(CUSTOM_ITEMS.get("sale_v6"));
+        Item.addCreativeItem(CUSTOM_ITEMS.get("sale_v7"));
+        Item.addCreativeItem(CUSTOM_ITEMS.get("sale_coin"));
+        Item.addCreativeItem(CUSTOM_ITEMS.get("money"));
+        Item.addCreativeItem(CUSTOM_ITEMS.get("ct"));
+        Item.addCreativeItem(CUSTOM_ITEMS.get("pipe_wrench"));
+        Item.addCreativeItem(CUSTOM_ITEMS.get("discount"));
+        Item.addCreativeItem(CUSTOM_ITEMS.get("netxk"));
+        Item.addCreativeItem(CUSTOM_ITEMS.get("ct_key"));
+        Item.addCreativeItem(CUSTOM_ITEMS.get("phone"));
+
 
 //        Item.removeCreativeItem(CUSTOM_ITEMS.get("ct_sale"));
 
