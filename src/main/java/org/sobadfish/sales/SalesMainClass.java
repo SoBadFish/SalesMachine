@@ -336,7 +336,7 @@ public class SalesMainClass extends PluginBase {
                 case "net":
                     return handleItemGive(sender, args, "netxk", "网店许可证");
                 case "coin":
-                    return handleItemGive(sender, args, "money", "硬币");
+                    return handleItemGive(sender, args, "sale_coin", "硬币");
                 case "q":
                     if(args.length > 1){
                         String master = args[1];
@@ -524,7 +524,7 @@ public class SalesMainClass extends PluginBase {
         }
 
         if (p != null) {
-            Item item = RegisterItemServices.CUSTOM_ITEMS.get(itemKey);
+            Item item = RegisterItemServices.CUSTOM_ITEMS.get(itemKey).clone();
             if (item != null) {
                 item.setCount(count);
                 p.getInventory().addItem(item);
