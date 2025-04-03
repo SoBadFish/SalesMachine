@@ -40,6 +40,12 @@ public class ItemAction {
      * 放置箱子..
      * */
     public static boolean onChestPlace(Item handItem,Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz){
+        Item pHand = player.getInventory().getItemInHand();
+        if(pHand.hasCompoundTag()){
+            if(pHand.getNamedTag().contains("BlockEntityTag")){
+                return false;
+            }
+        }
         BlockChest blockChest = new BlockChest();
         BlockPlaceEvent event = new BlockPlaceEvent(player,blockChest,block,target,handItem);
         Server.getInstance().getPluginManager().callEvent(event);
@@ -219,18 +225,17 @@ public class ItemAction {
                 if(index >= sk.size()){
                     index = 0;
                 }
+                if(item.getDamage() -1 >= item.getMaxDurability()){
+                    player.getInventory().removeItem(item);
+                    //添加粒子
+                    level.addParticle(new ItemBreakParticle(player.add(0, player.getEyeY()),item));
+                    level.addSound(player,Sound.RANDOM_BREAK);
+                    return true;
+                }
+                item.setDamage(item.getDamage() + 1);
+                player.getInventory().setItemInHand(item);
                 if(!salesEntity.setModel(sk.get(index))){
                     SalesMainClass.sendMessageToObject("&c切换模型失败",player);
-                }else{
-                    item.setDamage(item.getDamage() + 1);
-                    if(item.getDamage() >= item.getMaxDurability()){
-                        player.getInventory().removeItem(item);
-                        //添加粒子
-                        level.addParticle(new ItemBreakParticle(player.add(0, player.getEyeY()),item));
-                        level.addSound(player,Sound.RANDOM_BREAK);
-                    }else{
-                        player.getInventory().setItemInHand(item);
-                    }
                 }
             }else{
                 SalesMainClass.sendMessageToObject("&c这不是你的售货机",player);

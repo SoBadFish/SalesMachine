@@ -29,7 +29,7 @@ public class CustomSalePhoneItem extends ItemCustomTool implements ItemDurable {
 
     @Override
     public int getMaxDurability() {
-        return 5;
+        return 20;
     }
 
     @Override
