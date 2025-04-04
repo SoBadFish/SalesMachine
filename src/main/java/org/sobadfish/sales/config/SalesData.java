@@ -38,7 +38,7 @@ public class SalesData {
 
     public String master;
 
-    public String placeitem;
+    public String placeitem = "minecraft:sale_v1";
 
     public String customname;
 
