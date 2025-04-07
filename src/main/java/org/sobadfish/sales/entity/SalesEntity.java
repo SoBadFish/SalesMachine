@@ -863,10 +863,9 @@ public class SalesEntity extends EntityHuman {
                 position.getLevel().setBlock(sp, (Block) SalesMainClass.INSTANCE.services.iBarrier, false, false);
                 BlockEntity.createBlockEntity(SalesBlockEntity.ENTITY_TYPE, pos.getChunk(),
                         BlockEntity.getDefaultCompound(sp, SalesBlockEntity.ENTITY_TYPE), sales);
-                if (!SalesListener.cacheEntitys.containsKey(pps)) {
-                    SalesListener.cacheEntitys.put(pps, sales);
-                }
-
+//                if (!SalesListener.cacheEntitys.containsKey(pps)) {
+                SalesListener.cacheEntitys.put(pps, sales);
+//                }
             }
 
             String ps = asLocation(position);
@@ -898,9 +897,7 @@ public class SalesEntity extends EntityHuman {
                 if(handItem != null){
                     data.setPlaceItem(handItem);
                 }
-                if(data.world == null || "".equalsIgnoreCase(data.world)){
-                    data.world = position.level.getFolderName();
-                }
+                data.world = position.level.getFolderName();
                 if(data.uuid == null || "".equalsIgnoreCase(data.uuid)){
                     data.uuid = UUID.randomUUID().toString();
                 }

@@ -27,6 +27,7 @@ import cn.nukkit.item.ItemNameTag;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.Sound;
+import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.level.particle.ItemBreakParticle;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.nbt.tag.CompoundTag;
@@ -303,14 +304,20 @@ public class SalesListener implements Listener {
     public void onChunkLoad(ChunkLoadEvent event){
         //加载区间下的所有 实体
 //        SalesMainClass.sendMessageToConsole("区块加载: ("+event.getChunk().getX()+":"+ (event.getChunk().getZ())+")");
+        loadEntityByChunk(event.getLevel(),event.getChunk());
+
+    }
+
+
+    public void loadEntityByChunk(Level level,FullChunk chunk){
         if( SalesMainClass.INSTANCE.sqliteHelper != null){
             List<SalesData> salesData = SalesMainClass.INSTANCE.sqliteHelper.getDataByString(SalesMainClass.DB_TABLE,
                     "chunkx = ? and chunkz = ?",new String[]{
-                            (event.getChunk().getX())+"",
-                            (event.getChunk().getZ())+""
+                            (chunk.getX())+"",
+                            (chunk.getZ())+""
                     }, SalesData.class);
             if(!salesData.isEmpty()){
-               // SalesMainClass.sendMessageToConsole("加载 区块: ("+event.getChunk().getX()+":"+ (event.getChunk().getZ())+") "+salesData.size()+" 个售货机");
+                // SalesMainClass.sendMessageToConsole("加载 区块: ("+event.getChunk().getX()+":"+ (event.getChunk().getZ())+") "+salesData.size()+" 个售货机");
                 Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE, () -> {
                     for(SalesData data : salesData){
                         if("null".equalsIgnoreCase(data.customname) || "".equalsIgnoreCase(data.customname)){
@@ -318,9 +325,14 @@ public class SalesListener implements Listener {
                         }
 
                         Position position = data.asPosition();
-                        if(position.getLevel().getFolderName().equalsIgnoreCase(event.getLevel().getFolderName())){
+                        if(position.getLevel().getFolderName().equalsIgnoreCase(level.getFolderName())){
                             if("null".equalsIgnoreCase(data.world) || "".equalsIgnoreCase(data.world) || data.world == null){
-                                data.world = event.getLevel().getFolderName();
+                                data.world = level.getFolderName();
+                                SalesMainClass.INSTANCE.sqliteHelper.set(SalesMainClass.DB_TABLE,"location",data.location,data);
+                            }
+                            //还出现过地图没更新的问题
+                            if(data.world != null && !data.world.equalsIgnoreCase(level.getFolderName())){
+                                data.world = level.getFolderName();
                                 SalesMainClass.INSTANCE.sqliteHelper.set(SalesMainClass.DB_TABLE,"location",data.location,data);
                             }
                             if(!cacheEntitys.containsKey(data.location)){
@@ -345,14 +357,11 @@ public class SalesListener implements Listener {
                         }
 
                     }
-                }, 20);
+                }, 10);
             }
 
 
         }
-
-
-
     }
 
     //黑科技 接收漏斗物品
@@ -383,12 +392,11 @@ public class SalesListener implements Listener {
 //        SalesMainClass.sendMessageToConsole("&c区块卸载: 清理位置 &7("+event.getChunk().getX()+":"+ (event.getChunk().getZ())+") "+"&c 的售货机!");
         for(Entity e: event.getChunk().getEntities().values()){
             if(e instanceof SalesEntity){
-                event.setCancelled();
-                break;
-
+//                event.setCancelled();
+//                break;
 //                SalesMainClass.sendMessageToConsole("&c区块卸载: 移除位置&7 ("+((SalesEntity) e).salesData.location+") "+"区块: "+ ((SalesEntity) e).salesData.chunkx+","+ ((SalesEntity) e).salesData.chunkz+"&c 的售货机!");
                 //顺便移除缓存
-//                e.close();
+                e.close();
             }
         }
     }

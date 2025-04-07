@@ -11,6 +11,7 @@ import cn.nukkit.entity.data.Skin;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.level.Level;
+import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
@@ -37,7 +38,10 @@ import org.sobadfish.sales.panel.lib.AbstractFakeInventory;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
@@ -93,6 +97,9 @@ public class SalesMainClass extends PluginBase {
     public String[] lists = new String[]{"v1", "v2","v3","v4","v5","v6","v7"};
 
 
+    public SalesListener salesListener;
+
+
     @Override
     public void onLoad() {
         INSTANCE = this;
@@ -126,6 +133,12 @@ public class SalesMainClass extends PluginBase {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        saveResource("data.db",false);
+        try {
+            sqliteHelper = new SqliteHelper(getDataFolder()+"/data.db");
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
         //加载配置
         loadConfig();
         //加载经济核心
@@ -144,12 +157,6 @@ public class SalesMainClass extends PluginBase {
             sendMessageToConsole("&r物品数据信息 &c加载失败!");
         }
 
-        saveResource("data.db",false);
-        try {
-            sqliteHelper = new SqliteHelper(getDataFolder()+"/data.db");
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
 
         if(sqliteHelper != null){
             if(!sqliteHelper.exists(DB_TABLE)){
@@ -160,7 +167,8 @@ public class SalesMainClass extends PluginBase {
         chunkDb();
         initSkin();
         services.registerBlock();
-        this.getServer().getPluginManager().registerEvents(new SalesListener(this),this);
+        salesListener = new SalesListener(this);
+        this.getServer().getPluginManager().registerEvents(salesListener,this);
         services.registerCraft();
         sendMessageToConsole("&a加载完成!");
 
@@ -319,6 +327,7 @@ public class SalesMainClass extends PluginBase {
                     sendMessageToObject("&a/sa d <折扣> [玩家（可不填）]  &7给予玩家一个通用优惠券",sender);
                     sendMessageToObject("&a/sa b [模型]  &7将手持物品绑定售货机模型 &c(无法绑定售货机/使用后消耗)",sender);
                     sendMessageToObject("&a/sa load  &7查看当前加载的售货机",sender);
+                    sendMessageToObject("&a/sa update  &7重载当前区块的售货机",sender);
                     StringBuilder stringBuilder = new StringBuilder();
                     for(SaleSkinConfig saleSkinConfig: ENTITY_SKIN.values()){
                         stringBuilder.append(saleSkinConfig.modelName).append(",");
@@ -435,6 +444,20 @@ public class SalesMainClass extends PluginBase {
                             sendMessageToObject("&c不存在 "+model+" 模型",sender);
                         }
                     }
+                    break;
+                case "update":
+                    if(sender instanceof Player){
+                        //先清理当前区块的售货机
+                        for(Entity entity: ((Player) sender).getChunk().getEntities().values()){
+                            if(entity instanceof SalesEntity salesEntity){
+                                salesEntity.close();
+                            }
+                        }
+                        FullChunk chunk = ((Player) sender).getChunk();
+                        salesListener.loadEntityByChunk(((Player) sender).level,chunk);
+                        sendMessageToObject("&7已重新加载当前区块&e("+chunk.getX()+":"+chunk.getZ()+")&7下的售货机",sender);
+                    }
+
                     break;
                 case "load":
                     sendMessageToObject("&e当前服务器已加载 &a"+SalesListener.cacheEntitys.size()+" &e台售货机",sender);
@@ -692,4 +715,6 @@ public class SalesMainClass extends PluginBase {
             sqliteHelper.destroyed();
         }
     }
+
+
 }
