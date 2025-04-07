@@ -38,7 +38,7 @@ public class SalesData {
 
     public String master;
 
-    public String placeitem;
+    public String placeitem = "minecraft:sale_v1";
 
     public String customname;
 
@@ -76,6 +76,9 @@ public class SalesData {
         tag.putString("bf",bf);
         tag.putInt("net",net);
         tag.putInt("netuse",netuse);
+        if(netinfo == null){
+            netinfo = "";
+        }
         tag.putString("netinfo",netinfo);
         tag.putString("placeitem",placeitem);
         tag.putInt("lock",lock);
