@@ -801,13 +801,6 @@ public class SalesEntity extends EntityHuman {
             }
             saleSkinConfig = SalesMainClass.ENTITY_SKIN.get(modelName);
         }else{
-//            for(SaleSkinConfig sc: SalesMainClass.ENTITY_SKIN.values()){
-//                if(sc.config.meta == meta){
-//                    saleSkinConfig = sc;
-//                    modelName = sc.modelName;
-//                    break;
-//                }
-//            }
             if ( SalesMainClass.ENTITY_SKIN.containsKey(skin)){
                 saleSkinConfig =  SalesMainClass.ENTITY_SKIN.get(skin);
                 modelName = skin;
@@ -817,8 +810,6 @@ public class SalesEntity extends EntityHuman {
         if(saleSkinConfig == null){
             saleSkinConfig = SalesMainClass.ENTITY_SKIN.get(modelName);
         }
-
-
 
         Position pos = new Position(
                 position.getFloorX() + 0.5,
@@ -850,10 +841,8 @@ public class SalesEntity extends EntityHuman {
                 tagListTag = data.asItemSlots();
 
             }
-
 //            Item placeItem =
             SalesEntity sales = new SalesEntity(position.getChunk(), tag, bf, master, saleSkinConfig.config, tagListTag);
-
             sales.setSkin(skinV2);
             sales.spawnToAll();
 
@@ -871,40 +860,36 @@ public class SalesEntity extends EntityHuman {
             String ps = asLocation(position);
             if (data == null) {
                 data = new SalesData();
-                data.saveItemSlots(tagListTag);
-                data.chunkx = pos.getChunkX();
-                data.chunkz = pos.getChunkZ();
-                data.width = width;
-                data.height = height;
-                data.world = position.level.getFolderName();
-                data.location = ps;
-                data.master = master;
+            }
+            data.saveItemSlots(tagListTag);
+            data.chunkx = pos.getChunkX();
+            data.chunkz = pos.getChunkZ();
+            data.width = width;
+            data.height = height;
+            data.world = position.level.getFolderName();
+            data.location = ps;
+            data.master = master;
+            if(data.uuid == null || "".equalsIgnoreCase(data.uuid)){
                 data.uuid = UUID.randomUUID().toString();
-                data.bf = bf.getName();
-                data.skinmodel = modelName;
-                if(handItem != null){
-                    data.setPlaceItem(handItem);
-                }
+            }
+            data.bf = bf.getName();
+            data.skinmodel = modelName;
+            if(handItem != null){
+                data.setPlaceItem(handItem);
+            }
+            if(data.customname == null || "".equalsIgnoreCase(data.customname)){
                 data.customname = master + " 的售货机";
-                if (SalesMainClass.INSTANCE.sqliteHelper.hasData(SalesMainClass.DB_TABLE, "location", ps)) {
-                    SalesMainClass.INSTANCE.sqliteHelper.set(SalesMainClass.DB_TABLE, "location", ps, data);
-                } else {
-                    SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE, data);
-                }
+            }
 
-
-            }else{
-                if(handItem != null){
-                    data.setPlaceItem(handItem);
-                }
-                data.world = position.level.getFolderName();
-                if(data.uuid == null || "".equalsIgnoreCase(data.uuid)){
-                    data.uuid = UUID.randomUUID().toString();
-                }
+            if(handItem != null){
+                data.setPlaceItem(handItem);
+            }
+            if (SalesMainClass.INSTANCE.sqliteHelper.hasData(SalesMainClass.DB_TABLE, "location", ps)) {
+                SalesMainClass.INSTANCE.sqliteHelper.set(SalesMainClass.DB_TABLE, "location", ps, data);
+            } else {
+                SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE, data);
             }
             sales.salesData = data;
-
-
             return sales;
         }
         return null;
