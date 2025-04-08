@@ -625,6 +625,27 @@ public class SalesEntity extends EntityHuman {
     public void close() {
         //移除
         try {
+            //不要忘记把窗口移除..
+            for(Map.Entry<String, ChestPanel> chestPanelEntry:clickPlayers.entrySet()){
+                //关闭..
+                Player player = Server.getInstance().getPlayer(chestPanelEntry.getKey());
+                if(player != null){
+                    SalesMainClass.sendMessageToObject("&c售货机被移除或已移动!",player);
+                    chestPanelEntry.getValue().close(player);
+                }
+
+            }
+            for(Map.Entry<String, DoubleChestPanel> chestPanelEntry:clickInvPlayers.entrySet()){
+                //关闭..
+                Player player = Server.getInstance().getPlayer(chestPanelEntry.getKey());
+                if(player != null){
+                    SalesMainClass.sendMessageToObject("&c售货机被移除或已移动!",player);
+                    chestPanelEntry.getValue().close(player);
+                }
+
+            }
+
+
             List<Position> p3 = positionListByConfig(this, blockFace, salesData.width, salesData.height);
             for (Position position : p3) {
                 String lo = asLocation(position);
