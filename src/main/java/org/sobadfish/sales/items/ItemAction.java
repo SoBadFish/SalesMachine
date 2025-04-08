@@ -78,13 +78,13 @@ public class ItemAction {
             blockEntity.pairWith(chest);
         }
         Item cc = RegisterItemServices.CUSTOM_ITEMS.get("ct").clone();
-        if(handItem.getDamage() >= handItem.getMaxDurability()){
+        if(handItem.getDamage() + 1 >= handItem.getMaxDurability()){
             player.getInventory().removeItem(handItem);
             //添加粒子
             player.level.addParticle(new ItemBreakParticle(player.add(0, player.getEyeY()),handItem));
             player.level.addSound(player,Sound.RANDOM_BREAK);
         }else{
-            cc.setDamage(handItem.getDamage());
+            cc.setDamage(handItem.getDamage() + 1) ;
             player.getInventory().setItemInHand(cc);
             level.addSound(block, Sound.MOB_ZOMBIE_WOODBREAK);
         }
@@ -147,8 +147,8 @@ public class ItemAction {
                     }
 //     
                     ctm.putList(cl);
-                    i.setDamage(i.getDamage() + 1);
-                    Item sitem = RegisterItemServices.CUSTOM_ITEMS.get("ct_chest");
+//                    i.setDamage(i.getDamage() + 1);
+                    Item sitem = RegisterItemServices.CUSTOM_ITEMS.get("ct_chest").clone();
                     sitem.setDamage(i.getDamage());
                     sitem.setNamedTag(ctm);
 
@@ -179,9 +179,9 @@ public class ItemAction {
                     name = "ct_sale_v1";
                 }
 
-                Item sitem = RegisterItemServices.CUSTOM_ITEMS.get(name);
-                i.setDamage(i.getDamage() + 1);
-                sitem.setDamage(i.getDamage());
+                Item sitem = RegisterItemServices.CUSTOM_ITEMS.get(name).clone();
+//                i.setDamage(i.getDamage() + 1);
+//                sitem.setDamage(i.getDamage());
                 sitem.setCount(1);
                 //sitem.setDamage(saleSkinConfig.config.meta);
                 String nm = "&r&e"+salesEntity.master+" 的售货机";
@@ -275,14 +275,14 @@ public class ItemAction {
                 if(entity != null){
 
                     SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE, salesData);
-                    if(item.getDamage() >= item.getMaxDurability()){
+                    if(item.getDamage() + 1 >= item.getMaxDurability()){
                         player.getInventory().removeItem(item);
                         //添加粒子
                         player.level.addParticle(new ItemBreakParticle(player.add(0, player.getEyeY()),item));
                         player.level.addSound(player,Sound.RANDOM_BREAK);
                     }else{
                         Item cc = RegisterItemServices.CUSTOM_ITEMS.get("ct").clone();
-                        cc.setDamage(item.getDamage());
+                        cc.setDamage(item.getDamage() + 1);
                         player.getInventory().setItemInHand(cc);
                         level.addSound(block, Sound.MOB_ZOMBIE_WOODBREAK);
                     }
