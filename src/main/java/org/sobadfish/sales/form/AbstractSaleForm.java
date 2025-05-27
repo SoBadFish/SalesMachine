@@ -3,7 +3,6 @@ package org.sobadfish.sales.form;
 import cn.nukkit.Player;
 import cn.nukkit.form.response.FormResponse;
 import cn.nukkit.form.window.FormWindow;
-import org.sobadfish.sales.Utils;
 
 import java.util.LinkedHashMap;
 
@@ -19,19 +18,13 @@ public abstract class AbstractSaleForm {
 
     public static LinkedHashMap<String, AbstractSaleForm> DISPLAY_FROM = new LinkedHashMap<>();
 
-    private final int id;
+    private int id = 0;
 
-    private static int getRid(){
-        return Utils.rand(1293000,3233000);
-    }
-
-    public AbstractSaleForm(){
-        id = getRid();
-    }
 
 
     public void display(Player player){
         FormWindow formWindow = getForm(player);
+        id = player.formWindows.size() + 1;
         player.showFormWindow(formWindow,id);
         DISPLAY_FROM.put(player.getName(),this);
     }

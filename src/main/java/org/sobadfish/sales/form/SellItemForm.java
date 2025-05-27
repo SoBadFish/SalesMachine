@@ -106,8 +106,6 @@ public class SellItemForm extends AbstractSaleForm{
             saleItem.tag.putBoolean("noreduce",responseCustom.getToggleResponse(5));
         }
 
-
-
         if(sales.addItem(saleItem,true)){
             SalesMainClass.sendMessageToObject("&a添加成功!",player);
             player.getInventory().removeItem(cl);
