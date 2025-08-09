@@ -181,6 +181,7 @@ public class SalesEntity extends EntityHuman {
         return null;
     }
 
+
     /**
      * 向售货机钱罐添加物品
      * @param moneyItem 自定义货币

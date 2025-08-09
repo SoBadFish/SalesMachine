@@ -425,6 +425,8 @@ public class SalesListener implements Listener {
             AbstractSaleForm form = AbstractSaleForm.DISPLAY_FROM.get(event.getPlayer().getName());
             if(form.getId() == event.getFormID()) {
                 form.onListener(event.getPlayer(), event.getResponse());
+                AbstractSaleForm.DISPLAY_FROM.remove(event.getPlayer().getName());
+
             }
         }
     }

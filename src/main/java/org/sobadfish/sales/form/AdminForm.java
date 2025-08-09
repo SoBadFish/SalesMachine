@@ -72,12 +72,13 @@ public class AdminForm extends AbstractSaleForm {
             limit = Integer.parseInt(responseCustom.getInputResponse(0));
         }catch (Exception ignore){}
         try {
-            hour = Integer.parseInt(responseCustom.getInputResponse(1));
+            hour = Integer.parseInt(responseCustom.getInputResponse(1).trim());
 
         }catch (Exception ignore){}
         if(hour < -1){
             hour = -1;
         }
+
         int count = sales.stack;
 
 

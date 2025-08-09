@@ -89,7 +89,7 @@ public class PanelSettingItem extends BasePlayPanelItemInstance{
             limit = showItem.tag.getInt("limitCount");
         }
         if(showItem.tag.contains("limitTime") ){
-            time = (int) (showItem.tag.getLong("limitTime") / (60 * 60 * 1000));
+            time = (int) (showItem.tag.getLong("limitTime"));
         }
         lore.add(format(Utils.getCentontString("&r&e▶&7库存: &a"+(showItem.stack),length)));
         if(!isInv){

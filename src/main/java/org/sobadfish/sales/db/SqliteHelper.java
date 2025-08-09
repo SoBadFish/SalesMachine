@@ -358,7 +358,7 @@ public class SqliteHelper {
             ResultSet resultSet = statement.executeQuery();
             T t = clazz.getDeclaredConstructor().newInstance();
 
-            explainClass(resultSet,clazz,t);
+            instance = explainClass(resultSet,clazz,t);
             resultSet.close();
 
         } catch (SQLException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
