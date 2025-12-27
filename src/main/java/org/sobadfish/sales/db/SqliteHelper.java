@@ -1,7 +1,6 @@
 package org.sobadfish.sales.db;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.*;
 
@@ -13,25 +12,25 @@ public class SqliteHelper {
 
     private Connection connection;
 
-    private Statement statement;
-
     private final String dbFilePath;
 
     /**
      * 构造函数
+     *
      * @param dbFilePath sqlite db 文件路径
      */
     public SqliteHelper(String dbFilePath) throws ClassNotFoundException, SQLException {
         this.dbFilePath = dbFilePath;
-        connection = getConnection(dbFilePath);
+        this.connection = createConnection(dbFilePath);
     }
 
     /**
      * 获取数据库连接
+     *
      * @param dbFilePath db文件路径
      * @return 数据库连接
      */
-    private Connection getConnection(String dbFilePath) throws ClassNotFoundException, SQLException {
+    private Connection createConnection(String dbFilePath) throws ClassNotFoundException, SQLException {
         Connection conn = null;
         // 1、加载驱动
         Class.forName("org.sqlite.JDBC");
@@ -41,26 +40,28 @@ public class SqliteHelper {
         return conn;
     }
 
-
+    private Connection getConnection() throws ClassNotFoundException, SQLException {
+        if (null == connection) {
+            connection = createConnection(dbFilePath);
+        }
+        return connection;
+    }
 
     public boolean exists(String table) {
-        try {
-            getStatement().executeQuery(
-                    "select * from "+table
-            );
+        try (Statement stmt = getConnection().createStatement();
+             ResultSet resultSet = stmt.executeQuery("select * from " + table)) {
             return true;
         } catch (Exception e) {
             return false;
         }
-
     }
 
-    public void addTable(String tableName,DBTable tables){
-        if(!exists(tableName)) {
+    public void addTable(String tableName, DBTable tables) {
+        if (!exists(tableName)) {
             String sql = "create table " + tableName + "(" + tables.asSql() + ")";
-            try {
-                getStatement().executeQuery(sql);
-            }catch (Exception e){
+            try (Statement stmt = getConnection().createStatement()) {
+                stmt.execute(sql);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -72,187 +73,170 @@ public class SqliteHelper {
 
     /**
      * 增加数据
-     * */
-    public <T> void add(String tableName,T values){
-        try{
-            if(statement != null){
-//                ContentValues contentValues = new ContentValues();
-                SqlData sqlData = SqlData.classToSqlData(values);
-                add(tableName, sqlData);
-            }
-        }catch (Exception ignore){}
-
-
+     *
+     */
+    public <T> void add(String tableName, T values) {
+        try {
+            SqlData sqlData = SqlData.classToSqlData(values);
+            add(tableName, sqlData);
+        } catch (Exception ignore) {
+        }
     }
-
-
 
     /**
      * 增加数据
-     * */
-    public SqliteHelper add(String tableName,SqlData values){
+     *
+     */
+    public SqliteHelper add(String tableName, SqlData values) {
         try {
-            if (statement != null) {
-                String sql = "insert into " + tableName + "(" + values.getColumnToString() + ") values (" + values.getObjectToString() + ")";
-                statement.execute(sql);
+            String sql = "insert into " + tableName + "(" + values.getColumnToString() + ") values (" + values.getObjectToString() + ")";
+            try (Statement stmt = getConnection().createStatement()) {
+                stmt.execute(sql);
             }
-        }catch (Exception ignore){}
+        } catch (Exception ignore) {
+        }
         return this;
     }
-
 
     /**
      * 删除数据
-     * */
-    public SqliteHelper remove(String tableName,int id){
+     *
+     */
+    public SqliteHelper remove(String tableName, int id) {
         try {
-            if (statement != null) {
-                String sql = "delete from " + tableName + " where id = " + id;
-                statement.execute(sql);
+            String sql = "delete from " + tableName + " where id = " + id;
+            try (Statement stmt = getConnection().createStatement()) {
+                stmt.execute(sql);
             }
-        }catch (Exception ignore){}
+        } catch (Exception ignore) {
+        }
         return this;
     }
 
-    public SqliteHelper remove(String tableName,String key,String value){
+    public SqliteHelper remove(String tableName, String key, String value) {
         try {
-            if (statement != null) {
-                String sql = "delete from " + tableName + " where "+key+" = '" + value+"'";
-                statement.execute(sql);
+            String sql = "delete from " + tableName + " where " + key + " = '" + value + "'";
+            try (Statement stmt = getConnection().createStatement()) {
+                stmt.execute(sql);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return this;
     }
 
-    public SqliteHelper removeAll(String tableName){
+    public SqliteHelper removeAll(String tableName) {
         try {
-            if (statement != null) {
-                String sql = "delete from " + tableName;
-                statement.execute(sql);
+            String sql = "delete from " + tableName;
+            try (Statement stmt = getConnection().createStatement()) {
+                stmt.execute(sql);
             }
-        }catch (Exception ignore){}
+        } catch (Exception ignore) {
+        }
         return this;
     }
 
-
-
-    public <T> SqliteHelper set(String tableName,T values){
+    public <T> SqliteHelper set(String tableName, T values) {
         SqlData contentValues = SqlData.classToSqlDataAsId(values);
-        if(contentValues.getInt("id") == -1){
+        if (contentValues.getInt("id") == -1) {
             throw new NullPointerException("无 id 信息");
         }
-        return set(tableName,contentValues.getInt("id"),contentValues);
+        return set(tableName, contentValues.getInt("id"), contentValues);
     }
 
-    public <T> SqliteHelper set(String tableName,String key,String value,T values){
+    public <T> SqliteHelper set(String tableName, String key, String value, T values) {
         SqlData sqlData = SqlData.classToSqlData(values);
-        return  set(tableName,key,value,sqlData);
+        return set(tableName, key, value, sqlData);
     }
 
 
     /**
      * 更新数据
-     * */
-    public SqliteHelper set(String tableName,int id,SqlData values){
+     *
+     */
+    public SqliteHelper set(String tableName, int id, SqlData values) {
         try {
-            if(statement != null) {
-                statement.execute("update "+tableName+" set "+values.toUpdateValue()+" where id = "+id);
+            String sql = "update " + tableName + " set " + values.toUpdateValue() + " where id = " + id;
+            try (Statement stmt = getConnection().createStatement()) {
+                stmt.execute(sql);
             }
-
-        }catch (Exception ignore){}
-
+        } catch (Exception ignore) {
+        }
         return this;
     }
 
 
-    public void addColumns(String table,String columns,Field type){
+    public void addColumns(String table, String columns, Field type) {
         try {
-            if (statement != null) {
-                statement.execute("alter table " + table + " add column '"+columns+"' "+classTypeAsSql(type)+"");
+            String sql = "alter table " + table + " add column '" + columns + "' " + classTypeAsSql(type) + "";
+            try (Statement stmt = getConnection().createStatement()) {
+                stmt.execute(sql);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
 
     /**
      * 获取字段名称
-     * */
-    public List<String> getColumns(String table){
+     *
+     */
+    public List<String> getColumns(String table) {
         List<String> strings = new ArrayList<>();
-        if(statement != null) {
-            try{
-                ResultSet resultSet = statement.executeQuery("pragma  table_info("+table+")");
-                while (resultSet.next()){
-                    strings.add(resultSet.getString("name"));
-                }
-                resultSet.close();
-            }catch (Exception e){
-                e.printStackTrace();
+        try (Statement stmt = getConnection().createStatement();
+             ResultSet resultSet = stmt.executeQuery("pragma  table_info(" + table + ")")) {
+            while (resultSet.next()) {
+                strings.add(resultSet.getString("name"));
             }
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return strings;
     }
 
     /**
      * 更新数据
-     * */
-    public SqliteHelper set(String tableName,String key,String value,SqlData values){
-
+     *
+     */
+    public SqliteHelper set(String tableName, String key, String value, SqlData values) {
         try {
-            if(statement != null) {
-                statement.execute("update "+tableName+" set "+values.toUpdateValue()+" where "+key+" = "+value);
+            String sql = "update " + tableName + " set " + values.toUpdateValue() + " where " + key + " = " + value;
+            try (Statement stmt = getConnection().createStatement()) {
+                stmt.execute(sql);
             }
-
-        }catch (Exception ignore){}
-
+        } catch (Exception ignore) {
+        }
         return this;
-
     }
 
-    public <T> SqliteHelper set(String tableName,SqlData key,T values){
+    public <T> SqliteHelper set(String tableName, SqlData key, T values) {
         SqlData sqlData = SqlData.classToSqlData(values);
         try {
-            if(statement != null) {
-
-                String sql = "update "+tableName+" set "+sqlData.toUpdateValue()+" where "+getUpDataWhere(key);
-                PreparedStatement statement = connection.prepareStatement(sql);
-
+            String sql = "update " + tableName + " set " + sqlData.toUpdateValue() + " where " + getUpDataWhere(key);
+            try (PreparedStatement preparedStatement = getConnection().prepareStatement(sql)) {
                 int i = 1;
                 for (Object type : key.getObjects()) {
-                    statement.setString(i, type.toString());
+                    preparedStatement.setString(i, type.toString());
                     i++;
                 }
-                statement.execute();
-
+                preparedStatement.execute();
             }
-
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
         return this;
-
-//        return  set(tableName,key,value,sqlData);
     }
 
 
     public boolean hasData(String tableName, String key, String value) {
-        try {
-            if (statement != null) {
-                ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM " + tableName + " WHERE " + key + " = '" + value + "'");
-                if (resultSet.next()) {
-                    int count = resultSet.getInt(1);
-                    resultSet.close();
-                    return count > 0;
-                }
+        try (Statement stmt = getConnection().createStatement();
+             ResultSet resultSet = stmt.executeQuery("SELECT COUNT(*) FROM " + tableName + " WHERE " + key + " = '" + value + "'")) {
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                return count > 0;
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
@@ -269,244 +253,223 @@ public class SqliteHelper {
 
     /**
      * 查找条数
-     * */
-    public int countAllData(String tableName){
-        if (statement != null) {
-            try{
-                ResultSet resultSet = statement.executeQuery("SELECT count(*) FROM " + tableName);
+     *
+     */
+    public int countAllData(String tableName) {
+        try (Statement stmt = getConnection().createStatement();
+             ResultSet resultSet = stmt.executeQuery("SELECT count(*) FROM " + tableName)) {
+            if (resultSet.next()) {
                 return resultSet.getInt(1);
-            }catch (SQLException e){
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return 0;
-
     }
+
     /**
      * 查找条数
-     * */
-    public int countData(String tableName,String key,String value){
-        if (statement != null) {
-            try{
-                ResultSet resultSet = statement.executeQuery("SELECT count(*) FROM " + tableName+" WHERE " + key+" = '"+value+"'");
+     *
+     */
+    public int countData(String tableName, String key, String value) {
+        try (Statement stmt = getConnection().createStatement();
+             ResultSet resultSet = stmt.executeQuery("SELECT count(*) FROM " + tableName + " WHERE " + key + " = '" + value + "'")) {
+            if (resultSet.next()) {
                 return resultSet.getInt(1);
-            }catch (SQLException e){
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return 0;
-
     }
 
     /**
      * 根据数量排行
-     * */
-    public <T> List<DataCount<T>> sortDataCount(String tableName,String groupBy,String where,int count,Class<T> tClass){
-        if (statement != null) {
-            try{
-                LinkedList<DataCount<T>> datas = new LinkedList<>();
-                String sql = "SELECT "+tableName+".*, COUNT(*) AS group_count FROM " + tableName +" WHERE "+where+" "+
-                        "GROUP BY "+groupBy+" ORDER BY group_count DESC LIMIT "+count;
-                ResultSet resultSet = statement.executeQuery(sql);
-
+     *
+     */
+    public <T> List<DataCount<T>> sortDataCount(String tableName, String groupBy, String where, int count, Class<T> tClass) {
+        try {
+            LinkedList<DataCount<T>> datas = new LinkedList<>();
+            String sql = "SELECT " + tableName + ".*, COUNT(*) AS group_count FROM " + tableName + " WHERE " + where + " " +
+                    "GROUP BY " + groupBy + " ORDER BY group_count DESC LIMIT " + count;
+            try (Statement stmt = getConnection().createStatement();
+                 ResultSet resultSet = stmt.executeQuery(sql)) {
                 while (resultSet.next()) {
                     T t = tClass.getDeclaredConstructor().newInstance();
                     int ct = resultSet.getInt("group_count");
-                    explainClass(resultSet,tClass,t);
+                    explainClass(resultSet, tClass, t);
                     DataCount<T> dc = new DataCount<>();
                     dc.data = t;
                     dc.count = ct;
                     datas.add(dc);
                 }
-                resultSet.close();
-                return datas;
-
-            }catch (SQLException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
-                e.printStackTrace();
             }
+            return datas;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return new ArrayList<>();
     }
 
 
-
-    public <T> T get(String tableName,int id, Class<T> clazz){
+    public <T> T get(String tableName, int id, Class<T> clazz) {
         T instance = null;
         try {
             String query = "SELECT * FROM " + tableName + " WHERE id = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setInt(1, id);
-            ResultSet resultSet = statement.executeQuery();
-
-            instance = explainClass(resultSet,clazz,clazz.newInstance());
-            resultSet.close();
-        } catch (SQLException | InstantiationException | IllegalAccessException e) {
+            try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
+                preparedStatement.setInt(1, id);
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    instance = explainClass(resultSet, clazz, clazz.newInstance());
+                }
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return instance;
-
     }
 
-    public <T> T get(String tableName,String key,String value, Class<T> clazz){
+    public <T> T get(String tableName, String key, String value, Class<T> clazz) {
         T instance = null;
         try {
-            // 准备 SQL 查询语句
             String query = "SELECT * FROM " + tableName + " WHERE " + key + " = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, value);
-
-            ResultSet resultSet = statement.executeQuery();
-            T t = clazz.getDeclaredConstructor().newInstance();
-
-            instance = explainClass(resultSet,clazz,t);
-            resultSet.close();
-
-        } catch (SQLException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
+                preparedStatement.setString(1, value);
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    T t = clazz.getDeclaredConstructor().newInstance();
+                    instance = explainClass(resultSet, clazz, t);
+                }
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return instance;
-
     }
 
     public <T> LinkedList<T> getDataByString(String tableName, String selection, String[] key, Class<T> clazz) {
         LinkedList<T> datas = new LinkedList<>();
         try {
-            // 准备 SQL 查询语句
             String query = "SELECT * FROM " + tableName + " WHERE " + selection;
-            PreparedStatement statement = connection.prepareStatement(query);
-
-            // 设置查询条件
-            for (int i = 0; i < key.length; i++) {
-                statement.setString(i + 1, key[i]);
+            try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
+                // 设置查询条件
+                for (int i = 0; i < key.length; i++) {
+                    preparedStatement.setString(i + 1, key[i]);
+                }
+                // 执行查询
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    while (resultSet.next()) {
+                        T t = clazz.getDeclaredConstructor().newInstance();
+                        datas.add(explainClass(resultSet, clazz, t));
+                    }
+                }
             }
-
-            // 执行查询
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                T t = clazz.getDeclaredConstructor().newInstance();
-                datas.add(explainClass(resultSet,clazz,t));
-            }
-            resultSet.close();
-
-        } catch (SQLException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return datas;
     }
 
 
-
-    public <T> LinkedList<T> getAll(String tableName,Class<T> clazz){
+    public <T> LinkedList<T> getAll(String tableName, Class<T> clazz) {
         LinkedList<T> datas = new LinkedList<>();
         try {
-            // 准备 SQL 查询语句
             String query = "SELECT * FROM " + tableName;
-            PreparedStatement statement = connection.prepareStatement(query);
-
-            // 执行查询
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                T t = clazz.getDeclaredConstructor().newInstance();
-                datas.add(explainClass(resultSet,clazz,t));
+            try (PreparedStatement preparedStatement = getConnection().prepareStatement(query);
+                 ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    T t = clazz.getDeclaredConstructor().newInstance();
+                    datas.add(explainClass(resultSet, clazz, t));
+                }
             }
-
-            resultSet.close();
-
-        } catch (SQLException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return datas;
     }
 
-    private String classTypeAsSql(Field type){
-        if(type.getType() == int.class ){
+    private String classTypeAsSql(Field type) {
+        if (type.getType() == int.class) {
             return "integer default 0";
         }
-        if(type.getType() == float.class || type.getType() == double.class){
+        if (type.getType() == float.class || type.getType() == double.class) {
             return type.getType().getName();
-        }else{
+        } else {
             return "text";
         }
 
     }
 
-    private <T> T explainClass(ResultSet cursor, Class<?> tc, T t){
+    private <T> T explainClass(ResultSet cursor, Class<?> tc, T t) {
         try {
             ResultSetMetaData rsmd = cursor.getMetaData();
-            for(int i = 0;i < rsmd.getColumnCount();i++){
+            for (int i = 0; i < rsmd.getColumnCount(); i++) {
                 String name = rsmd.getColumnName(i + 1);
                 Field field = null;
                 try {
                     field = tc.getField(name);
-                }catch (Exception ignore){
+                } catch (Exception ignore) {
                 }
-                if(field == null){
+                if (field == null) {
                     continue;
                 }
-                if(field.getType() == int.class){
+                if (field.getType() == int.class) {
                     field.set(t, cursor.getInt(name));
-                }else
-                if(field.getType() == float.class || field.getType() == double.class){
+                } else if (field.getType() == float.class || field.getType() == double.class) {
                     field.set(t, cursor.getFloat(name));
-                }else
-                if(field.getType() == boolean.class){
+                } else if (field.getType() == boolean.class) {
                     field.set(t, Boolean.valueOf(cursor.getString(name)));
 
-                }else
-                if(field.getType() == long.class){
+                } else if (field.getType() == long.class) {
                     field.set(t, cursor.getLong(name));
 
-                }else{
+                } else {
                     String v = cursor.getString(name);
-                    if("null".equalsIgnoreCase(v)){
+                    if ("null".equalsIgnoreCase(v)) {
                         v = null;
                     }
-                    field.set(t,v);
+                    field.set(t, v);
                 }
 
             }
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return t;
     }
 
 
-
     public static class DBTable {
-        LinkedHashMap<String,String> tables = new LinkedHashMap<>();
+        LinkedHashMap<String, String> tables = new LinkedHashMap<>();
 
-        public DBTable(String key,String value){
+        public DBTable(String key, String value) {
             tables.put(key, value);
         }
 
-        public DBTable(Map<String,String> m){
+        public DBTable(Map<String, String> m) {
             tables.putAll(m);
         }
 
-        public DBTable put(String key,String value){
+        public DBTable put(String key, String value) {
             tables.put(key, value);
             return this;
         }
 
-        public String asSql(){
+        public String asSql() {
             StringBuilder s = new StringBuilder();
-            for (Map.Entry<String,String> e:tables.entrySet()) {
+            for (Map.Entry<String, String> e : tables.entrySet()) {
                 s.append(e.getKey()).append(" ").append(e.getValue()).append(",");
             }
-            return s.substring(0,s.length() - 1);
+            return s.substring(0, s.length() - 1);
 
         }
 
 
-
-        public static DBTable asDbTable(Class<?> t){
+        public static DBTable asDbTable(Class<?> t) {
             Field[] fields = t.getFields();
-            LinkedHashMap<String,String> stringStringLinkedHashMap = new LinkedHashMap<>();
+            LinkedHashMap<String, String> stringStringLinkedHashMap = new LinkedHashMap<>();
             boolean isId = false;
             // 先找自增id
-            for(Field field: fields){
+            for (Field field : fields) {
                 if ("id".equalsIgnoreCase(field.getName()) && (field.getType() == long.class
                         || field.getType() == int.class)) {
                     //找到了
@@ -514,42 +477,27 @@ public class SqliteHelper {
                     break;
                 }
             }
-            if(!isId){
+            if (!isId) {
                 throw new NullPointerException("数据库类需要一个id");
             }
-            stringStringLinkedHashMap.put("id","integer primary key autoincrement");
-            for(Field field: fields){
-                if("id".equalsIgnoreCase(field.getName()) && field.getType() == int.class){
+            stringStringLinkedHashMap.put("id", "integer primary key autoincrement");
+            for (Field field : fields) {
+                if ("id".equalsIgnoreCase(field.getName()) && field.getType() == int.class) {
                     //找到了
                     continue;
                 }
-                if(field.getType() == float.class || field.getType() == double.class){
-                    stringStringLinkedHashMap.put(field.getName().toLowerCase(),field.getType().getName());
-                }else if(field.getType() == int.class){
-                    stringStringLinkedHashMap.put(field.getName().toLowerCase(),"integer");
-                }else{
-                    stringStringLinkedHashMap.put(field.getName().toLowerCase(),"text");
+                if (field.getType() == float.class || field.getType() == double.class) {
+                    stringStringLinkedHashMap.put(field.getName().toLowerCase(), field.getType().getName());
+                } else if (field.getType() == int.class) {
+                    stringStringLinkedHashMap.put(field.getName().toLowerCase(), "integer");
+                } else {
+                    stringStringLinkedHashMap.put(field.getName().toLowerCase(), "text");
                 }
             }
             return new DBTable(stringStringLinkedHashMap);
 
         }
 
-    }
-
-
-    private Connection getConnection() throws ClassNotFoundException, SQLException {
-        if (null == connection) {
-            connection = getConnection(dbFilePath);
-        }
-        return connection;
-    }
-
-    private Statement getStatement() throws SQLException, ClassNotFoundException {
-        if (null == statement) {
-            statement = getConnection().createStatement();
-        }
-        return statement;
     }
 
     /**
@@ -561,18 +509,12 @@ public class SqliteHelper {
                 connection.close();
                 connection = null;
             }
-
-            if (null != statement) {
-                statement.close();
-                statement = null;
-            }
-
         } catch (SQLException e) {
-            System.out.println("Sqlite数据库关闭时异常 "+ e);
+            System.out.println("Sqlite数据库关闭时异常 " + e);
         }
     }
 
-    public static class DataCount<T>{
+    public static class DataCount<T> {
 
         public T data;
 
