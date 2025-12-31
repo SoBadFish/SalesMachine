@@ -16,7 +16,7 @@ public abstract class AbstractSaleForm {
         return id;
     }
 
-    public static LinkedHashMap<String, AbstractSaleForm> DISPLAY_FROM = new LinkedHashMap<>();
+    public static volatile LinkedHashMap<String, AbstractSaleForm> DISPLAY_FROM = new LinkedHashMap<>();
 
     private int id = 0;
 

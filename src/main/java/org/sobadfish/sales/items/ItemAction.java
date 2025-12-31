@@ -47,6 +47,7 @@ public class ItemAction {
             }
         }
         BlockChest blockChest = new BlockChest();
+        blockChest.position(block);
         BlockPlaceEvent event = new BlockPlaceEvent(player,blockChest,block,target,handItem);
         Server.getInstance().getPluginManager().callEvent(event);
         if(event.isCancelled()){

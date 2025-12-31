@@ -391,12 +391,12 @@ public class SalesListener implements Listener {
         //卸载区间下的所有 实体
 //        SalesMainClass.sendMessageToConsole("&c区块卸载: 清理位置 &7("+event.getChunk().getX()+":"+ (event.getChunk().getZ())+") "+"&c 的售货机!");
         for(Entity e: event.getChunk().getEntities().values()){
-            if(e instanceof SalesEntity){
+            if(e instanceof SalesEntity salesEntity){
 //                event.setCancelled();
 //                break;
 //                SalesMainClass.sendMessageToConsole("&c区块卸载: 移除位置&7 ("+((SalesEntity) e).salesData.location+") "+"区块: "+ ((SalesEntity) e).salesData.chunkx+","+ ((SalesEntity) e).salesData.chunkz+"&c 的售货机!");
                 //顺便移除缓存
-                e.close();
+                salesEntity.closeAsChunk();
             }
         }
     }
