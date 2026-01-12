@@ -30,10 +30,10 @@ public class RemoveSales extends BasePlayPanelItemInstance{
 
     @Override
     public void onClick(ISalePanel inventory, Player player) {
-        if(click == 0){
+        if(click < 3){
             click++;
-            Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE,() -> click = 0,40);
-        }else{
+            Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE,() -> click = 0,50);
+        }else {
             ((ChestPanel)inventory).onClose(player);
             Item item =  ((ChestPanel)inventory).sales.getShaleItem();
             item.setCount(1);
