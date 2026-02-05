@@ -136,9 +136,9 @@ public class SalesListener implements Listener {
 
                 return;
             }
-            if(!ei.equals(RegisterItemServices.CUSTOM_ITEMS.get("ct"),false) &&
+            if(!ei.equals(RegisterItemServices.CUSTOM_ITEMS.get("ct"),false,false) &&
                     !(ei instanceof ISaleItem)&&
-                    !ei.equals(RegisterItemServices.CUSTOM_ITEMS.get("pipe_wrench"),false)
+                    !ei.equals(RegisterItemServices.CUSTOM_ITEMS.get("pipe_wrench"),false,false)
             && !ei.equals(new ItemHopper()) && !ei.equals(new ItemMinecartHopper())){
                 event.setCancelled();
             }else{
@@ -191,7 +191,7 @@ public class SalesListener implements Listener {
                         }
                     }else{
                         if(event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
-                            if(entity1.clickInvPlayers.size() > 0){
+                            if(!entity1.clickInvPlayers.isEmpty()){
                                 SalesMainClass.sendMessageToObject("&c售货机正在被编辑",player);
                                 return;
                             }
@@ -312,9 +312,10 @@ public class SalesListener implements Listener {
     public void loadEntityByChunk(Level level,FullChunk chunk){
         if( SalesMainClass.INSTANCE.sqliteHelper != null){
             List<SalesData> salesData = SalesMainClass.INSTANCE.sqliteHelper.getDataByString(SalesMainClass.DB_TABLE,
-                    "chunkx = ? and chunkz = ?",new String[]{
+                    "chunkx = ? and chunkz = ? and can_move = ?",new String[]{
                             (chunk.getX())+"",
-                            (chunk.getZ())+""
+                            (chunk.getZ())+"",
+                            "0"
                     }, SalesData.class);
             if(!salesData.isEmpty()){
                 // SalesMainClass.sendMessageToConsole("加载 区块: ("+event.getChunk().getX()+":"+ (event.getChunk().getZ())+") "+salesData.size()+" 个售货机");

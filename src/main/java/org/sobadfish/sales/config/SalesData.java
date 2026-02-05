@@ -22,6 +22,7 @@ public class SalesData {
 
     public long id;
 
+    public int can_move;
     //唯一ID
     public String uuid;
 
@@ -215,6 +216,7 @@ public class SalesData {
     @Override
     public String toString() {
         return "SalesData{" +
+                "uuid="+uuid+
                 "id=" + id +
                 ", chunkx=" + chunkx +
                 ", chunkz=" + chunkz +

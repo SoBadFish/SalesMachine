@@ -100,7 +100,7 @@ public class ItemAction {
      * 放置售货机
      * */
     public static boolean onSalePlace(Item handItem,Block block, Player player, int meta){
-        if(!handItem.hasCompoundTag() || !handItem.getNamedTag().contains("salesmeta")){
+        if( !handItem.hasCompoundTag() || !handItem.getNamedTag().contains("salesmeta")){
             String sm = null;
             for(SaleSkinConfig saleSkinConfig: SalesMainClass.ENTITY_SKIN.values()){
                 if(saleSkinConfig.config.meta == meta){
@@ -124,6 +124,19 @@ public class ItemAction {
     }
 
     public static boolean onCtActivate(Item i, Player player, Block target,BlockFace face) {
+
+//        System.out.println("onCtActivate: 拿取.....");
+        CompoundTag tag = i.getNamedTag();
+        if(tag != null) {
+            //这段代码防止 win10 右键放置多次触发
+            if (tag.contains("lock")) {
+                long lockTime = tag.getLong("lock");
+                if (System.currentTimeMillis() - lockTime < 400) {
+//                    System.out.println("锁定: "+lockTime+" 当前: "+System.currentTimeMillis());
+                    return false;
+                }
+            }
+        }
 
         if(SalesMainClass.usedCtChest) {
             //把箱子搬起来
@@ -184,6 +197,7 @@ public class ItemAction {
 //                i.setDamage(i.getDamage() + 1);
 //                sitem.setDamage(i.getDamage());
                 sitem.setCount(1);
+                sitem.setDamage(i.getDamage());
                 //sitem.setDamage(saleSkinConfig.config.meta);
                 String nm = "&r&e"+salesEntity.master+" 的售货机";
                 if(salesEntity.salesData.customname != null){
@@ -194,14 +208,17 @@ public class ItemAction {
                 sitem.setCustomName(TextFormat.colorize('&',nm));
                 sitem.addEnchantment(Enchantment.getEnchantment(0));
                 CompoundTag compoundTag = sitem.getNamedTag();
-                compoundTag.putCompound(salesEntity.toPackage());
+                compoundTag.putCompound(salesEntity.toPackage());//包装...
                 //防止过快使用锁
                 compoundTag.putLong("lock",System.currentTimeMillis());
                 sitem.setCompoundTag(compoundTag);
+                sitem.setCustomName(i.getCustomName());
+
                 //i.setCount(i.getCount() - 1);
 
                 player.getInventory().removeItem(i);
                 player.getInventory().setItemInHand(sitem);
+                //拿去的时候移除
             }
 
 
@@ -257,42 +274,75 @@ public class ItemAction {
             //这段代码防止 win10 右键放置多次触发
             if(tag.contains("lock")){
                 long lockTime = tag.getLong("lock");
-                if(System.currentTimeMillis() - lockTime < 1000){
+                if(System.currentTimeMillis() - lockTime < 400){
                     return false;
                 }
             }
             if(SalesMainClass.banWorlds.contains(level.getFolderName()) && !player.isOp()){
                 return false;
             }
-            if(tag.contains("sale_data")){
 
-              //  Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE, () -> {
-                CompoundTag data = tag.getCompound("sale_data");
-                SalesData salesData = SalesData.getSaleDataByCompoundTag(data);
-                salesData.bf = player.getDirection().getName();
-                salesData.location = SalesEntity.asLocation(block);
-                SalesEntity entity = SalesEntity.spawnToAll(salesData.asPosition(),
-                        BlockFace.valueOf(salesData.bf.toUpperCase()), salesData.master, salesData,false,true,null,null);
-                if(entity != null){
+            if(tag.contains("sales_data")){
 
-                    SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE, salesData);
-                    if(item.getDamage() + 1 >= item.getMaxDurability()){
-                        player.getInventory().removeItem(item);
-                        //添加粒子
-                        player.level.addParticle(new ItemBreakParticle(player.add(0, player.getEyeY()),item));
-                        player.level.addSound(player,Sound.RANDOM_BREAK);
+                CompoundTag sales_data = item.getNamedTag().getCompound("sales_data");
+                String uuid = sales_data.getString("sale_uuid");
+                SalesData salesData = null;
+                if (SalesMainClass.INSTANCE.sqliteHelper.hasData(SalesMainClass.DB_TABLE, "uuid", uuid)) {
+                    salesData = SalesMainClass.INSTANCE.sqliteHelper.get(SalesMainClass.DB_TABLE, "uuid", uuid, SalesData.class);
+                    salesData.can_move = 0;
+                    salesData.location = SalesEntity.asLocation(block);
+//                    Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE, () -> {
+//                    SalesMainClass.INSTANCE.sqliteHelper.remove(SalesMainClass.DB_TABLE, "uuid",uuid);
+//                    },1);
+
+                }
+
+//                System.out.println("尝试放置售货机: "+salesData);
+                if(salesData != null){
+                    SalesEntity entity = SalesEntity.spawnToAll(block,
+                            BlockFace.valueOf(player.getDirection().getName().toUpperCase()),
+                            salesData.master, salesData,false,true,null,null);
+                    if(entity != null){
+//                        System.out.println("售货机生成");
+
+//                        SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE, salesData);
+                        if(item.getDamage() + 1 >= item.getMaxDurability()){
+                            player.getInventory().removeItem(item);
+                            //添加粒子
+                            player.level.addParticle(new ItemBreakParticle(player.add(0, player.getEyeY()),item));
+                            player.level.addSound(player,Sound.RANDOM_BREAK);
+                            return true;
+                        }else{
+                            Item cc = RegisterItemServices.CUSTOM_ITEMS.get("ct").clone();
+                            cc.setCustomName(item.getCustomName());
+                            cc.setDamage(item.getDamage() + 1);
+                            CompoundTag tag1 = cc.getNamedTag();
+                            if(tag1 == null){
+                                tag1 = new CompoundTag();
+                            }
+
+                            tag1.putLong("lock",System.currentTimeMillis());
+                            cc.setNamedTag(tag1);
+//                            tag
+                            player.getInventory().setItemInHand(cc);
+                            level.addSound(block, Sound.MOB_ZOMBIE_WOODBREAK);
+
+//                            System.out.println("物品覆盖");
+                            return true;
+                        }
+
+
+
                     }else{
-                        Item cc = RegisterItemServices.CUSTOM_ITEMS.get("ct").clone();
-                        cc.setDamage(item.getDamage() + 1);
-                        player.getInventory().setItemInHand(cc);
-                        level.addSound(block, Sound.MOB_ZOMBIE_WOODBREAK);
+                        SalesMainClass.sendMessageToObject("&c生成失败！ 请保证周围没有其他方块",player);
                     }
 
-
-
-                }else{
-                    SalesMainClass.sendMessageToObject("&c生成失败！ 请保证周围没有其他方块",player);
                 }
+              //  Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE, () -> {
+//                CompoundTag data = tag.getCompound("sale_data");
+//                SalesData salesData = SalesData.getSaleDataByCompoundTag(data);
+//                salesData.bf = player.getDirection().getName();
+//                salesData.location = SalesEntity.asLocation(block);
 
 
               //  },1);

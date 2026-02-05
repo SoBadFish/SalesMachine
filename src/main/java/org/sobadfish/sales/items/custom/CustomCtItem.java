@@ -28,7 +28,10 @@ public class CustomCtItem extends ItemCustom {
     }
 
 
-
+    @Override
+    public int getMaxDurability() {
+        return 20;
+    }
 
     @Override
     public boolean onActivate(Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz) {

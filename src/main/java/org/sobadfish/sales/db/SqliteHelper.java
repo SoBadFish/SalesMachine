@@ -150,6 +150,21 @@ public class SqliteHelper {
     }
 
 
+    public <T> SqliteHelper set(String tableName,SqlData values, String whereKey,String whereValue) {
+
+        try {
+            String sql = "update " + tableName + " set " + values.toUpdateValue() + " where "+whereKey+" = " + whereValue;
+            try (Statement stmt = getConnection().createStatement()) {
+                stmt.execute(sql);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return this;
+
+    }
+
+
     /**
      * 更新数据
      *
@@ -201,7 +216,8 @@ public class SqliteHelper {
      */
     public SqliteHelper set(String tableName, String key, String value, SqlData values) {
         try {
-            String sql = "update " + tableName + " set " + values.toUpdateValue() + " where " + key + " = " + value;
+            String sql = "update " + tableName + " set " + values.toUpdateValue() + " where " + key + " = '" + value+"'";
+//            System.out.println("更新命令: "+sql);
             try (Statement stmt = getConnection().createStatement()) {
                 stmt.execute(sql);
             }

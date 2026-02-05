@@ -26,6 +26,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.network.protocol.AddItemEntityPacket;
 import cn.nukkit.network.protocol.RemoveEntityPacket;
+import cn.nukkit.scheduler.PluginTask;
 import cn.nukkit.utils.TextFormat;
 import org.sobadfish.sales.RegisterItemServices;
 import org.sobadfish.sales.SalesListener;
@@ -43,6 +44,7 @@ import org.sobadfish.sales.panel.lib.DoubleChestPanel;
 import org.sobadfish.sales.panel.lib.IDisplayPanel;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author Sobadfish
@@ -54,7 +56,7 @@ public class SalesEntity extends EntityHuman {
 
     public static final String SALE_MASTER_TAG = "SalesMaster";
 
-    public List<AddItemEntityPacket> ipacket = new ArrayList<>();
+    public List<AddItemEntityPacket> ipacket = new CopyOnWriteArrayList<>();
 
     public List<SaleItem> items = new ArrayList<>();
 
@@ -461,7 +463,7 @@ public class SalesEntity extends EntityHuman {
         return b;
     }
 
-    public List<Player> onlinePlayers = new ArrayList<>();
+    public List<Player> onlinePlayers = new CopyOnWriteArrayList<>();
 
     public boolean equalsItemStr(String str) {
         if (str == null || str.isEmpty()) { // 过滤无效查询
@@ -510,17 +512,20 @@ public class SalesEntity extends EntityHuman {
     }
     public void removePacketsAll() {
         for (AddItemEntityPacket dataPacket : new ArrayList<>(ipacket)) {
+//            System.out.println("移除不相关的包.. "+dataPacket.entityUniqueId);
             RemoveEntityPacket pk1 = new RemoveEntityPacket();
             pk1.eid = dataPacket.entityUniqueId;
             for(Player player: onlinePlayers){
                 if(player.isOnline()){
+//                    System.out.println("移除玩家.. "+player.getName());
                     player.dataPacket(pk1);
                 }
 //                Server.broadcastPacket(Server.getInstance().getOnlinePlayers().values(), pk1);
             }
-            onlinePlayers.clear();
+
 
         }
+        onlinePlayers.clear();
         ipacket.clear();
     }
 
@@ -528,7 +533,7 @@ public class SalesEntity extends EntityHuman {
      * 重新将包发给玩家..
      * */
     private void showItems(Player player) {
-        if(ipacket.size() == 0){
+        if(ipacket.isEmpty()){
             showItems();
             return;
         }
@@ -543,7 +548,7 @@ public class SalesEntity extends EntityHuman {
     }
 
     private void showItems() {
-        if (ipacket.size() == 0) {
+        if (ipacket.isEmpty()) {
             int size = 6;
             if (saleSettingConfig.floatItemPos.containsKey(blockFace)) {
                 size = saleSettingConfig.floatItemPos.get(blockFace).size();
@@ -703,14 +708,16 @@ public class SalesEntity extends EntityHuman {
                 salesData.saveItemSlots(loadItems);
                 saveData();
             }
+            removePacketsAll();
 
-        }catch (Exception ignore){
+        }catch (Exception e){
+            e.printStackTrace();
         }finally {
             //不管怎么样 保证移除
             removePacketsAll();
-            super.close();
-        }
 
+        }
+        super.close();
 
     }
 
@@ -740,9 +747,13 @@ public class SalesEntity extends EntityHuman {
     public CompoundTag toPackage() {
         //直接打包成tag 然后移除
         salesData.saveItemSlots(loadItems);
-        CompoundTag tag = salesData.toPackage();
+        salesData.can_move = 1;
+        CompoundTag tag = new CompoundTag("sales_data");
+        tag.putString("sale_uuid",salesData.uuid);
+//        CompoundTag tag = salesData.toPackage();
         finalClose = true;
         isPackage = true;
+
         for (Map.Entry<String, IDisplayPanel> dis : SalesListener.chestPanelLinkedHashMap.entrySet()) {
             if (dis.getValue().getSales().equals(this)) {
                 dis.getValue().close();
@@ -751,14 +762,14 @@ public class SalesEntity extends EntityHuman {
 
         }
         close();
-        String as = asLocation(this);
+//        String as = asLocation(this);
         //后台写入
-        Server.getInstance().getScheduler().scheduleTask(SalesMainClass.INSTANCE, new Runnable() {
-            @Override
-            public void run() {
-                SalesMainClass.INSTANCE.sqliteHelper.remove(SalesMainClass.DB_TABLE, "location", as);
-            }
-        });
+////        Server.getInstance().getScheduler().scheduleTask(SalesMainClass.INSTANCE, new Runnable() {
+//            @Override
+//            public void run() {
+        SalesMainClass.INSTANCE.sqliteHelper.set(SalesMainClass.DB_TABLE, salesData);
+//            }
+//        });
 
 //        SalesListener.cacheEntitys.remove(as);
         return tag;
@@ -799,8 +810,8 @@ public class SalesEntity extends EntityHuman {
         }
 
         close();
-        String as = asLocation(this);
-        SalesMainClass.INSTANCE.sqliteHelper.remove(SalesMainClass.DB_TABLE, "location", as);
+//        String as = asLocation(this);
+        SalesMainClass.INSTANCE.sqliteHelper.remove(SalesMainClass.DB_TABLE, "uuid", salesData.uuid);
 //        SalesListener.cacheEntitys.remove(as);
 
 //        level.save(true);
@@ -831,7 +842,7 @@ public class SalesEntity extends EntityHuman {
             }
 
         }
-        if (SalesMainClass.ENTITY_SKIN.size() == 0) {
+        if (SalesMainClass.ENTITY_SKIN.isEmpty()) {
             return null;
         }
         String modelName = new ArrayList<>(SalesMainClass.ENTITY_SKIN.keySet()).get(0);
@@ -928,11 +939,25 @@ public class SalesEntity extends EntityHuman {
             if(handItem != null){
                 data.setPlaceItem(handItem);
             }
-            if (SalesMainClass.INSTANCE.sqliteHelper.hasData(SalesMainClass.DB_TABLE, "location", ps)) {
-                SalesMainClass.INSTANCE.sqliteHelper.set(SalesMainClass.DB_TABLE, "location", ps, data);
-            } else {
-                SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE, data);
-            }
+            SalesData finalData = data;
+            Server.getInstance().getScheduler().scheduleDelayedTask(SalesMainClass.INSTANCE, new PluginTask<>(SalesMainClass.INSTANCE) {
+                @Override
+                public void onRun(int currentTick) {
+                    if (SalesMainClass.INSTANCE.sqliteHelper.hasData(SalesMainClass.DB_TABLE, "uuid", finalData.uuid)) {
+//                        SalesMainClass.INSTANCE.sqliteHelper.set(SalesMainClass.DB_TABLE,new SqlData("location",ps),"uuid", finalData.uuid);
+                        SalesMainClass.INSTANCE.sqliteHelper.set(SalesMainClass.DB_TABLE, "uuid", finalData.uuid, finalData);
+                    } else {
+                        SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE, finalData);
+                    }
+                }
+            },1);
+
+
+//            if (SalesMainClass.INSTANCE.sqliteHelper.hasData(SalesMainClass.DB_TABLE, "location", ps)) {
+//                SalesMainClass.INSTANCE.sqliteHelper.set(SalesMainClass.DB_TABLE, "location", ps, data);
+//            } else {
+//                SalesMainClass.INSTANCE.sqliteHelper.add(SalesMainClass.DB_TABLE, data);
+//            }
             sales.salesData = data;
             return sales;
         }
