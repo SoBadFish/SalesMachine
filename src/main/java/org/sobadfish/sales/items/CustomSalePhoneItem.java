@@ -5,7 +5,7 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.item.ItemDurable;
 import cn.nukkit.item.customitem.CustomItemDefinition;
 import cn.nukkit.item.customitem.ItemCustomTool;
-import cn.nukkit.item.customitem.data.ItemCreativeCategory;
+import cn.nukkit.network.protocol.types.inventory.creative.CreativeItemCategory;
 
 /**
  * @author Sobadfish
@@ -19,7 +19,7 @@ public class CustomSalePhoneItem extends ItemCustomTool implements ItemDurable {
 
     @Override
     public CustomItemDefinition getDefinition() {
-        return CustomItemDefinition.toolBuilder(this, ItemCreativeCategory.ITEMS).allowOffHand(true).build();
+        return CustomItemDefinition.toolBuilder(this, CreativeItemCategory.ITEMS).allowOffHand(true).build();
     }
 
     @Override

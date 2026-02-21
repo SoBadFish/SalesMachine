@@ -14,7 +14,7 @@ public class CustomSaleSettingItem extends ItemCustom {
 
 //    @Override
 //    public CustomItemDefinition getDefinition() {
-//        return CustomItemDefinition.customBuilder(this, ItemCreativeCategory.ITEMS).build();
+//        return CustomItemDefinition.customBuilder(this, CreativeItemCategory.ITEMS).build();
 //    }
 
 }

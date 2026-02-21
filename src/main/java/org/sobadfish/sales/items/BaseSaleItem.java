@@ -4,9 +4,9 @@ import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.item.customitem.CustomItemDefinition;
 import cn.nukkit.item.customitem.ItemCustom;
-import cn.nukkit.item.customitem.data.ItemCreativeCategory;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
+import cn.nukkit.network.protocol.types.inventory.creative.CreativeItemCategory;
 
 /**
  * @author Sobadfish
@@ -27,7 +27,7 @@ public abstract class BaseSaleItem extends ItemCustom implements ISaleItem {
 
     @Override
     public CustomItemDefinition getDefinition() {
-        return CustomItemDefinition.customBuilder(this, ItemCreativeCategory.ITEMS).build();
+        return CustomItemDefinition.customBuilder(this, CreativeItemCategory.ITEMS).build();
     }
 
     @Override

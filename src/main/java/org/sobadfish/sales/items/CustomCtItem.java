@@ -4,9 +4,9 @@ import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.item.customitem.CustomItemDefinition;
 import cn.nukkit.item.customitem.ItemCustomTool;
-import cn.nukkit.item.customitem.data.ItemCreativeCategory;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
+import cn.nukkit.network.protocol.types.inventory.creative.CreativeItemCategory;
 
 /**
  * @author Sobadfish
@@ -21,7 +21,7 @@ public class CustomCtItem extends ItemCustomTool {
 
     @Override
     public CustomItemDefinition getDefinition() {
-        return CustomItemDefinition.toolBuilder(this, ItemCreativeCategory.ITEMS).build();
+        return CustomItemDefinition.toolBuilder(this, CreativeItemCategory.ITEMS).build();
     }
 
     @Override
